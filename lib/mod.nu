@@ -14,3 +14,4 @@ export use ./task/mod.nu *
 export use ./rust/mod.nu *
 export use ./misc/mod.nu *
 export use ./ai/mod.nu *
+export use ./hooks/mod.nu *

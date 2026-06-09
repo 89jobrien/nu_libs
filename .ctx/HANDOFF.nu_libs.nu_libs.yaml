@@ -1,23 +1,29 @@
 project: nu_libs
 id: nu_libs
-updated: 2026-06-09
+updated: 20260609::140255
 items:
   - id: "3"
     doob_uuid: null
     name: null
     priority: P2
     status: open
-    title: Add README for ai_nu and lib subcategories
+    title: Add README for lib/ai and lib subcategories
     description: |
-      ai_nu/README.md exists. Verify lib subcategory READMEs exist and are accurate.
-      ai_nu/TODO.md and ai_nu/changelog.md need review for open items.
+      lib/ai/ vendored as first-party source. Review lib/ai/README and TODO content
+      for open items; add subcategory READMEs as needed.
     files:
-      - ai_nu/README.md
-      - ai_nu/TODO.md
-      - ai_nu/changelog.md
+      - lib/ai/mod.nu
     completed: null
     extra: []
 log:
+  - date: 20260609::140255
+    summary: Dropped ai_nu submodule; vendored lib/ai as regular files, removed .gitmodules
+    commits:
+      - sha: 9f22821
+        branch: main
+      - sha: 69104a0
+        branch: main
+    session: 3
   - date: 20260609::094615
     summary: Initial commit and push to GitHub; ai_nu wired as git submodule
     commits: []

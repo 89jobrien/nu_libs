@@ -1,0 +1,9 @@
+name: po
+description: "objects in programming languages"
+yaml: |-
+  type: Type
+  struct: Struct
+  class: Class
+  trait: Trait
+  interface: Interface
+  table: Table

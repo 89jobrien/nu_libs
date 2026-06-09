@@ -13,3 +13,4 @@ export use ./std/mod.nu *
 export use ./task/mod.nu *
 export use ./rust/mod.nu *
 export use ./misc/mod.nu *
+export use ./ai/mod.nu *

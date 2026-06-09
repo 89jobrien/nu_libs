@@ -1,7 +1,6 @@
 project: nu_libs
 id: nu_libs
-updated: "20260609::094615"
-
+updated: 2026-06-09
 items:
   - id: "3"
     doob_uuid: null
@@ -18,17 +17,12 @@ items:
       - ai_nu/changelog.md
     completed: null
     extra: []
-
 log:
-  - date: "20260609::094615"
-    session: 2
+  - date: 20260609::094615
     summary: Initial commit and push to GitHub; ai_nu wired as git submodule
-    commits:
-      - sha: 8df1abe
-        branch: main
-      - sha: 9ba510d
-        branch: main
-  - date: "20260609::094034"
-    session: 1
+    commits: []
+    session: 2
+  - date: 20260609::094034
     summary: Bootstrapped HANDOFF for nu_libs — new repo, no commits yet
     commits: []
+    session: 1

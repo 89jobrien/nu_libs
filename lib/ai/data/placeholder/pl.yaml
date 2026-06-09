@@ -1,0 +1,15 @@
+name: pl
+description: "name of the programming language"
+yaml: |-
+  rust: Rust
+  python: Python pydantic
+  haskell: Haskell
+  nushell: Nushell
+  typescript: TypeScript
+  Javascript: Javascript
+  jsonschema: JsonSchema
+  sql: SQL
+  psql: PostgreSQL
+  mysql: MySQL
+  slite: Sqlite
+  bash: Bash

@@ -1,6 +1,6 @@
 project: nu_libs
 id: nu_libs
-updated: 20260609::140255
+updated: 20260609::193954
 items:
   - id: "3"
     doob_uuid: null
@@ -15,14 +15,39 @@ items:
       - lib/ai/mod.nu
     completed: null
     extra: []
+  - id: "4"
+    doob_uuid: null
+    name: null
+    priority: P1
+    status: open
+    title: Implement lib/ai/clients/baml.nu — Nu wrapper for nu-ai-daemon
+    description: |
+      Thin Nu client over the BAML agent daemon HTTP API. Requires nu-ai-daemon
+      and numcp to be operational. See design doc:
+      docs/plans/2026-06-09-baml-agent-daemon.md
+    files:
+      - lib/ai/clients/baml.nu
+      - lib/ai/mcp.nu
+    completed: null
+    extra: []
 log:
-  - date: 20260609::140255
-    summary: Dropped ai_nu submodule; vendored lib/ai as regular files, removed .gitmodules
+  - date: 20260609::193954
+    summary: >-
+      Designed BAML agent daemon + numcp architecture; bootstrapped numcp repo;
+      implemented numcp Phase 1 (config + registry, 12 tests green)
     commits:
-      - sha: 9f22821
+      - sha: 3e1c010
+        branch: main
+      - sha: ccefbfd
+        branch: main
+      - sha: a66417f
         branch: main
       - sha: 69104a0
         branch: main
+    session: 4
+  - date: 20260609::140255
+    summary: Dropped ai_nu submodule; vendored lib/ai as regular files, removed .gitmodules
+    commits: []
     session: 3
   - date: 20260609::094615
     summary: Initial commit and push to GitHub; ai_nu wired as git submodule

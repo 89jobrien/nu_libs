@@ -1,36 +1,8 @@
 project: nu_libs
 id: nu_libs
-updated: 2026-06-09
+updated: "20260609::094615"
+
 items:
-  - id: "1"
-    doob_uuid: null
-    name: null
-    priority: P0
-    status: open
-    title: Initial commit — stage and publish repo
-    description: |
-      Repo has been structured (lib/, ai_nu/, scripts/, README.md) but has no commits yet. Need to create .gitignore, initial commit, and push to GitHub.
-    files:
-      - README.md
-      - lib/mod.nu
-      - ai_nu/
-      - scripts/
-      - .gitignore
-    completed: null
-    extra: []
-  - id: "2"
-    doob_uuid: null
-    name: null
-    priority: P1
-    status: open
-    title: Wire ai_nu as a git submodule
-    description: |
-      ai_nu/ appears to be a separate repo. Formalize as a git submodule so consumers can pin the version independently.
-    files:
-      - .gitmodules
-      - ai_nu/
-    completed: null
-    extra: []
   - id: "3"
     doob_uuid: null
     name: null
@@ -38,15 +10,25 @@ items:
     status: open
     title: Add README for ai_nu and lib subcategories
     description: |
-      ai_nu/README.md exists. Verify lib subcategory READMEs exist and are accurate. ai_nu/TODO.md and ai_nu/changelog.md need review for open items.
+      ai_nu/README.md exists. Verify lib subcategory READMEs exist and are accurate.
+      ai_nu/TODO.md and ai_nu/changelog.md need review for open items.
     files:
       - ai_nu/README.md
       - ai_nu/TODO.md
       - ai_nu/changelog.md
     completed: null
     extra: []
+
 log:
-  - date: 20260609::094034
+  - date: "20260609::094615"
+    session: 2
+    summary: Initial commit and push to GitHub; ai_nu wired as git submodule
+    commits:
+      - sha: 8df1abe
+        branch: main
+      - sha: 9ba510d
+        branch: main
+  - date: "20260609::094034"
+    session: 1
     summary: Bootstrapped HANDOFF for nu_libs — new repo, no commits yet
     commits: []
-    session: 1

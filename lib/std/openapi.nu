@@ -2,9 +2,9 @@
 #
 # Usage:
 #   use lib/std/openapi.nu *
-#   nu-libschema                        # schema for all custom commands
-#   nu-libschema --filter "magi-"       # filter by name prefix
-#   nu-libschema --format yaml          # YAML output (default: json)
+#   nul-genschema                        # schema for all custom commands
+#   nul-genschema --filter "magi-"       # filter by name prefix
+#   nul-genschema --format yaml          # YAML output (default: json)
 
 # Map Nu param types to OpenAPI property schema
 def nu-type-to-schema [t: string] {
@@ -72,7 +72,7 @@ def cmd-to-operation [cmd: record] {
 }
 
 # Generate an OpenAPI 3.1 schema from all currently loaded custom commands
-export def nu-libschema [
+export def nul-genschema [
     --filter(-f): string = ""       # filter command names by substring
     --format: string = "json"       # output format: json or yaml
     --title: string = "nu_libs"     # schema title

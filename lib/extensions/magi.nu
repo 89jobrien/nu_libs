@@ -152,9 +152,11 @@ export def magi-loop [] {
     magi-run "loop.py"
 }
 
+def cmpl-reconcile-mode [] { ["prompt", "weight"] }
+
 # Reconcile modelcard after a prompt or weight RL run
 export def magi-reconcile [
-    mode: string  # "prompt" or "weight"
+    mode: string@cmpl-reconcile-mode  # "prompt" or "weight"
 ] {
     magi-run "reconcile.py" "--mode" $mode
 }

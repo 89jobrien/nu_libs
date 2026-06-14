@@ -13,5 +13,9 @@ export use ./std/mod.nu *
 export use ./task/mod.nu *
 export use ./rust/mod.nu *
 export use ./misc/mod.nu *
-export use ./ai/mod.nu *
+# ai/mod.nu requires ollama/baml runtime deps and version-specific query web API — use directly:
+#   use /Users/joe/dev/nu_libs/lib/ai/mod.nu *
 export use ./hooks/mod.nu *
+# extensions require external project repos on disk — use directly:
+#   use /Users/joe/dev/nu_libs/lib/extensions/magi.nu *
+# export use ./extensions/mod.nu *

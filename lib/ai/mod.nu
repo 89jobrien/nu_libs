@@ -3,7 +3,7 @@ export-env {
     use call.nu *
     use function.nu *
     use data/tools/os.nu
-    use data/tools/web.nu
+    # web.nu uses `query web 'selector'` — API changed across nu versions, use directly if needed
     use data/tools/git.nu
     use data/tools/programming.nu
     use data/tools/clipboard.nu
@@ -41,6 +41,8 @@ export def --env hook-ai-assistant [] {
 
 export use call.nu *
 export use shortcut.nu *
+export use mcp.nu *
+export use clients/baml.nu *
 
 export use integration/ollama.nu *
 export use integration/local.nu *

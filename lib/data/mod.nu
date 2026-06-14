@@ -2,9 +2,9 @@
 # Files with `export def main` (expand, remove-diacritics) must be used directly:
 #   use lib/data/expand.nu
 #   use lib/data/remove-diacritics.nu
-
 export use ./typeof.nu *
-export use ./to-json-schema.nu *
+# to-json-schema.nu must be used directly (command name clashes with module name):
+#   use lib/data/to-json-schema.nu *
 export use ./from-cpuinfo.nu *
 export use ./from-dmidecode.nu *
 export use ./from-env.nu *

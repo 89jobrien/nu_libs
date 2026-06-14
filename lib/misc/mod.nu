@@ -3,7 +3,7 @@
 export use ./asciinema.nu *
 export use ./rbw.nu *
 export use ./reg.nu *
-export use ./rustic.nu *
+# rustic.nu requires a `parser` module not available in this repo, use directly if needed
 export use ./zellij.nu *
-export use ./website_builder.nu *
+# website_builder.nu is a script (bare pipeline), use directly
 export use ./temp.nu *

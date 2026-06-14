@@ -1,8 +1,14 @@
 # typeof command.  Requires Nushell version 0.88 or later
 
-# Returns the typeof a value passed into input as a string
-export def typeof [--full (-f)] {
+# Internal helper shared by `main` and `structured-type` to avoid calling `main` by name,
+# which is fragile when the file is loaded as a module.
+def _typeof [--full (-f)] {
   describe -d | if not $full { get type } else { $in }
+}
+
+# Returns the typeof a value passed into input as a string
+export def main [--full (-f)] {
+  _typeof --full=$full
 }
 
 
@@ -13,9 +19,9 @@ export def typeof [--full (-f)] {
 # { record: 3 } # record with 3 fields
 export def structured-type [] {
   let data = $in
-  match ($data | typeof -f) {
+  match ($data | _typeof --full) {
   {type: list } => { {list: ($data | length) } },
     { type: record } =>  { {record: ($data | columns | length) } },
-  _ => { $data | typeof }
+  _ => { $data | _typeof }
   }
 }

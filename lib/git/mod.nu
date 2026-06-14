@@ -7,5 +7,5 @@ export use ./git_branch_age.nu *
 export use ./git_branch_cleanup.nu *
 export use ./git_gone.nu *
 export use ./clone-all.nu *
-export use ./merged-branches.nu *
+# merged-branches.nu is a script (bare pipeline), use directly: use lib/git/merged-branches.nu
 export use ./git-hooks.nu *

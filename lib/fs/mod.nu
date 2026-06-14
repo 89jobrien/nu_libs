@@ -4,13 +4,13 @@
 #   use lib/fs/wc.nu
 
 export use ./tree.nu *
-export use ./file.nu *
+# file.nu uses relative `use nushell.nu` cross-domain — use directly after ensuring nushell.nu is in path
 export use ./disk.nu *
-export use ./file_convert_naming_case.nu *
-export use ./filesize.nu *
+# file_convert_naming_case.nu is a script (bare pipeline), use directly
+# filesize.nu is a script (bare pipeline), use directly
 export use ./find_in.nu *
 export use ./ultimate_extractor.nu *
-export use ./directory.nu *
+# directory.nu contains top-level record literal (keybinding config), not a module
 export use ./up.nu *
 export use ./cdpath.nu *
 export use ./pwd-short.nu *

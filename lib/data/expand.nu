@@ -2,8 +2,8 @@
 # A bash like quick string manipulation script
 # the script works by creating a list from brace contents, separated by a brace.
 
-# Expand the given string into a list on braces like bashes brace expansion 
-export def main [ 
+# Expand the given string into a list on braces like bashes brace expansion
+export def main [
   input: string   # the string to expand.
   ] {
   listify $input
@@ -11,7 +11,7 @@ export def main [
 
 def listify [lst] {
   try {
-    ($lst 
+    ($lst
       | parse -r '(?P<left>.*)(?<!\\){(?P<list>.*)(?<!\\)}(?P<right>.*)'
       | get 0
       | upsert list { |l|
@@ -19,8 +19,8 @@ def listify [lst] {
         | split row ","
         | str trim
       }
-      | each { |it| 
-        $it.list 
+      | each { |it|
+        $it.list
         | each { |l|
           listify $"($it.left)($l)($it.right)"
         }})

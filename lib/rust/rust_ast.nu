@@ -413,7 +413,7 @@ def _read-cargo-toml [] {
 def _external-crate-set [] {
   let toml = (_read-cargo-toml)
 
-  def _g [rec key] { $rec | get -i $key | default {} }
+  def _g [rec key] { $rec | get --optional $key | default {} }
   def _keys [x] { if (($x | describe) =~ '^record<') { $x | columns } else { [] } }
 
   def _is-ext [v] {
@@ -421,8 +421,8 @@ def _external-crate-set [] {
     if $t == 'string' {
       true
     } else if ($t | str starts-with 'record<') {
-      let has_path = (try { $v | get -i path } catch { null }) != null
-      let has_ws   = (try { $v | get -i workspace } catch { null }) != null
+      let has_path = (try { $v | get --optional path } catch { null }) != null
+      let has_ws   = (try { $v | get --optional workspace } catch { null }) != null
       (not $has_path) and (not $has_ws)
     } else { false }
   }
@@ -783,7 +783,7 @@ def _enclosing-inline-mods [file:string, s:int, e:int] {
     $spans
     | where {|m| ($m.start < $s) and ($m.end > $e) }
     | sort-by {|m| ($m.end - $m.start) }
-    | get -i name
+    | get --optional name
     | default []
   }
 }
@@ -901,11 +901,11 @@ def _rust-call-sites-on [targets:list<string>] {
       | each {|raw|
           let s = ($raw.metaVariables.single? | default {})
 
-          let n = ($s | get -i N | default {} | get -i text | default null)
+          let n = ($s | get --optional N | default {} | get --optional text | default null)
           if $n == null { null } else {
-            let has_q    = (($s | get -i Q | default null)    != null)
-            let has_recv = (($s | get -i RECV | default null) != null)
-            let qual_val = if $has_q { ($s | get -i Q    | get -i text | default '') } else if $has_recv { ($s | get -i RECV | get -i text | default '') } else ''
+            let has_q    = (($s | get --optional Q | default null)    != null)
+            let has_recv = (($s | get --optional RECV | default null) != null)
+            let qual_val = if $has_q { ($s | get --optional Q    | get --optional text | default '') } else if $has_recv { ($s | get --optional RECV | get --optional text | default '') } else ''
 
             {
               callee: $n
@@ -933,11 +933,11 @@ def _attach_callers [rows?: list<record>] {
   let rows0 = if ($rows | is-empty) { $in } else { $rows }
   let rows = ($rows0 | where {|r| ($r | describe) =~ '^record<' })
 
-  let fns = ($rows | where {|r| ($r | get -i kind | default '') == 'fn' })
+  let fns = ($rows | where {|r| ($r | get --optional kind | default '') == 'fn' })
 
   let files = (
     $rows
-    | each {|r| ($r | get -i file | default null) }
+    | each {|r| ($r | get --optional file | default null) }
     | where {|f| $f != null }
     | uniq
   )
@@ -953,8 +953,8 @@ def _attach_callers [rows?: list<record>] {
         if $caller == null { null } else {
           let target = (_resolve-call $idx $fns $c $caller)
           if $target == null { null } else {
-            { callee_fq: ($target | get -i fqpath | default '')
-            , caller_fq: ($caller | get -i fqpath | default '') }
+            { callee_fq: ($target | get --optional fqpath | default '')
+            , caller_fq: ($caller | get --optional fqpath | default '') }
           }
         }
       }
@@ -975,11 +975,11 @@ def _attach_callers [rows?: list<record>] {
   | each {|r|
       let t = ($r | describe)
       if ($t =~ '^record<') {
-        let kind = ($r | get -i kind | default '')
+        let kind = ($r | get --optional kind | default '')
         if $kind != 'fn' {
           $r
         } else {
-          let fq  = ($r | get -i fqpath | default '')
+          let fq  = ($r | get --optional fqpath | default '')
           let ent = ($callee_to_callers | where fq == $fq | get 0?)
           if ( ($ent | describe) =~ '^record<' ) {
             ($r | upsert callers ($ent.callers | default []))
@@ -1031,15 +1031,15 @@ def _build-fn-indexes [fns:list<record>] {
 
   let impl_methods = (
     $fns
-    | where {|r| ($r | get -i impl_of | default {} | get -i type_path | default '') != '' }
-    | each {|r| { key: { ty: ($r.impl_of | get -i type_path), name: $r.name }, row: $r } }
+    | where {|r| ($r | get --optional impl_of | default {} | get --optional type_path | default '') != '' }
+    | each {|r| { key: { ty: ($r.impl_of | get --optional type_path), name: $r.name }, row: $r } }
     | group-by {|x| $"($x.key.ty)::($x.key.name)" }
     | transpose key vals
   )
 
   let free_fns = (
     $fns
-    | where {|r| ($r | get -i impl_of | default null) == null }
+    | where {|r| ($r | get --optional impl_of | default null) == null }
     | each {|r| { key: { mod: ($r.module_path | default [] | str join '::'), name: $r.name }, row: $r } }
     | group-by {|x| $"($x.key.mod)::($x.key.name)" }
     | transpose key vals
@@ -1063,20 +1063,20 @@ def _resolve-call [
     if ($caller_fn | describe) =~ '^nothing' {
       ''
     } else {
-      $caller_fn | get -i impl_of | default {} | get -i type_path | default ''
+      $caller_fn | get --optional impl_of | default {} | get --optional type_path | default ''
     }
   )
   let caller_mod = (
     if ($caller_fn | describe) =~ '^nothing' {
       ''
     } else {
-      $caller_fn | get -i module_path | default [] | str join '::'
+      $caller_fn | get --optional module_path | default [] | str join '::'
     }
   )
 
   if ($qual | str starts-with 'crate::') {
     let tail = $"($qual)::($name)"
-    let exact = ($idx.by_fqpath | where key == $tail | get 0? | get -i vals | default [])
+    let exact = ($idx.by_fqpath | where key == $tail | get 0? | get --optional vals | default [])
     if (not ($exact | is-empty)) { return ($exact | get 0) }
   }
 
@@ -1086,18 +1086,18 @@ def _resolve-call [
     if (not ($cand1 | is-empty)) { return ($cand1 | get 0) }
   } else if ($kind == 'qualified' and (not ($qual | str contains '::'))) {
     let key = $"($qual)::($name)"
-    let cand2 = ($idx.impl_methods | where key == $key | get 0? | get -i vals | default [])
+    let cand2 = ($idx.impl_methods | where key == $key | get 0? | get --optional vals | default [])
     if (not ($cand2 | is-empty)) { return ($cand2 | get 0).row }
   }
 
   if ($kind == 'method' and $caller_impl_ty != '') {
     let key = $"($caller_impl_ty)::($name)"
-    let cand3 = ($idx.impl_methods | where key == $key | get 0? | get -i vals | default [])
+    let cand3 = ($idx.impl_methods | where key == $key | get 0? | get --optional vals | default [])
     if (not ($cand3 | is-empty)) { return ($cand3 | get 0).row }
   }
 
   let key4 = $"($caller_mod)::($name)"
-  let cand4 = ($idx.free_fns | where key == $key4 | get 0? | get -i vals | default [])
+  let cand4 = ($idx.free_fns | where key == $key4 | get 0? | get --optional vals | default [])
   if (not ($cand4 | is-empty)) { return ($cand4 | get 0).row }
 
   let cand_mod = (
@@ -1213,12 +1213,12 @@ def _mk-record [
   let vis   = (_visibility-of $sig)
 
   let single = ($raw.metaVariables.single? | default {})
-  let nmeta  = ($single | get -i N | default {} | get -i text | default '')
+  let nmeta  = ($single | get --optional N | default {} | get --optional text | default '')
   let name   = if ($name_from | default '' | str length) > 0 { $name_from } else { $nmeta }
 
-  let abi   = ($single | get -i ABI | default {} | get -i text | default null)
-  let gens  = ($single | get -i G   | default {} | get -i text | default null)
-  let where_txt = ($single | get -i W | default {} | get -i text | default null)
+  let abi   = ($single | get --optional ABI | default {} | get --optional text | default null)
+  let gens  = ($single | get --optional G   | default {} | get --optional text | default null)
+  let where_txt = ($single | get --optional W | default {} | get --optional text | default null)
 
   # FQ path now respects inline modules
   let fq = if ($name | is-empty) { '' } else {
@@ -1779,9 +1779,9 @@ export def rust-impl-records [...paths:string] {
           let rec = (_mk-record 'impl' $raw true)
 
           let single     = ($raw.metaVariables.single? | default {})
-          let trait_path = ($single | get -i TR | default {} | get -i text | default null)
-          let type_path1 = ($single | get -i TY | default {} | get -i text | default null)
-          let type_path2 = ($single | get -i T  | default {} | get -i text | default null)
+          let trait_path = ($single | get --optional TR | default {} | get --optional text | default null)
+          let type_path1 = ($single | get --optional TY | default {} | get --optional text | default null)
+          let type_path2 = ($single | get --optional T  | default {} | get --optional text | default null)
           let type_path  = (if $type_path1 != null { $type_path1 } else { $type_path2 })
 
           let impl_name = if ($trait_path | default '' | str length) > 0 and ($type_path | default '' | str length) > 0 {
@@ -2077,7 +2077,7 @@ export def rust-use-records [...paths:string] {
 
 # Build parent→children edges (each as fq strings)
 def _build-symbol-edges [rows:list<record>] {
-  let keyed = ($rows | where {|r| ($r | get -i fqpath | default '') != '' })
+  let keyed = ($rows | where {|r| ($r | get --optional fqpath | default '') != '' })
 
   let parent_of = {|fq|
     if $fq == 'crate' { null } else {
@@ -2089,7 +2089,7 @@ def _build-symbol-edges [rows:list<record>] {
 
   $keyed
   | each {|r|
-      let fq = ($r | get -i fqpath | default '')
+      let fq = ($r | get --optional fqpath | default '')
       let p  = (do $parent_of $fq)
       if $p == null or $p == $fq { null } else { { parent: $p, child: $fq } }
     }
@@ -2141,7 +2141,7 @@ def _rows-index [rows: list<record>] {
 
 # Safely get child fq list for a parent from edges structure
 def _children-for [edges: list<record<parent: string, children: list<string>>>, parent_fq: string] {
-  $edges | where parent == $parent_fq | get 0? | get -i children | default []
+  $edges | where parent == $parent_fq | get 0? | get --optional children | default []
 }
 
 # Recursive builder: construct a fresh record (avoid upsert-on-record issues)
@@ -2231,9 +2231,9 @@ def _collect-rows [
   is_last: bool = true
 ] {
   # Coerce `children` → always a list of records
-  let kids0 = (try { $node | get -i children } catch { [] })
+  let kids0 = (try { $node | get --optional children } catch { [] })
   let kids = (
-    [ (try { $node | get -i children } catch { [] }) ]
+    [ (try { $node | get --optional children } catch { [] }) ]
     | flatten
     | where {|x| (($x | describe) =~ '^record<') }
   )
@@ -2393,13 +2393,13 @@ def _vlen [s: any] {
 def _lookup-fn-seeds [fns:list<record>, pattern:string] {
   let pat = ($pattern | into string | str trim)
   if ($pat | str starts-with 'crate::') {
-    $fns | where {|r| ($r.fqpath | default '') == $pat } | get -i fqpath
+    $fns | where {|r| ($r.fqpath | default '') == $pat } | get --optional fqpath
   } else if ($pat | str contains '::') {
-    $fns | where {|r| ($r.fqpath | default '') | str ends-with $pat } | get -i fqpath
+    $fns | where {|r| ($r.fqpath | default '') | str ends-with $pat } | get --optional fqpath
   } else {
-    let by_name = ($fns | where name == $pat | get -i fqpath)
+    let by_name = ($fns | where name == $pat | get --optional fqpath)
     if (not ($by_name | is-empty)) { $by_name } else {
-      $fns | where {|r| ($r.fqpath | default '') | str ends-with $"::($pat)" } | get -i fqpath
+      $fns | where {|r| ($r.fqpath | default '') | str ends-with $"::($pat)" } | get --optional fqpath
     }
   }
 }
@@ -2455,7 +2455,7 @@ def _render_callers_tree_inverted [root maxd callers canon2real] {
   let R     = (ansi reset)
 
   def _fq_of [canon canon2real] {
-    let v = ($canon2real | get -i $canon | default [])
+    let v = ($canon2real | get --optional $canon | default [])
     if ($v | length) > 0 { $v | get 0 } else { $canon }
   }
 
@@ -2482,7 +2482,7 @@ def _render_callers_tree_inverted [root maxd callers canon2real] {
     }
 
     # next parents (i.e., expand upward)
-    let parents = ($callers | get -i $node | default [] | uniq | sort)
+    let parents = ($callers | get --optional $node | default [] | uniq | sort)
     if ($parents | is-empty) or ($depth_left <= 1) {
       # terminate branch with the seed as a leaf
       $out = ($out | append $"(ansi dark_gray)($prefix)($cont)`- (ansi reset)(ansi white)($root_short)(ansi reset)  (ansi dark_gray)[($root_fq)](ansi reset)")
@@ -2507,7 +2507,7 @@ def _render_callers_tree_inverted [root maxd callers canon2real] {
     (ansi white), $root_fq, (ansi reset)
   ] | str join ""
 
-  let parents = ($callers | get -i $root | default [] | uniq | sort)
+  let parents = ($callers | get --optional $root | default [] | uniq | sort)
   if ($parents | is-empty) {
     # no callers → nothing to invert; still show a header and a single leaf
     [ $header, $"(ansi white)($root_short)(ansi reset)  (ansi dark_gray)[($root_fq)](ansi reset)" ]
@@ -2569,8 +2569,8 @@ def _build_inverted_callers_forest [
   )
 
   # Compute roots of the forest (parents that are never a child)
-  let all_parents = ($edges | get -i parent | default [] | uniq | sort)
-  let all_children = ($edges | get -i child  | default [] | uniq | sort)
+  let all_parents = ($edges | get --optional parent | default [] | uniq | sort)
+  let all_children = ($edges | get --optional child  | default [] | uniq | sort)
   let roots = ($all_parents | where {|p| not ($all_children | any {|c| $c == $p }) })
 
   { fwd: $fwd, roots: ($roots | default []) }
@@ -2587,7 +2587,7 @@ def _render_callers_forest_inverted [
   let R    = (ansi reset)
 
   def _fq_of [canon canon2real] {
-    let v = ($canon2real | get -i $canon | default [])
+    let v = ($canon2real | get --optional $canon | default [])
     if ($v | length) > 0 { $v | get 0 } else { $canon }
   }
 
@@ -2913,13 +2913,13 @@ def _render_callers_tree [root maxd callers canon2real root_label?: string] {
   let R     = (ansi reset)
 
   def _fq_of [canon canon2real] {
-    let v = ($canon2real | get -i $canon | default [])
+    let v = ($canon2real | get --optional $canon | default [])
     if ($v | length) > 0 { $v | get 0 } else { $canon }
   }
 
   def _go [node prefix depth_left callers canon2real seen:list<string>] {
     if $depth_left <= 0 { return [] }
-    let parents = ($callers | get -i $node | default [] | enumerate)
+    let parents = ($callers | get --optional $node | default [] | enumerate)
     if ($parents | is-empty) { return [] }
     let last_idx = (($parents | length) - 1)
     mut out = []
@@ -3029,7 +3029,7 @@ def _tree_from_fqpaths [
       [ $edges ] | flatten
       | where parent == $fq
       | get 0?
-      | get -i children
+      | get --optional children
       | default []
     )
     let kids = (
@@ -3089,8 +3089,8 @@ export def rust-print-dep-usage [
     for d in $uses_det {
       let key = ($d.dep | str downcase)
       if ($ext_set | any {|e| ($e | str downcase) == $key }) {
-        let cur = ($dep_index | get -i $key | default { real: {}, maybe: {} })
-        let cur_syms = ($cur.real | get -i $fq | default [])
+        let cur = ($dep_index | get --optional $key | default { real: {}, maybe: {} })
+        let cur_syms = ($cur.real | get --optional $fq | default [])
         let next_syms = ($cur_syms | append $d.syms | flatten | uniq | sort)
         let nxt = ($cur | upsert real ($cur.real | upsert $fq $next_syms))
         $dep_index = ($dep_index | upsert $key $nxt)
@@ -3101,8 +3101,8 @@ export def rust-print-dep-usage [
       for m in $maybes {
         let key = ($m | str downcase)
         if ($ext_set | any {|e| ($e | str downcase) == $key }) {
-          let cur = ($dep_index | get -i $key | default { real: {}, maybe: {} })
-          let cur_syms = ($cur.maybe | get -i $fq | default [])
+          let cur = ($dep_index | get --optional $key | default { real: {}, maybe: {} })
+          let cur_syms = ($cur.maybe | get --optional $fq | default [])
           let nxt = ($cur | upsert maybe ($cur.maybe | upsert $fq $cur_syms))
           $dep_index = ($dep_index | upsert $key $nxt)
         }
@@ -3133,7 +3133,7 @@ export def rust-print-dep-usage [
         while ( $depth < $maxd ) {
           mut nxt = []
           for n in $frontier {
-            let parents = ($callers | get -i $n | default [])
+            let parents = ($callers | get --optional $n | default [])
             for p in $parents {
               if not ($seen | any {|x| $x == $p }) {
                 $seen = ($seen | append $p)
@@ -3159,7 +3159,7 @@ export def rust-print-dep-usage [
       }
       let seeds_maybe = (
         $seeds_maybe_all
-        | where {|fq| ($on_path | get -i (_fq_canon $fq) | default false) }
+        | where {|fq| ($on_path | get --optional (_fq_canon $fq) | default false) }
       )
 
       let keep_fqs = ($seeds_real | append $seeds_maybe)
@@ -3169,7 +3169,7 @@ export def rust-print-dep-usage [
         let leaf_info = (
           $keep_fqs
           | reduce -f {} {|fq, acc|
-              let uses = ($seeds_real_map | get -i $fq | default [])
+              let uses = ($seeds_real_map | get --optional $fq | default [])
               let ref_type = (if (not ($uses | is-empty)) { "real" } else { "maybe" })
               $acc | upsert $fq {
                 dep: $crate_name,
@@ -3211,7 +3211,7 @@ export def rust-print-dep-usage [
       while ( $depth < $maxd ) {
         mut nxt = []
         for n in $frontier {
-          let parents = ($callers | get -i $n | default [])
+          let parents = ($callers | get --optional $n | default [])
           for p in $parents {
             if not ($seen | any {|x| $x == $p }) {
               $seen = ($seen | append $p)
@@ -3234,14 +3234,14 @@ export def rust-print-dep-usage [
     }
     let seeds_maybe = (
       $seeds_maybe_all
-      | where {|fq| ($on_path | get -i (_fq_canon $fq) | default false) }
+      | where {|fq| ($on_path | get --optional (_fq_canon $fq) | default false) }
     )
 
     if (not ($seeds_real | is-empty)) {
       print $"(ansi dark_gray)direct references(ansi reset)"
       for s in $seeds_real {
         let c = (_fq_canon $s)
-        let sym_list = ($seeds_real_map | get -i $s | default [] | uniq | sort)
+        let sym_list = ($seeds_real_map | get --optional $s | default [] | uniq | sort)
         let sym_suffix = if ($sym_list | is-empty) { "" } else {
           $" (ansi dark_gray)uses:(ansi reset) (ansi light_yellow)($sym_list | str join ', ')(ansi reset)"
         }

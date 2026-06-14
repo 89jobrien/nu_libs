@@ -511,3 +511,6 @@ export def group-list [
     $ret
   }
 }
+
+# Reload the current Nushell session (re-reads config.nu and env.nu)
+export alias rr = exec nu

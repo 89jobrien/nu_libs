@@ -17,3 +17,4 @@ export use ./twin-tweaks.nu *
 export use ./nushell.nu *
 export use ./this_week_in_nu_weekly.nu *
 export use ./openapi.nu *
+export use ./carapace.nu *

@@ -15,6 +15,7 @@ lib/
   std/        Nu ecosystem: config, init, modules, deps, release tooling, dynamic loading
   task/       Productivity: task runner, todo, history, bookmarks, just completions, hosts/path
   rust/       Rust/Cargo: cargo search, rust AST, coverage
+  doob/       Doob wrappers: repo-scoped todos, search, notes, handoff sync
   misc/       Misc tools: asciinema, zellij, rustic, rbw, website builder
 
 scripts/      Standalone scripts (not modules — contain top-level executable code)

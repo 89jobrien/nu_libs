@@ -1,6 +1,7 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this
+repository.
 
 ## What This Is
 
@@ -34,6 +35,7 @@ lib/
   std/            Nu ecosystem: config, init, modules, deps, release tooling, dynamic loading
   task/           task runner, todo, history, bookmarks, just completions, hosts/path
   rust/           cargo search, rust AST, coverage
+  doob/           doob wrappers for repo-scoped todos, search, notes, handoff sync
   misc/           asciinema, zellij, rustic, rbw, website builder
   hooks/          git hook helpers
   ai/             LLM agent primitives (vendored from ai_nu — see below)

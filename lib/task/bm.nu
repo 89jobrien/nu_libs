@@ -79,7 +79,7 @@ export def add [
 }
 
 # remove one or more bookmarks
-export def remove [] {
+export def bm-remove [] {
   let rm_these = (
     list | 
     where name != "prev" |

@@ -68,8 +68,11 @@ These conflict when re-exported from a category mod:
 | `lib/data/remove-diacritics.nu` | `remove-diacritics`          |
 | `lib/std/nu_deps.nu`            | `nu-deps`                    |
 | `lib/std/nu_release.nu`         | `nu-release`                 |
+| `lib/std/cmd_stats.nu`          | `cmd_stats`                  |
 | `lib/task/after.nu`             | `after` (wait for process)   |
 | `lib/task/just.nu`              | `just` (completions wrapper) |
+| `lib/task/task.nu`              | `task` (lists task commands) |
+| `lib/task/bm.nu`                | `bm` (bookmark help)         |
 
 ## lib/ai Architecture
 

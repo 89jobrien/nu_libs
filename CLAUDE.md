@@ -55,24 +55,25 @@ use lib/mod.nu *         # load everything (slow, may conflict)
 
 These conflict when re-exported from a category mod:
 
-| File                            | Command                      |
-| ------------------------------- | ---------------------------- |
-| `lib/git/bump-version.nu`       | `bump-version`               |
-| `lib/fs/loc.nu`                 | `loc` (tokei wrapper)        |
-| `lib/fs/wc.nu`                  | `wc`                         |
-| `lib/fs/pwd-short.nu`           | `pwd-short`                  |
-| `lib/fs/up.nu`                  | `up`                         |
-| `lib/data/expand.nu`            | `expand`                     |
-| `lib/data/typeof.nu`            | `typeof`                     |
-| `lib/data/base64_encode.nu`     | `base64_encode`              |
-| `lib/data/remove-diacritics.nu` | `remove-diacritics`          |
-| `lib/std/nu_deps.nu`            | `nu-deps`                    |
-| `lib/std/nu_release.nu`         | `nu-release`                 |
-| `lib/std/cmd_stats.nu`          | `cmd_stats`                  |
-| `lib/task/after.nu`             | `after` (wait for process)   |
-| `lib/task/just.nu`              | `just` (completions wrapper) |
-| `lib/task/task.nu`              | `task` (lists task commands) |
-| `lib/task/bm.nu`                | `bm` (bookmark help)         |
+| File                            | Command                       |
+| ------------------------------- | ----------------------------- |
+| `lib/git/bump-version.nu`       | `bump-version`                |
+| `lib/fs/loc.nu`                 | `loc` (tokei wrapper)         |
+| `lib/fs/wc.nu`                  | `wc`                          |
+| `lib/fs/pwd-short.nu`           | `pwd-short`                   |
+| `lib/fs/up.nu`                  | `up`                          |
+| `lib/data/expand.nu`            | `expand`                      |
+| `lib/data/typeof.nu`            | `typeof`                      |
+| `lib/data/base64_encode.nu`     | `base64_encode`               |
+| `lib/data/remove-diacritics.nu` | `remove-diacritics`           |
+| `lib/std/nu_deps.nu`            | `nu-deps`                     |
+| `lib/std/nu_release.nu`         | `nu-release`                  |
+| `lib/std/cmd_stats.nu`          | `cmd_stats`                   |
+| `lib/task/after.nu`             | `after` (wait for process)    |
+| `lib/task/just.nu`              | `just` (completions wrapper)  |
+| `lib/task/task.nu`              | `task` (lists task commands)  |
+| `lib/ui/pick.nu`                | `pick` (fuzzy-select wrapper) |
+| `lib/task/bm.nu`                | `bm` (bookmark help)          |
 
 ## lib/ai Architecture
 

@@ -2,6 +2,8 @@
 
 # bar.nu must be used directly (command name clashes with module name):
 #   use lib/ui/bar.nu *
+# pick.nu (export def main) must also be used directly:
+#   use lib/ui/pick.nu
 export use ./percent_meter.nu *
 export use ./completion-generator.nu *
 export use ./bat-aliases.nu *

@@ -137,9 +137,9 @@ export def gf [
     git fetch $remote $branch
 }
 
-export def gm [branch:string@"nu-complete git branches"] {
-    git merge $branch
-}
+# export def gm [branch:string@"nu-complete git branches"] {
+#     git merge $branch
+# }
 
 export def grb [branch:string@"nu-complete git branches"] {
     git rebase (gstat).branch $branch

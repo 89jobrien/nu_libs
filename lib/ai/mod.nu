@@ -47,3 +47,4 @@ export use clients/baml.nu *
 export use integration/ollama.nu *
 export use integration/local.nu *
 export use integration/audio.nu *
+export use list-hooks.nu *

@@ -1,4 +1,4 @@
-export alias x = eza --icons
+export alias xs = eza --icons
 export alias xa = eza --icons --all
 export alias xl	= eza --long
 export alias xla = eza --long --all

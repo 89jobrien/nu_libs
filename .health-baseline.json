@@ -1,0 +1,27 @@
+{
+  "repo": "nu_libs",
+  "captured_at": "2026-06-28",
+  "cargo_clippy": {
+    "status": "failed_no_manifest",
+    "warnings": 0,
+    "message": "cargo clippy --workspace -- -D warnings could not run because no Cargo.toml exists"
+  },
+  "cargo_test": {
+    "status": "failed_no_manifest",
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "message": "cargo test --workspace could not run because no Cargo.toml exists"
+  },
+  "depgraph": {
+    "status": "unavailable",
+    "ring_violations": 0,
+    "message": "No depgraph xtask or equivalent target was found in this repository"
+  },
+  "todo_fixme_count": 68,
+  "dependency_version_inconsistencies": {
+    "status": "n_a",
+    "count": 0,
+    "message": "No Cargo.toml workspace was found, so version consistency checks are not applicable"
+  }
+}

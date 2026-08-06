@@ -20,7 +20,7 @@ def image-loader [uri: string] {
     }
 }
 
-# Build/append to an OpenAI-format chat request body, appending a new message from the given role/content/image/audio/tool-call fields.
+# [nu_lib] Build/append to an OpenAI-format chat request body, appending a new message from the given role/content/image/audio/tool-call fields.
 export def req [
     --role(-r): string = 'user'
     --image(-i): string
@@ -84,7 +84,7 @@ export def req [
     $o
 }
 
-# Replay piped-in stored messages into an OpenAI request, reconstructing tool_calls/tool_call_id per role.
+# [nu_lib] Replay piped-in stored messages into an OpenAI request, reconstructing tool_calls/tool_call_id per role.
 export def req-restore [s req] {
     $in
     | reduce -f $req {|i, a|
@@ -102,7 +102,7 @@ export def req-restore [s req] {
     }
 }
 
-# Merge streamed tool-call delta fragments (indexed chunks of id/name/arguments) into complete tool_calls.
+# [nu_lib] Merge streamed tool-call delta fragments (indexed chunks of id/name/arguments) into complete tool_calls.
 export def merge-tools [tools] {
     if ($tools | is-empty) {
         []
@@ -129,7 +129,7 @@ export def merge-tools [tools] {
     }
 }
 
-# POST a chat completion request and yield each parsed SSE JSON chunk from the stream.
+# [nu_lib] POST a chat completion request and yield each parsed SSE JSON chunk from the stream.
 export def raw-call [session req] {
     http post -r -e -t application/json --headers [
             Authorization $"Bearer ($session.api_key)"
@@ -150,7 +150,7 @@ export def raw-call [session req] {
     }
 }
 
-# Stream a chat completion, printing tokens live (unless --quiet), and return the assembled content/reason/token-count/tools.
+# [nu_lib] Stream a chat completion, printing tokens live (unless --quiet), and return the assembled content/reason/token-count/tools.
 export def call [
     session
     --quiet(-q)
@@ -203,7 +203,7 @@ export def call [
 }
 
 
-# List available model IDs for the session's OpenAI-compatible endpoint.
+# [nu_lib] List available model IDs for the session's OpenAI-compatible endpoint.
 export def models [session] {
     http get --headers [
         Authorization $"Bearer ($session.api_key)"

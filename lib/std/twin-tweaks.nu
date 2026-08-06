@@ -1,4 +1,4 @@
-# Rewrite a "This Week in Nu" changelog into more natural prose via an LLM (OpenRouter).
+# [nu_lib] Rewrite a "This Week in Nu" changelog into more natural prose via an LLM (OpenRouter).
 export def "twin format" [filename?] {
   use std/clip
   use std-rfc/str

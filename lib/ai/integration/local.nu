@@ -2,7 +2,7 @@ def cmpl-server [] {
     [ollama llama.cpp tgi]
 }
 
-# Run a local LLM server (ollama/llama.cpp/tgi) as a container, with port/cache/proxy/GPU wiring per server type.
+# [nu_lib] Run a local LLM server (ollama/llama.cpp/tgi) as a container, with port/cache/proxy/GPU wiring per server type.
 export def --wrapped run-llm-with [
     server:string@cmpl-server
     --name:string

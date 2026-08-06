@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 use std log
 
-# bump the minor or patch version of the Nushell project
+# [nu_lib] bump the minor or patch version of the Nushell project
 export def main [
     --patch # update the minor version instead of the minor
 ]: nothing -> nothing {

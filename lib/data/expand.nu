@@ -2,7 +2,7 @@
 # A bash like quick string manipulation script
 # the script works by creating a list from brace contents, separated by a brace.
 
-# Expand the given string into a list on braces like bashes brace expansion
+# [nu_lib] Expand the given string into a list on braces like bashes brace expansion
 export def main [
   input: string   # the string to expand.
   ] {
@@ -30,7 +30,7 @@ def listify [lst] {
   }
 }
 
-# Print expand's usage plus worked examples.
+# [nu_lib] Print expand's usage plus worked examples.
 export def help [] {
   print -n ( main -h )
 

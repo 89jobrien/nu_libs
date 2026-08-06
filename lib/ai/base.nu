@@ -2,7 +2,7 @@ use data.nu
 use clients/openai.nu
 use clients/gemini.nu
 
-# List available models for a session's provider.
+# [nu_lib] List available models for a session's provider.
 export def ai-models [session] {
     match $session.adapter? {
         _ => {
@@ -11,7 +11,7 @@ export def ai-models [session] {
     }
 }
 
-# Build a provider-specific request payload from a piped-in request, dispatching to the session's adapter (openai/gemini).
+# [nu_lib] Build a provider-specific request payload from a piped-in request, dispatching to the session's adapter (openai/gemini).
 export def ai-req [
     session
     message?: string
@@ -54,7 +54,7 @@ def debug-req [--debug] {
     $req
 }
 
-# Execute a built request against the provider, recording the outgoing/incoming messages via data.nu, and return the response.
+# [nu_lib] Execute a built request against the provider, recording the outgoing/incoming messages via data.nu, and return the response.
 export def ai-call [
     session
     --tag: string = ''
@@ -98,7 +98,7 @@ export def ai-call [
     $r
 }
 
-# Restore piped-in stored messages into a provider-specific request, dispatching to the session's adapter.
+# [nu_lib] Restore piped-in stored messages into a provider-specific request, dispatching to the session's adapter.
 export def req-restore [session req] {
     let o = $in
     match $session.adapter? {
@@ -109,7 +109,7 @@ export def req-restore [session req] {
 }
 
 
-# Full multi-turn tool-use loop: build the request (restoring history unless --oneshot), call the model, execute any tool calls it returns, and repeat until it stops requesting tools.
+# [nu_lib] Full multi-turn tool-use loop: build the request (restoring history unless --oneshot), call the model, execute any tool calls it returns, and repeat until it stops requesting tools.
 export def ai-send [
     --session(-s): record
     --role: string = 'user'

@@ -27,7 +27,7 @@ def magi-is-running [] {
     (ps | where pid == ($pid | into int) | length) > 0
 }
 
-# Start the magi loop daemon in the background
+# [nu_lib] Start the magi loop daemon in the background
 export def magi-start [
     --once         # run one cycle then exit (no daemon)
     --interval: int  # override loop interval in seconds
@@ -57,7 +57,7 @@ export def magi-start [
     }
 }
 
-# Stop the magi loop daemon (SIGTERM — waits for current cycle to finish)
+# [nu_lib] Stop the magi loop daemon (SIGTERM — waits for current cycle to finish)
 export def magi-stop [] {
     if not (magi-is-running) {
         print "magi is not running"
@@ -85,7 +85,7 @@ export def magi-stop [] {
     }
 }
 
-# Show daemon status: running/stopped, pid, log tail
+# [nu_lib] Show daemon status: running/stopped, pid, log tail
 export def magi-ps [] {
     let running = magi-is-running
     let pid_file = magi-pid-file
@@ -101,7 +101,7 @@ export def magi-ps [] {
     }
 }
 
-# Tail the magi loop log live
+# [nu_lib] Tail the magi loop log live
 export def magi-logs [
     --lines(-n): int = 40  # initial lines to show before following
 ] {
@@ -113,7 +113,7 @@ export def magi-logs [
     bash -c $"tail -n ($lines) -f ($log)"
 }
 
-# Show the magi training dashboard (one-shot)
+# [nu_lib] Show the magi training dashboard (one-shot)
 export def magi-dashboard [
     --watch(-w)          # refresh continuously
     --interval(-i): int = 10  # refresh interval in seconds (with --watch)
@@ -127,41 +127,41 @@ export def magi-dashboard [
     }
 }
 
-# Run interact stage — samples tasks and records interactions to DB
+# [nu_lib] Run interact stage — samples tasks and records interactions to DB
 export def magi-interact [] {
     magi-run "interact.py"
 }
 
-# Run score stage — scores unscored interactions
+# [nu_lib] Run score stage — scores unscored interactions
 export def magi-score [] {
     magi-run "score.py"
 }
 
-# Run prompt RL stage — updates system prompt and few-shot pool
+# [nu_lib] Run prompt RL stage — updates system prompt and few-shot pool
 export def magi-rl-prompt [] {
     magi-run "rl_prompt.py"
 }
 
-# Run weight RL stage — fine-tunes weights when threshold is met
+# [nu_lib] Run weight RL stage — fine-tunes weights when threshold is met
 export def magi-rl-weights [] {
     magi-run "rl_weights.py"
 }
 
-# Run full pipeline loop (one iteration: interact → score → rl_prompt → maybe rl_weights)
+# [nu_lib] Run full pipeline loop (one iteration: interact → score → rl_prompt → maybe rl_weights)
 export def magi-loop [] {
     magi-run "loop.py"
 }
 
 def cmpl-reconcile-mode [] { ["prompt", "weight"] }
 
-# Reconcile modelcard after a prompt or weight RL run
+# [nu_lib] Reconcile modelcard after a prompt or weight RL run
 export def magi-reconcile [
     mode: string@cmpl-reconcile-mode  # "prompt" or "weight"
 ] {
     magi-run "reconcile.py" "--mode" $mode
 }
 
-# Show recent interaction stats from the rewards DB
+# [nu_lib] Show recent interaction stats from the rewards DB
 export def magi-status [
     --limit(-n): int = 20  # number of recent interactions to show
 ] {
@@ -177,7 +177,7 @@ export def magi-status [
     "
 }
 
-# Show prompt update history
+# [nu_lib] Show prompt update history
 export def magi-prompt-history [
     --limit(-n): int = 10
 ] {
@@ -192,7 +192,7 @@ export def magi-prompt-history [
     "
 }
 
-# Show weight training run history
+# [nu_lib] Show weight training run history
 export def magi-weight-history [
     --limit(-n): int = 5
 ] {
@@ -206,7 +206,7 @@ export def magi-weight-history [
     "
 }
 
-# Chat with gemma-lg via Ollama (oneshot by default)
+# [nu_lib] Chat with gemma-lg via Ollama (oneshot by default)
 export def magi-chat [
     message: string
     --multi-turn(-m)  # keep conversation history across calls

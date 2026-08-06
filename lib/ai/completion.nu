@@ -2,7 +2,7 @@ use sqlite.nu *
 use base.nu
 use data.nu
 
-# Completer: offer message indices (with content previews) from the current session's history.
+# [nu_lib] Completer: offer message indices (with content previews) from the current session's history.
 export def cmpl-sessoin-offset [ctx] {
     let session = if NU_ARGX_EXISTS in $env {
         $ctx | argx parse | get -o opt.fork
@@ -24,22 +24,22 @@ def cmpl-models-temp [path ctx] {
     base ai-models $s
 }
 
-# Completer: model names for the --provider named flag's value.
+# [nu_lib] Completer: model names for the --provider named flag's value.
 export def cmpl-models [ctx] {
     cmpl-models-temp ([opt provider] | into cell-path)  $ctx
 }
 
-# Completer: model names for a positional provider argument.
+# [nu_lib] Completer: model names for a positional provider argument.
 export def cmpl-models-pos [ctx] {
     cmpl-models-temp ([pos provider] | into cell-path) $ctx
 }
 
-# Completer: registered tool names from $env.AI_TOOLS.
+# [nu_lib] Completer: registered tool names from $env.AI_TOOLS.
 export def cmpl-tools [] {
     $env.AI_TOOLS | columns
 }
 
-# Completer: recent `ai-do` scratch entries, most recently updated first.
+# [nu_lib] Completer: recent `ai-do` scratch entries, most recently updated first.
 export def cmpl-previous [] {
     let rw = (term size).columns - 22
     sqlx $"select id as value,
@@ -55,7 +55,7 @@ export def cmpl-previous [] {
     | { completions: $in, options: { sort: false } }
 }
 
-# Completer for ai-do's positional args: prompt name first, then that prompt's placeholder values in order.
+# [nu_lib] Completer for ai-do's positional args: prompt name first, then that prompt's placeholder values in order.
 export def 'cmpl-role' [ctx] {
     let args = $ctx | split row '|' | last | str trim -l | split row ' ' | slice 1..
     let len = $args | length
@@ -84,7 +84,7 @@ def cmpl-config [context] {
     }
 }
 
-# Completer: configured provider names, marking the current session's provider(s) and the active default.
+# [nu_lib] Completer: configured provider names, marking the current session's provider(s) and the active default.
 export def cmpl-provider [] {
     let current = sqlx $"select provider from sessions where id = ($env.AI_SESSION)"
     | get provider
@@ -96,7 +96,7 @@ export def cmpl-provider [] {
     }
 }
 
-# Completer: known prompt names, from $env.AI_PROMPTS plus the prompt table.
+# [nu_lib] Completer: known prompt names, from $env.AI_PROMPTS plus the prompt table.
 export def cmpl-prompt [] {
     $env.AI_PROMPTS
     | values
@@ -107,13 +107,13 @@ export def cmpl-prompt [] {
     | { completions: $in, options: { sort: false } }
 }
 
-# Completer: prompt names that have a non-empty system message.
+# [nu_lib] Completer: prompt names that have a non-empty system message.
 export def cmpl-system [] {
     sqlx $"select name from prompt where system != ''"
     | get name
 }
 
-# Completer: 6 evenly-spaced temperature values within the current session's provider range.
+# [nu_lib] Completer: 6 evenly-spaced temperature values within the current session's provider range.
 export def cmpl-temperature [] {
     let s = data session
     let tr = ($s.temp_max - $s.temp_min) / 5

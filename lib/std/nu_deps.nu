@@ -45,7 +45,7 @@ def find-deps [] {
     }
 }
 
-# Find the right publish ordering of Nushell crates based on their dependencies
+# [nu_lib] Find the right publish ordering of Nushell crates based on their dependencies
 #
 # Returns a list which you can process further, e.g.:
 # > nu_deps | str join (',' + (char nl))

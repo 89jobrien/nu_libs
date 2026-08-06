@@ -1,4 +1,4 @@
-# Convert from output of dmidecode to structured data
+# [nu_lib] Convert from output of dmidecode to structured data
 export def "from dmidecode" [] {
     lines
     | skip until {|x|

@@ -1,4 +1,4 @@
-# Fuzzy-select from piped input via the external `pick` tool.
+# [nu_lib] Fuzzy-select from piped input via the external `pick` tool.
 #
 # `pick` reads plain newline-delimited choices. Piping a Nushell table
 # straight into it (`ls | pick`) stringifies every column into each line,

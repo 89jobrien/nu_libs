@@ -1,4 +1,4 @@
-# =============================================================================
+# [nu_lib] =============================================================================
 # rust-ast toolkit — Harvest, analyze, and pretty-print Rust symbols & calls
 # Website: github.com/graves/nu_rust_ast
 # Maintained by: Thomas Gentry <thomas@awfulsec.com>
@@ -271,7 +271,7 @@ export def rust-ast [...paths:string] {
   | _attach_callers
 }
 
-# # Nested structure of symbols — MINIMAL payload (kind, name, fqpath, children).
+# [nu_lib] # Nested structure of symbols — MINIMAL payload (kind, name, fqpath, children).
 # This is exactly what `rust-print-symbol-tree` expects to render/align/paint columns.
 # replace the body of rust-tree with this version
 export def rust-tree [
@@ -304,7 +304,7 @@ export def rust-tree [
   [{ kind: 'mod', name: 'crate', fqpath: 'crate', children: $root_kids }]
 }
 
-# =============================================================================
+# [nu_lib] =============================================================================
 # rust-print-symbol-tree — Pretty-print a nested Rust symbol tree with columns
 # =============================================================================
 # Works with the nested output from `rust-tree`.
@@ -1158,7 +1158,7 @@ def _has-env [name:string] {
   $env | columns | any {|c| $c == $name }
 }
 
-# setter: mutate env (portable)
+# [nu_lib] setter: mutate env (portable)
 export def --env _inline-idx-set [idx: record] {
   load-env { __INLINE_IDX: $idx }
 }
@@ -1440,7 +1440,7 @@ def _list-rust-files [...paths:string] {
 
 # ---------- collectors per kind ---------------------------------------------
 
-# Collect function-definition records (name, params, body location, etc.) across the given Rust paths.
+# [nu_lib] Collect function-definition records (name, params, body location, etc.) across the given Rust paths.
 export def rust-fn-records [...paths:string] {
   let targets = (_target-list ...$paths)
 
@@ -1546,7 +1546,7 @@ export def rust-fn-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# extern "ABI" functions
+# [nu_lib] extern "ABI" functions
 export def rust-extern-fn-records [...paths:string] {
   let targets = (_target-list ...$paths)
   let pats = [
@@ -1575,7 +1575,7 @@ export def rust-extern-fn-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# Structs (handles generics, tuple/unit, where-clauses, and common vis forms)
+# [nu_lib] Structs (handles generics, tuple/unit, where-clauses, and common vis forms)
 # Structs — braced / tuple / unit
 # - Explicit generic vs non-generic variants (no <$G>?).
 # - Allow where-clauses only on braced forms (tuple/unit+where caused ERROR nodes).
@@ -1618,7 +1618,7 @@ export def rust-struct-records [...paths:string] {
   | _uniq-records
 }
 
-# Enums — cover: no generics, generics, where, generics+where.
+# [nu_lib] Enums — cover: no generics, generics, where, generics+where.
 export def rust-enum-records [...paths:string] {
   let targets = (_target-list ...$paths)
 
@@ -1651,7 +1651,7 @@ export def rust-enum-records [...paths:string] {
   | _uniq-records
 }
 
-# Type aliases
+# [nu_lib] Type aliases
 export def rust-type-records [...paths:string] {
   let targets = (_target-list ...$paths)
   let pats = [
@@ -1666,7 +1666,7 @@ export def rust-type-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# Traits
+# [nu_lib] Traits
 # Traits (now matches supertraits and optional where-clauses)
 export def rust-trait-records [...paths:string] {
   let targets = (_target-list ...$paths)
@@ -1749,7 +1749,7 @@ def _uniq-by-kind-fqpath [rows?: list<record>] {
   | sort-by file span.start_line
 }
 
-# impl blocks
+# [nu_lib] impl blocks
 export def rust-impl-records [...paths:string] {
   let targets = (_target-list ...$paths)
   let pats = [
@@ -1809,7 +1809,7 @@ export def rust-impl-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# Collect trait-impl methods efficiently:
+# [nu_lib] Collect trait-impl methods efficiently:
 # - Reuse piped rows if present (no re-scan).
 # - Otherwise, for each file, harvest fns ONCE and slice by block span.
 export def rust-trait-method-records [...paths:string] {
@@ -1895,7 +1895,7 @@ export def rust-trait-method-records [...paths:string] {
   $out | _uniq-records
 }
 
-# Module syntax (inline and declarations)
+# [nu_lib] Module syntax (inline and declarations)
 export def rust-mod-records [...paths:string] {
   let targets = (_target-list ...$paths)
 
@@ -1924,7 +1924,7 @@ export def rust-mod-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# File modules synthesized from filesystem layout
+# [nu_lib] File modules synthesized from filesystem layout
 export def rust-file-mod-records [...paths:string] {
   _list-rust-files ...$paths
   | each {|f| _mk-synthetic-mod $f }
@@ -1932,7 +1932,7 @@ export def rust-file-mod-records [...paths:string] {
   | _uniq-records
 }
 
-# macro_rules!
+# [nu_lib] macro_rules!
 export def rust-macro-records [...paths:string] {
   let targets = (_target-list ...$paths)
   let pats = [ 'macro_rules! $N { $$$B }' ]
@@ -1944,7 +1944,7 @@ export def rust-macro-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# const items
+# [nu_lib] const items
 export def rust-const-records [...paths:string] {
   let targets = (_target-list ...$paths)
   let pats = [
@@ -1959,7 +1959,7 @@ export def rust-const-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# static items
+# [nu_lib] static items
 export def rust-static-records [...paths:string] {
   let targets = (_target-list ...$paths)
   let pats = [
@@ -1974,7 +1974,7 @@ export def rust-static-records [...paths:string] {
   $out | reduce -f [] {|batch, acc| $acc | append $batch } | _uniq-records
 }
 
-# use/import statements (one row per statement)
+# [nu_lib] use/import statements (one row per statement)
 export def rust-use-records [...paths:string] {
   let targets = (_target-list ...$paths)
   let pats = ['pub use $$$I;' 'use $$$I;']
@@ -2642,7 +2642,7 @@ def _render_callers_forest_inverted [
   $out
 }
 
-# Print a tree-formatted call graph for functions matching `pattern` (forward or --reverse callers) up to --max-depth.
+# [nu_lib] Print a tree-formatted call graph for functions matching `pattern` (forward or --reverse callers) up to --max-depth.
 export def rust-print-call-graph [
   pattern:string,
   --max-depth:int = 3,
@@ -3053,7 +3053,7 @@ def _tree_from_fqpaths [
   [ (_nest "crate") ]
 }
 
-# Print (or emit as records) a nested tree of which crate modules use a given dependency.
+# [nu_lib] Print (or emit as records) a nested tree of which crate modules use a given dependency.
 export def rust-print-dep-usage [
   dep?: string
   --max-depth:int = 4
@@ -3291,7 +3291,7 @@ export def rust-print-dep-usage [
 
 # ---------- LOOP GUARDS (seen-set + per-file cap) ----------------------------
 
-# track (file|pattern) we've already run
+# [nu_lib] track (file|pattern) we've already run
 export def --env _seen-add [key:string] {
   let m = (try { $env.__SEEN } catch { {} })
   load-env { __SEEN: ($m | upsert $key true) }
@@ -3302,7 +3302,7 @@ def _seen-has [key:string] {
   try { $m | get $key } catch { false }
 }
 
-# bump a per-file counter; bail out if it gets silly
+# [nu_lib] bump a per-file counter; bail out if it gets silly
 export def --env _bump-file-count [file:string] {
   let f = ($file | path expand)
   let m = (try { $env.__SCAN_COUNT } catch { {} })
@@ -3323,19 +3323,19 @@ def _sg_cache_get [k:string] {
   try { $cur | get $k } catch { null }
 }
 
-# Internal: store a value in the ast-grep JSON result cache ($env.__SG_JSON_CACHE).
+# [nu_lib] Internal: store a value in the ast-grep JSON result cache ($env.__SG_JSON_CACHE).
 export def --env _sg_cache_put [k:string, v:any] {
   let cur  = (try { $env | get __SG_JSON_CACHE } catch { {} })
   let next = ($cur | upsert $k $v)
   load-env { __SG_JSON_CACHE: $next }
 }
 
-# Internal: reset the ast-grep JSON result cache.
+# [nu_lib] Internal: reset the ast-grep JSON result cache.
 export def --env _sg_cache_clear [] {
   load-env { __SG_JSON_CACHE: {} }
 }
 
-# Internal: initialize $env.__SG_JSON_CACHE if not already present.
+# [nu_lib] Internal: initialize $env.__SG_JSON_CACHE if not already present.
 export def --env _ensure-caches [] {
   if (try { $env | get __SG_JSON_CACHE } catch { null }) == null {
     load-env { __SG_JSON_CACHE: {} }

@@ -2,7 +2,7 @@ def "nu-complete ps" [] {
     ps -l | each {|x| { value: $"($x.pid)", description: $x.command } }
 }
 
-# after <pid> {|| do something ... }
+# [nu_lib] after <pid> {|| do something ... }
 export def main [
     pid: string@"nu-complete ps"
     action
@@ -11,7 +11,7 @@ export def main [
     do $action
 }
 
-# before {|| do something ... } <pid>
+# [nu_lib] before {|| do something ... } <pid>
 export def before [
     action
     pid: string@"nu-complete ps"

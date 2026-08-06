@@ -1,4 +1,4 @@
-# Works with version 0.109.1
+# [nu_lib] Works with version 0.109.1
 # Converts a .env file into a record
 # may be used like this: open .env | load-env
 # works with quoted and unquoted .env files

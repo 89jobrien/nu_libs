@@ -1,4 +1,4 @@
-# Structured `lsof -i` — open sockets joined with process info from `ps`.
+# [nu_lib] Structured `lsof -i` — open sockets joined with process info from `ps`.
 export def main [--abbreviate-java-class-paths (-j)] {
   let input = (^lsof +c 0xFFFF -i -n -P)
   let header = ($input | lines
@@ -20,12 +20,12 @@ export def main [--abbreviate-java-class-paths (-j)] {
               } else { $in }
 }
 
-# Extract a java command's -classpath jar entries as a list.
+# [nu_lib] Extract a java command's -classpath jar entries as a list.
 export def 'java-cmd classpath' [] {
   str replace '.* -classpath +(.+\.jar) +.*' '$1' | split row ':'
 }
 
-# Replace jar paths in a java command line with `*.jar` for compact display.
+# [nu_lib] Replace jar paths in a java command line with `*.jar` for compact display.
 export def 'java-cmd abbreviate-classpath' [] {
   str replace '[^ ]*\.jar' '*.jar'
 }

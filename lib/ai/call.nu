@@ -12,7 +12,7 @@ export-env {
     ai-new-session
 }
 
-# Create a new AI session (optionally forked from another) and set it as $env.AI_SESSION.
+# [nu_lib] Create a new AI session (optionally forked from another) and set it as $env.AI_SESSION.
 export def --env ai-new-session [
     --fork(-f): int
     offset?:int@cmpl-sessoin-offset
@@ -30,7 +30,7 @@ export def --env ai-new-session [
     }
 }
 
-# Send a message to the configured assistant prompt/tools, looping through any tool calls it makes until it produces a final answer.
+# [nu_lib] Send a message to the configured assistant prompt/tools, looping through any tool calls it makes until it produces a final answer.
 export def --env --wrapped ai-assistant [
     --provider(-p): string@cmpl-provider
     --model(-m): string@cmpl-models
@@ -131,7 +131,7 @@ export def --env --wrapped ai-assistant [
     }
 }
 
-# Interactive REPL chat loop against the AI session (\model/\system to switch, \q/exit/quit to leave).
+# [nu_lib] Interactive REPL chat loop against the AI session (\model/\system to switch, \q/exit/quit to leave).
 export def ai-chat [
     --provider(-p): string@cmpl-provider
     --model(-m): string@cmpl-models
@@ -165,7 +165,7 @@ export def ai-chat [
     }
 }
 
-# Re-run the ai-do call that opened the current $env.AI_EDITOR_CONTEXT buffer, optionally watching the file for changes.
+# [nu_lib] Re-run the ai-do call that opened the current $env.AI_EDITOR_CONTEXT buffer, optionally watching the file for changes.
 export def ai-editor-run [
     --watch(-w)
     --clear(-c)
@@ -197,7 +197,7 @@ export def ai-editor-run [
     }
 }
 
-# One-shot prompt call using a named role/template (editing input in $EDITOR if none is piped in), recording the exchange to scratch history.
+# [nu_lib] One-shot prompt call using a named role/template (editing input in $EDITOR if none is piped in), recording the exchange to scratch history.
 export def ai-do [
     ...args: string@cmpl-role
     --out(-o)
@@ -257,7 +257,7 @@ export def ai-do [
     if $out { $r.result }
 }
 
-# Get an embedding vector for `input` from the session's provider.
+# [nu_lib] Get an embedding vector for `input` from the session's provider.
 export def ai-embed [
     input: string
     --provider: string@cmpl-provider
@@ -270,7 +270,7 @@ export def ai-embed [
     | get data.0.embedding
 }
 
-# Cosine similarity between two equal-length numeric vectors.
+# [nu_lib] Cosine similarity between two equal-length numeric vectors.
 export def 'similarity cosine' [a b] {
     if ($a | length) != ($b | length) {
         print "The lengths of the vectors must be equal."

@@ -1,6 +1,6 @@
 # workspace — Cargo workspace discovery helpers
 
-# Walk up from $start to find the Cargo workspace root.
+# [nu_lib] Walk up from $start to find the Cargo workspace root.
 # Returns the directory containing a [workspace] Cargo.toml, or "" if not found.
 export def find-workspace-root [start: string] {
     mut dir = $start
@@ -22,12 +22,12 @@ export def find-workspace-root [start: string] {
     $fallback
 }
 
-# True if $path ends with .rs
+# [nu_lib] True if $path ends with .rs
 export def is-rust-file [path: string] {
     $path | str ends-with ".rs"
 }
 
-# True if $path ends with .nu
+# [nu_lib] True if $path ends with .nu
 export def is-nu-file [path: string] {
     $path | str ends-with ".nu"
 }

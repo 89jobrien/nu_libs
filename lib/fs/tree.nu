@@ -41,7 +41,7 @@ def visit-table [act: closure] {
 }
 
 
-# Applies closure to every node in tree passed to input recursively.
+# [nu_lib] Applies closure to every node in tree passed to input recursively.
 export def visit [act: closure] {
     let stream = $in
 

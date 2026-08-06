@@ -1,4 +1,4 @@
-# Converts specific JSON to JSON schema.
+# [nu_lib] Converts specific JSON to JSON schema.
 export def to-json-schema [schema: int, url: string, json: string] {
     if ($schema != 4 or $schema != 7) {
         error make { msg: $"'http://json-schema.org/draft-0($schema)/schema' is not supported yet." }

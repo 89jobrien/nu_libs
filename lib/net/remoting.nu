@@ -38,7 +38,7 @@ def get-url [
     }
 }
 
-# Connect over ssh to one of predefined hosts, execute nushell commands and parse them on the host
+# [nu_lib] Connect over ssh to one of predefined hosts, execute nushell commands and parse them on the host
 export def ssh [
     hostname: string@"nu-complete hosts"                 # name of the host you want to connect to
     ...args                                                 # commands you wish to run on the host
@@ -55,7 +55,7 @@ export def ssh [
     }
 }
 
-# Connect over ssh to one of predefined hosts, execute nushell script with arguments passed from the host
+# [nu_lib] Connect over ssh to one of predefined hosts, execute nushell script with arguments passed from the host
 export def "ssh script" [
     hostname: string@"nu-complete nu"                           # name of the host you want to connect to
     script: string@"nu-complete scripts"                        # name of the script
@@ -79,7 +79,7 @@ export def "ssh script" [
         }
     }
 }
-# Turns on specified hosts using Wake on Lan
+# [nu_lib] Turns on specified hosts using Wake on Lan
 export def wake [
     ...names: string@"nu-complete wol" # list of host names to wake
 ] {

@@ -69,7 +69,7 @@ def cmd-to-spec [cmd: record] {
     $spec
 }
 
-# Generate carapace spec YAML for loaded custom commands; optionally install to ~/.config/carapace/specs/
+# [nu_lib] Generate carapace spec YAML for loaded custom commands; optionally install to ~/.config/carapace/specs/
 export def nul-carapace [
     --filter(-f): string = ""   # filter command names by substring
     --install(-i)               # write spec files to ~/.config/carapace/specs/

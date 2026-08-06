@@ -12,7 +12,7 @@ export alias ai-history-chat = ai-history-assistant
 export alias aha = ai-history-assistant
 export alias ahd = ai-history-do
 
-# Record a voice question, transcribe it, and send it to ai-assistant.
+# [nu_lib] Record a voice question, transcribe it, and send it to ai-assistant.
 export def aa [] {
     let host = $env.WHISPER_HOST? | default 'http://localhost:4010'
     let a = audio-to-text --host $host

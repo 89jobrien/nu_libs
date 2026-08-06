@@ -1,4 +1,4 @@
-# Convert named in-scope nu commands into OpenAI-format function-tool schemas.
+# [nu_lib] Convert named in-scope nu commands into OpenAI-format function-tool schemas.
 export def func-list [...fns:string] {
     scope commands
     | where name in $fns
@@ -6,7 +6,7 @@ export def func-list [...fns:string] {
     | each {|x| {type: function, function: ($x | update parameters {|y| $y.parameters.value}), flags: $x.parameters.flags} }
 }
 
-# Convert a `scope commands` entry's signature into a JSON-schema `parameters` object (resolving completer-derived enums).
+# [nu_lib] Convert a `scope commands` entry's signature into a JSON-schema `parameters` object (resolving completer-derived enums).
 export def func-to-json [fn] {
     $fn
     | insert parameters {|x|
@@ -57,7 +57,7 @@ export def func-to-json [fn] {
     | select name description parameters
 }
 
-# Convert LLM function-call JSON back into runnable nu command-line strings, using `tools` to know which args are flags.
+# [nu_lib] Convert LLM function-call JSON back into runnable nu command-line strings, using `tools` to know which args are flags.
 export def json-to-func [o tools] {
     $o
     | each {|x|

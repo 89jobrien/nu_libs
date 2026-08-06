@@ -1,4 +1,4 @@
-# Creates a table listing the branches of a git repository and the day of the last commit
+# [nu_lib] Creates a table listing the branches of a git repository and the day of the last commit
 export def "git age" [] {
     git branch |
     lines |

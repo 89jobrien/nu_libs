@@ -1,4 +1,4 @@
-# Walk a nested schema (record/list, with optional closures) by the current command line's args, returning the matching completion menu. Core engine behind flare/math demo completers.
+# [nu_lib] Walk a nested schema (record/list, with optional closures) by the current command line's args, returning the matching completion menu. Core engine behind flare/math demo completers.
 export def 'from tree' [
     schema
     --cmd-len(-c) = 1
@@ -75,7 +75,7 @@ export def 'from tree' [
     }
 }
 
-# Demo: tree-completion example over the D3 "flare" dataset.
+# [nu_lib] Demo: tree-completion example over the D3 "flare" dataset.
 export def flare [...args:string@comflare] {
     print ($args | str join ' -> ')
 }
@@ -90,7 +90,7 @@ def comflare [...context] {
     $context | from tree -c 2 --selector {value: name, description: value, next: children } [$data]
 }
 
-# Demo: tree-completion example over a closure-driven schema.
+# [nu_lib] Demo: tree-completion example over a closure-driven schema.
 export def math [...args:string@commath] {
     print ($args | str join ' -> ')
 }

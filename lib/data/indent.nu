@@ -1,4 +1,4 @@
-# Parse piped-in indented lines into a nested record tree keyed by indent depth.
+# [nu_lib] Parse piped-in indented lines into a nested record tree keyed by indent depth.
 export def parse-indent [] {
     let n = $in
     mut pth = []

@@ -66,7 +66,7 @@ def _anchor_after_doc_block [lines: list<string>, idx: int] {
     if $doc_end < 0 { $idx } else { $doc_end }
 }
 
-# Insert a comment at specific lines/anchors across Rust files, driven by a JSON locations file.
+# [nu_lib] Insert a comment at specific lines/anchors across Rust files, driven by a JSON locations file.
 export def annotate-rust-lines [
     --locations: string          # Path to JSON file with [{file, linenum}] entries
     --comment: string            # Comment string to insert (indentation auto-detected from target line)

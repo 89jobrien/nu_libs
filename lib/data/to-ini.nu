@@ -1,4 +1,4 @@
-# converts records into .ini files
+# [nu_lib] converts records into .ini files
 export def "to ini" [] {
   transpose key value
   | update value {|row|

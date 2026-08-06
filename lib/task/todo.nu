@@ -1,6 +1,6 @@
 # (See TODO.md for more details)
 
-# This first command looks for the file with the todo list and
+# [nu_lib] This first command looks for the file with the todo list and
 # prints it to the screen.
 export def --env printer [] {
     let contents = (
@@ -22,7 +22,7 @@ export def --env printer [] {
    }
 }
 
-# This command is used to update you todo-list, and should ideally be
+# [nu_lib] This command is used to update you todo-list, and should ideally be
 # sourced in your `config.nu`
 export def todo [
     --edit(-e)           # edit todo manually

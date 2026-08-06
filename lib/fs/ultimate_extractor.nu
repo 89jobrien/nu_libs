@@ -1,4 +1,4 @@
-# Function to extract archives with different extensions.
+# [nu_lib] Function to extract archives with different extensions.
 export def extract [name:string] {
   let handlers = [ [extension command];
                    ['tar\.bz2|tbz|tbz2'     'tar xvjf']

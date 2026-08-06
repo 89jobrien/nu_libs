@@ -1,4 +1,4 @@
-# List zellij sessions as a structured table (name/time/status).
+# [nu_lib] List zellij sessions as a structured table (name/time/status).
 export def zellij-session [] {
     zellij list-sessions -n
     | lines
@@ -13,12 +13,12 @@ def cmpl-zellij-session [] {
     }
 }
 
-# Attach to a zellij session, creating it if it doesn't exist.
+# [nu_lib] Attach to a zellij session, creating it if it doesn't exist.
 export def zellij-enter [name: string@cmpl-zellij-session] {
     zellij attach --create $name
 }
 
-# Delete a zellij session by name.
+# [nu_lib] Delete a zellij session by name.
 export def zellij-delete [name: string@cmpl-zellij-session --force(-f)] {
     mut args = []
     if $force { $args ++= [--force] }
@@ -26,7 +26,7 @@ export def zellij-delete [name: string@cmpl-zellij-session --force(-f)] {
     zellij delete-session ...$args
 }
 
-# cd to `path` (or stay put) and rename the current zellij tab to match the directory name.
+# [nu_lib] cd to `path` (or stay put) and rename the current zellij tab to match the directory name.
 export def --env zellij-cd [path?: string] {
     if ("ZELLIJ" in $env) {
         let dir_name = ($path | default $env.PWD | path basename)
@@ -53,7 +53,7 @@ export-env {
     ]
 }
 
-# Send a desktop notification, wait, then jump zellij back to the tab this was called from.
+# [nu_lib] Send a desktop notification, wait, then jump zellij back to the tab this was called from.
 export def notify-zellij [msg?] {
     let tab = zellij action list-clients | lines | get 1 | split row -r '\s+' | get 1 | split row '_' | get 1
     notify-send $env.pwd ($msg | default '')

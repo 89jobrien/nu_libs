@@ -1,4 +1,4 @@
-# construct bars based of a given percentage from a given width (5 is default)
+# [nu_lib] construct bars based of a given percentage from a given width (5 is default)
 # > bar 0.2
 # █
 # > bar 0.71

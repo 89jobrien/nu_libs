@@ -10,7 +10,7 @@
 #   merge-conflicts --against feat/foo     # preview merge with a specific ref
 #   merge-conflicts --json                 # output structured data
 
-# Categorize a list of raw CONFLICT lines by conflict type.
+# [nu_lib] Categorize a list of raw CONFLICT lines by conflict type.
 # Returns a record: {content, add_add, rename_delete, modify_delete, other}
 # each value is a list of the raw conflict strings.
 export def categorize-conflicts [
@@ -45,7 +45,7 @@ export def categorize-conflicts [
     }
 }
 
-# Preview merge conflicts against a ref without touching the working tree (uses `git merge-tree`).
+# [nu_lib] Preview merge conflicts against a ref without touching the working tree (uses `git merge-tree`).
 export def merge-conflicts [
     --against: string = "origin/main"  # Ref to preview merge against
     --json                             # Output JSON instead of human summary

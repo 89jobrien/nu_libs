@@ -1,6 +1,6 @@
 use sqlite.nu *
 
-# Insert/update/delete a row in the `provider` table via table-upsert, with default field values.
+# [nu_lib] Insert/update/delete a row in the `provider` table via table-upsert, with default field values.
 export def upsert-provider [--delete --action: closure] {
     $in | table-upsert --delete=$delete --action $action {
         table: provider
@@ -21,7 +21,7 @@ export def upsert-provider [--delete --action: closure] {
     }
 }
 
-# Insert/update/delete a row in the `prompt` table via table-upsert, with default field values.
+# [nu_lib] Insert/update/delete a row in the `prompt` table via table-upsert, with default field values.
 export def upsert-prompt [--delete --action: closure] {
     $in | table-upsert --action $action --delete=$delete {
         table: prompt
@@ -36,7 +36,7 @@ export def upsert-prompt [--delete --action: closure] {
     }
 }
 
-# Insert/update/delete a row in the `model` table via table-upsert, with default field values.
+# [nu_lib] Insert/update/delete a row in the `model` table via table-upsert, with default field values.
 export def upsert-model [--delete --action: closure] {
     $in | table-upsert --action $action --delete=$delete {
         table: model
@@ -50,7 +50,7 @@ export def upsert-model [--delete --action: closure] {
     }
 }
 
-# Load built-in prompts/placeholders from data/prompts and data/placeholder, and wire default tool allocations.
+# [nu_lib] Load built-in prompts/placeholders from data/prompts and data/placeholder, and wire default tool allocations.
 export def seed [] {
     const dir = path self .
 
@@ -77,7 +77,7 @@ export def seed [] {
     | insert-prompt-tools
 }
 
-# Create the AI state SQLite database (provider/model/sessions/prompt/messages/scratch tables) and seed it if it doesn't exist yet.
+# [nu_lib] Create the AI state SQLite database (provider/model/sessions/prompt/messages/scratch tables) and seed it if it doesn't exist yet.
 export def --env init [] {
     init-db AI_STATE ([$nu.data-dir 'openai.db'] | path join) {|sqlx, Q|
         for s in [
@@ -167,7 +167,7 @@ export def --env init [] {
     }
 }
 
-# Insert a new session row using the active provider's defaults, returning its id.
+# [nu_lib] Insert a new session row using the active provider's defaults, returning its id.
 export def make-session [] {
     sqlx "INSERT INTO sessions (provider, model, temperature)
         SELECT name, model_default, temp_default
@@ -176,7 +176,7 @@ export def make-session [] {
     | get id
 }
 
-# Resolve the effective session record (provider/model/capabilities), optionally overriding provider (-p) or model (-m).
+# [nu_lib] Resolve the effective session record (provider/model/capabilities), optionally overriding provider (-p) or model (-m).
 export def session [-p:string -m:string] {
     mut o = sqlx $"select * from provider as p join sessions as s
         on p.name = s.provider where s.id = ($env.AI_SESSION);" | first
@@ -193,7 +193,7 @@ export def session [-p:string -m:string] {
     }
 }
 
-# Insert a message row for the given session context.
+# [nu_lib] Insert a message row for the given session context.
 export def record [
     ctx
     content
@@ -206,7 +206,7 @@ export def record [
         VALUES \(($ctx.id), (Q $ctx.provider), (Q $ctx.model), (Q $role), (Q $content), (Q $tools), (Q $token), (Q $tag)\);"
 }
 
-# Fetch up to `num` recent untagged messages for the current session (and its parent chain), pairing up unpaired tool_calls. --sql returns the raw query instead of running it.
+# [nu_lib] Fetch up to `num` recent untagged messages for the current session (and its parent chain), pairing up unpaired tool_calls. --sql returns the raw query instead of running it.
 export def messages [
     num = 20
     --sql
@@ -253,7 +253,7 @@ export def messages [
     $r
 }
 
-# Collect all known prompts, functions, and placeholders (env + DB) into one record, for use in tool schemas.
+# [nu_lib] Collect all known prompts, functions, and placeholders (env + DB) into one record, for use in tool schemas.
 export def tools [] {
     mut t = $env.AI_PROMPTS | values
     for i in (sqlx $"select name, description, placeholder from prompt;") {
@@ -276,7 +276,7 @@ export def tools [] {
     { prompt: $t, function: $f, placeholder: $p }
 }
 
-# Resolve a named prompt's system message, template, and rendered placeholder values from the given positional args.
+# [nu_lib] Resolve a named prompt's system message, template, and rendered placeholder values from the given positional args.
 export def role [...args] {
     let role = if $args.0 in $env.AI_PROMPTS {
         $env.AI_PROMPTS | get $args.0

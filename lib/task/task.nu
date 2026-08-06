@@ -1,4 +1,4 @@
-# Spawn a task to run in the background, even when the shell is closed.
+# [nu_lib] Spawn a task to run in the background, even when the shell is closed.
 #
 # Note that a fresh Nushell interpreter is spawned to execute the
 # given task, so it won't inherit the current scope's variables,
@@ -60,7 +60,7 @@ export def spawn [
   (pueue add --print-task-id ...$args $"nu --config '($nu.config-path)' --env-config '($nu.env-path)' ($source_path)")
 }
 
-# Remove tasks from the queue.
+# [nu_lib] Remove tasks from the queue.
 # Running or paused tasks need to be killed first.
 export def remove [
   ...ids: int # IDs of the tasks to remove from the status list.
@@ -68,7 +68,7 @@ export def remove [
   pueue remove ...$ids
 }
 
-# Switches the queue position of two tasks.
+# [nu_lib] Switches the queue position of two tasks.
 # Only works for queued or stashed tasks.
 export def switch [
   task_id_1: int # The first task ID.
@@ -77,7 +77,7 @@ export def switch [
   pueue switch $task_id_1 $task_id_2
 }
 
-# Stash a task that is not currently running.
+# [nu_lib] Stash a task that is not currently running.
 #
 # Stashed tasks won't be automatically started.
 # You will have to queue them or start them by hand.
@@ -87,7 +87,7 @@ export def stash [
   pueue stash ...$ids
 }
 
-# Queue stashed tasks for execution.
+# [nu_lib] Queue stashed tasks for execution.
 export def queue [
   ...ids: int            # IDs of the tasks to queue.
   --delay (-d): duration # Queue only after the specified delay.
@@ -101,7 +101,7 @@ export def queue [
   pueue enqueue ...$args ...$ids
 }
 
-# Resume operation of specific tasks or groups of tasks.
+# [nu_lib] Resume operation of specific tasks or groups of tasks.
 #
 # By default, this resumes the default group and all its tasks.
 # It can also be used force-start specific tasks or start whole groups.
@@ -122,7 +122,7 @@ export def start [
   pueue start ...$args
 }
 
-# Restart failed or successful task(s).
+# [nu_lib] Restart failed or successful task(s).
 #
 # By default, identical tasks will be created and
 # enqueued, but it's possible to restart in-place.
@@ -174,7 +174,7 @@ export def restart [
   pueue restart ...$args ...$ids
 }
 
-# Either pause a running tasks or a specific groups of tasks.
+# [nu_lib] Either pause a running tasks or a specific groups of tasks.
 #
 # By default, pauses the default group and all its tasks.
 #
@@ -200,7 +200,7 @@ export def pause [
   pueue pause ...$args ...$ids
 }
 
-# Kill specific running tasks or whole task groups.
+# [nu_lib] Kill specific running tasks or whole task groups.
 #
 # Kills all tasks of the default group when no ids or a specific group are provided.
 export def kill [
@@ -224,7 +224,7 @@ export def kill [
   pueue kill ...$args ...$ids
 }
 
-# Send something to a task. Useful for sending confirmations such as "y\n".
+# [nu_lib] Send something to a task. Useful for sending confirmations such as "y\n".
 export def send [
   id: int # ID of the task to send something to.
   input: string # The input that should be sent to the process.
@@ -232,7 +232,7 @@ export def send [
   pueue send $id $input
 }
 
-# Edit the command, path or label of a stashed or queued task.
+# [nu_lib] Edit the command, path or label of a stashed or queued task.
 #
 # By default only the command is edited.
 #
@@ -258,14 +258,14 @@ export def edit [
   pueue edit ...$args $id
 }
 
-# Use this to add or remove groups.
+# [nu_lib] Use this to add or remove groups.
 #
 # By default, this will simply display all known groups.
 export def group [] {
   pueue group --json | from json
 }
 
-# Create a new group with a name.
+# [nu_lib] Create a new group with a name.
 export def "group add" [
   name: string # The name of the new group.
   --parallel (-p): int # The amount of parallel tasks the group can run at one time.
@@ -279,14 +279,14 @@ export def "group add" [
   pueue group add ...$args $name
 }
 
-# Remove a group with a name.
+# [nu_lib] Remove a group with a name.
 export def "group remove" [
   name: string # The name of the group to be removed.
 ] {
   pueue group remove $name
 }
 
-# Display the current status of all tasks.
+# [nu_lib] Display the current status of all tasks.
 export def status [
   --detailed (-d) # Return a table with more detailed information.
 ] {
@@ -306,7 +306,7 @@ export def status [
   }
 }
 
-# Display the output of tasks.
+# [nu_lib] Display the output of tasks.
 #
 # Only the last few lines will be shown by default for multiple tasks.
 # If you want to follow the output, use `--tail/-t`.
@@ -361,7 +361,7 @@ export def log [
   }
 }
 
-# Wait until the provided tasks are finished.
+# [nu_lib] Wait until the provided tasks are finished.
 #
 # This is like join() or await in many languages.
 export def wait [
@@ -389,7 +389,7 @@ export def wait [
   pueue wait ...$args ...$ids
 }
 
-# Remove tasks from the status list.
+# [nu_lib] Remove tasks from the status list.
 export def clean [
   --successful-only (-s) # Only clean tasks that finished successfully
   --group (-g): string   # Only clean tasks of a specific group
@@ -406,12 +406,12 @@ export def clean [
   pueue clean ...$args
 }
 
-# Shutdown pueue and thus this module.
+# [nu_lib] Shutdown pueue and thus this module.
 export def shutdown [] {
   pueue shutdown
 }
 
-# Set the maximum parallel tasks for a group.
+# [nu_lib] Set the maximum parallel tasks for a group.
 #
 # Note that no tasks will be stopped if the number is lowered.
 # The limit only applies when schelduing.
@@ -430,7 +430,7 @@ export def set-parallel-limit [
 
 const HERE = (path self)
 
-# List all `task <cmd>` pueue-wrapper commands with their descriptions. Called `task` since it's an `export def main`.
+# [nu_lib] List all `task <cmd>` pueue-wrapper commands with their descriptions. Called `task` since it's an `export def main`.
 export def main [] {
   let mod_name = $HERE | path basename | str replace -r '\.nu$' ''
   scope commands | where name =~ $"^($mod_name) " | select name description | transpose -rd

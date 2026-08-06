@@ -1,6 +1,6 @@
 # This script requires that `tokei` be installed and available!
 
-# Count lines of code in a project.
+# [nu_lib] Count lines of code in a project.
 export def main [
     ...rest # args to pass to tokei
 ] {

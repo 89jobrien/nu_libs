@@ -1,4 +1,4 @@
-# Convert from contents of /proc/cpuinfo to structured data
+# [nu_lib] Convert from contents of /proc/cpuinfo to structured data
 export def "from cpuinfo" [] {
     lines
     | split list ''

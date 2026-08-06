@@ -2,7 +2,7 @@
 
 # Usage: (remove-diacritics 'Zażółć gęślą jaźń') == Zazolc gesla jazn
 
-# Strip Polish/German diacritics, transliterating to plain ASCII equivalents.
+# [nu_lib] Strip Polish/German diacritics, transliterating to plain ASCII equivalents.
 export def main [
     arg: string
 ] {

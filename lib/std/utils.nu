@@ -1,4 +1,4 @@
-# Rewrite `#[entry]`-tagged `export alias` lines in a file into full function wrappers (see wrap-fn), preserving the rest of the file.
+# [nu_lib] Rewrite `#[entry]`-tagged `export alias` lines in a file into full function wrappers (see wrap-fn), preserving the rest of the file.
 export def convert-alias-file [
     file: path
     prelude?
@@ -23,7 +23,7 @@ export def convert-alias-file [
     | str join (char newline)
 }
 
-# Convert an existing alias into a full function wrapper (see wrap-fn).
+# [nu_lib] Convert an existing alias into a full function wrapper (see wrap-fn).
 export def alias-to-fn [alias prelude?: list = []] {
     let cmd = scope aliases | where name == $alias | first | get expansion
     wrap-fn $cmd $alias $prelude
@@ -56,7 +56,7 @@ def handle_parameter [i] {
     }
 }
 
-# Generate a `def --env` wrapper function around an argx-parsed alias command, reconstructing its parameters from scope signatures.
+# [nu_lib] Generate a `def --env` wrapper function around an argx-parsed alias command, reconstructing its parameters from scope signatures.
 export def wrap-fn [
     alias
     cmd

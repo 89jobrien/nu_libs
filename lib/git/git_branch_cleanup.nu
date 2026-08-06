@@ -3,7 +3,7 @@
 # Adapted from bash version `git cleanup-repo` by Rob Miller <rob@bigfish.co.uk>
 # https://gist.github.com/robmiller/5133264
 
-# Delete local (and optionally remote) merged branches
+# [nu_lib] Delete local (and optionally remote) merged branches
 #
 # Set branch-cleanup.keep locally to a space-separated list of branch patterns to keep
 export def "git branch-cleanup" [

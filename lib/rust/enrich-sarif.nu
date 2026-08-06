@@ -27,7 +27,7 @@
 #   services/<name>/...        → <name>
 #   (other)                    → "root"
 
-# Derive crate name from a SARIF artifact URI.
+# [nu_lib] Derive crate name from a SARIF artifact URI.
 export def derive-crate [uri: string] {
     if ($uri | str contains "standalone/") {
         "standalone"
@@ -40,7 +40,7 @@ export def derive-crate [uri: string] {
     }
 }
 
-# Map a rustqual ruleId to a category string.
+# [nu_lib] Map a rustqual ruleId to a category string.
 export def derive-category [rule_id: string] {
     if ("iosp" in $rule_id) or ($rule_id == "VIOLATION") {
         "iosp"
@@ -59,7 +59,7 @@ export def derive-category [rule_id: string] {
     }
 }
 
-# Group enriched SARIF results by a field ("category" or "crate").
+# [nu_lib] Group enriched SARIF results by a field ("category" or "crate").
 # Pipe the results list from an enriched SARIF record into this command.
 # Each result must have a .properties record with the named field.
 # Returns a record keyed by the group value, each value a list of results.
@@ -70,7 +70,7 @@ export def sarif-group-by [field: string] {
     group-by {|r| $r.properties | get $field }
 }
 
-# Enrich a raw SARIF report's results with extra derived properties (e.g. grouping keys).
+# [nu_lib] Enrich a raw SARIF report's results with extra derived properties (e.g. grouping keys).
 export def enrich-sarif [
     input?: string           # Path to raw SARIF JSON (omit to read from pipeline)
     --out: string = ""       # Write enriched SARIF to this path (default: print to stdout)

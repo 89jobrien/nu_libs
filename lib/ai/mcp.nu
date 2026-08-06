@@ -11,7 +11,7 @@
 #
 # See: docs/plans/2026-06-09-baml-agent-daemon.md
 
-# Configure numcp for this session.
+# [nu_lib] Configure numcp for this session.
 # Sets env vars that baml-agent-run reads as defaults.
 # Does NOT spawn a process (stdio mode — daemon manages the subprocess).
 export def --env mcp-start [
@@ -24,7 +24,7 @@ export def --env mcp-start [
     print $"[mcp] configured: ($command) serve --config ($config)"
 }
 
-# Clear numcp session config (and stop background process when TCP transport added).
+# [nu_lib] Clear numcp session config (and stop background process when TCP transport added).
 export def --env mcp-stop [] {
     let pid = $env.NU_MCP_PID?
     if ($pid | is-not-empty) {
@@ -36,13 +36,13 @@ export def --env mcp-stop [] {
     print "[mcp] cleared"
 }
 
-# Return the active MCP server address (TCP transport, v2).
+# [nu_lib] Return the active MCP server address (TCP transport, v2).
 # Returns empty string in v1 stdio mode.
 export def mcp-addr [] {
     $env.NU_MCP_SERVER? | default ""
 }
 
-# Return the numcp command and config currently configured for this session.
+# [nu_lib] Return the numcp command and config currently configured for this session.
 export def mcp-status [] {
     {
         command: ($env.NU_MCP_COMMAND? | default "numcp")

@@ -1,6 +1,6 @@
 const ID = 'x'
 
-# Populate $env.GIT_HOOKS with the known git hook names, their category (commit/email/client/server/other), and which default to being installed.
+# [nu_lib] Populate $env.GIT_HOOKS with the known git hook names, their category (commit/email/client/server/other), and which default to being installed.
 export def --env 'project init-git-hooks' [] {
     $env.GIT_HOOKS = {
         # commit
@@ -52,7 +52,7 @@ def git-current-branch [] {
     git rev-parse --abbrev-ref HEAD
 }
 
-# List installed hook names (executable files under .git/hooks matching known hook names) for the current repo.
+# [nu_lib] List installed hook names (executable files under .git/hooks matching known hook names) for the current repo.
 export def git-list-hooks [] {
     let c = git-cdup
     if ($c | describe) == nothing { return }
@@ -66,7 +66,7 @@ def cmpl-hooks [] {
     $env.GIT_HOOKS | columns
 }
 
-# Remove installed git hooks by name (all installed hooks if none given).
+# [nu_lib] Remove installed git hooks by name (all installed hooks if none given).
 export def git-uninstall-hooks [...hooks:string@git-list-hooks] {
     let c = git-cdup
     if ($c | describe) == nothing { return }
@@ -77,14 +77,14 @@ export def git-uninstall-hooks [...hooks:string@git-list-hooks] {
     }
 }
 
-# Check whether a `<mod> <fun>` command exists in scope — used by generated hook scripts to decide whether to run.
+# [nu_lib] Check whether a `<mod> <fun>` command exists in scope — used by generated hook scripts to decide whether to run.
 export def has-git-hooks [mod fun] {
     scope commands
     | where name == $'($mod) ($fun)'
     | is-not-empty
 }
 
-# Resolve the working directory of the repo containing $env.CURRENT_FILE (path up to but excluding .git).
+# [nu_lib] Resolve the working directory of the repo containing $env.CURRENT_FILE (path up to but excluding .git).
 export def git-hooks-dir [] {
     $env.CURRENT_FILE
     | path split
@@ -94,7 +94,7 @@ export def git-hooks-dir [] {
     | path join
 }
 
-# Build the context record (workdir, commit, remote/repo args, branch) passed to hook handler functions.
+# [nu_lib] Build the context record (workdir, commit, remote/repo args, branch) passed to hook handler functions.
 export def git-hooks-context [] {
     let argv = $in
     {
@@ -106,7 +106,7 @@ export def git-hooks-context [] {
     }
 }
 
-# Generate and install executable .git/hooks scripts that dispatch to `<mod> <fun>`, for the given hooks (or all default: true hooks if none given).
+# [nu_lib] Generate and install executable .git/hooks scripts that dispatch to `<mod> <fun>`, for the given hooks (or all default: true hooks if none given).
 export def git-install-hooks [
     ...hooks:string@cmpl-hooks
     --mod(-m)=$ID

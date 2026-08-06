@@ -2,7 +2,7 @@
 #
 # Init module that exports commands and environment variables wanted at startup
 
-# commands
+# [nu_lib] commands
 export def egd [...rest] {
     with-env [GIT_EXTERNAL_DIFF 'difft'] { git diff $rest }
 }
@@ -33,7 +33,7 @@ export-env {
 # prompt
 PROMPT_COMMAND: { build-prompt }
 
-# Build the interactive shell prompt string used by PROMPT_COMMAND.
+# [nu_lib] Build the interactive shell prompt string used by PROMPT_COMMAND.
 export def build-prompt [] {
     let usr_str = (if $env.SHOW_USER {
         [

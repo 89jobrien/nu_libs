@@ -71,7 +71,7 @@ def cmd-to-operation [cmd: record] {
     }
 }
 
-# Generate an OpenAPI 3.1 schema from all currently loaded custom commands
+# [nu_lib] Generate an OpenAPI 3.1 schema from all currently loaded custom commands
 export def nul-genschema [
     --filter(-f): string = ""       # filter command names by substring
     --format: string = "json"       # output format: json or yaml

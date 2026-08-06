@@ -1,7 +1,7 @@
-#copy current dir
+# [nu_lib] copy current dir
 export def cpwd [] {pwd | tr "\n" " " | sed "s/ //g" | xclip -sel clip}
 
-#update-upgrade system (ubuntu)
+# [nu_lib] update-upgrade system (ubuntu)
 export def supgrade [] {
   echo "updating..."
   sudo aptitude update -y
@@ -11,34 +11,34 @@ export def supgrade [] {
   sudo apt autoremove -y
 }
 
-#open mcomix
+# [nu_lib] open mcomix
 export def mcx [file] {
   bash -c $'mcomix "($file)" 2>/dev/null &'
 }
 
-#open file
+# [nu_lib] open file
 export def openf [file?] {
   let file = if ($file | is-empty) {$in} else {$file}
 
   bash -c $'xdg-open "($file)" 2>/dev/null &'
 }
 
-#search for specific process
+# [nu_lib] search for specific process
 export def psn [name: string] {
   ps | find $name
 }
 
-#kill specified process in name
+# [nu_lib] kill specified process in name
 export def killn [name: string] {
   ps | find $name | each {|| kill -f $in.pid}
 }
 
-#jdownloader downloads info (requires a jdown python script)
+# [nu_lib] jdownloader downloads info (requires a jdown python script)
 export def nujd [] {
   jdown | lines | each { |line| $line | from nuon } | flatten | flatten
 }
 
-# Switch-case like instruction
+# [nu_lib] Switch-case like instruction
 export def switch [
   var           #input var to test
   cases: record #record with all cases
@@ -54,7 +54,7 @@ export def switch [
     echo $cases | get $var | do $in
 }
 
-#post to discord
+# [nu_lib] post to discord
 export def post_to_discord [message] {
   let content = $"{\"content\": \"($message)\"}"
 
@@ -63,32 +63,32 @@ export def post_to_discord [message] {
   post $weburl $content --content-type "application/json"
 }
 
-#select column of a table (to table)
+# [nu_lib] select column of a table (to table)
 export def column [n] {
   transpose | select $n | transpose | select column1 | headers
 }
 
-#get column of a table (to list)
+# [nu_lib] get column of a table (to list)
 export def column2 [n] {
   transpose | get $n | transpose | get column1 | skip 1
 }
 
-#short pwd
+# [nu_lib] short pwd
 export def pwd-short [] {
   $env.PWD | str replace $nu.home-dir '~'
 }
 
-#string repeat
+# [nu_lib] string repeat
 export def "str repeat" [count: int] {
   each {|it| let str = $it; echo 1..$count | each {|| echo $str } }
 }
 
-#join 2 lists
+# [nu_lib] join 2 lists
 export def union [a: list, b: list] {
     $a | append $b | uniq
 }
 
-#nushell source files info
+# [nu_lib] nushell source files info
 export def 'nu-sloc' [] {
   let stats = (
     ls **/*.nu
@@ -111,7 +111,7 @@ export def 'nu-sloc' [] {
   print $stats
 }
 
-#go to dir (via pipe)
+# [nu_lib] go to dir (via pipe)
 export def --env goto [] {
     let input = $in
     cd (
@@ -123,18 +123,18 @@ export def --env goto [] {
     )
 }
 
-#go to custom bash bin path, must be added last in config.nu
+# [nu_lib] go to custom bash bin path, must be added last in config.nu
 export def --env goto-bash [] {
     cd ($env.PATH | last)
 }
 
-#cd to the folder where a binary is located
+# [nu_lib] cd to the folder where a binary is located
 export def --env which-cd [program] {
   let dir = (which $program | get path | path dirname | str trim)
   cd $dir.0
 }
 
-#push to git
+# [nu_lib] push to git
 export def git-push [m: string] {
   git add -A
   git status
@@ -142,23 +142,23 @@ export def git-push [m: string] {
   git push origin main
 }
 
-#get help for custom commands
+# [nu_lib] get help for custom commands
 export def "help my-commands" [] {
   help commands | where is_custom == true
 }
 
-#web search in terminal (requires ddgr)
+# [nu_lib] web search in terminal (requires ddgr)
 export def gg [...search: string] {
   ddgr -n 5 ($search | str join ' ')
 }
 
-#habitipy dailies done all (requires habitipy)
+# [nu_lib] habitipy dailies done all (requires habitipy)
 export def hab-dailies-done [] {
   let to_do = (habitipy dailies | grep ✖ | awk {print $1} | tr '.\n' ' ' | split row ' ' | into int)
   habitipy dailies done $to_do
 }
 
-#update aliases backup file from config.nu
+# [nu_lib] update aliases backup file from config.nu
 export def update-aliases [] {
   let nlines = (open $nu.config-path | lines | length)
 
@@ -167,7 +167,7 @@ export def update-aliases [] {
   open $nu.config-path | lines | last ($nlines - $from + 1) | save /path/to/backup/file.nu
 }
 
-#update config.nu from aliases backup
+# [nu_lib] update config.nu from aliases backup
 export def update-config [] {
   let from = ((grep "## aliases" $nu.config-path -n | split row ':').0 | into int)
   let aliases = "/path/to/backup/file.nu"
@@ -176,7 +176,7 @@ export def update-config [] {
   mv temp.nu $nu.config-path
 }
 
-#countdown alarm (requires termdown y mpv)
+# [nu_lib] countdown alarm (requires termdown y mpv)
 export def countdown [
   n: int # time in seconds
   ] {
@@ -193,17 +193,17 @@ export def countdown [
     }
 }
 
-#get aliases
+# [nu_lib] get aliases
 export def get-aliases [] {
   open $nu.config-path | lines | find alias | find -v aliases | split column '=' | select column1 column2 | rename Alias Command | update Alias {|f| $f.Alias | split row ' ' | last} | sort-by Alias
 }
 
-#compress every subfolder into separate files and delete them
+# [nu_lib] compress every subfolder into separate files and delete them
 export def `7zfolders` [] {
   ^find . -maxdepth 1 -mindepth 1 -type d -print0 | parallel -0 --eta 7z a -t7z -sdel -bso0 -bsp0 -m0=lzma2 -mx=9 -ms=on -mmt=on {}.7z {}
 }
 
-#compress to 7z using max compression
+# [nu_lib] compress to 7z using max compression
 export def `7zmax` [
   filename: string  #filename without extension
   ...rest:  string  #files to compress and extra flags for 7z (add flags between quotes)
@@ -220,7 +220,7 @@ export def `7zmax` [
   }
 }
 
-#add event to google calendar, also usable without arguments (requires gcalcli)
+# [nu_lib] add event to google calendar, also usable without arguments (requires gcalcli)
 export def addtogcal [
   calendar?   #to which calendar add event
   title?      #event title
@@ -238,7 +238,7 @@ export def addtogcal [
   gcalcli --calendar $"($calendar)" add --title $"($title)" --when $"($when)" --where $"($where)" --duration $"($duration)" --default-reminders
 }
 
-#show gcal agenda in selected calendars
+# [nu_lib] show gcal agenda in selected calendars
 export def agenda [
   --full: int  #show all calendars (default: 0)
   ...rest      #extra flags for gcalcli between quotes (specified full needed)
@@ -259,7 +259,7 @@ export def agenda [
   }
 }
 
-#show gcal week in selected calendards
+# [nu_lib] show gcal week in selected calendards
 export def semana [
   --full: int  #show all calendars (default: 0)
   ...rest      #extra flags for gcalcli between quotes (specified full needed)
@@ -280,7 +280,7 @@ export def semana [
   }
 }
 
-#show gcal month in selected calendards
+# [nu_lib] show gcal month in selected calendards
 export def mes [
   --full: int  #show all calendars (default: 0)
   ...rest      #extra flags for gcalcli between quotes (specified full needed)
@@ -301,7 +301,7 @@ export def mes [
   }
 }
 
-#get bitly short link (requires xclip)
+# [nu_lib] get bitly short link (requires xclip)
 export def mbitly [longurl] {
   if ($longurl | is-empty) {
     echo "no url provided"
@@ -317,7 +317,7 @@ export def mbitly [longurl] {
   }
 }
 
-#translate text using mymemmory api
+# [nu_lib] translate text using mymemmory api
 export def trans [
   ...search:string  #search query]
   --from:string     #from which language you are translating (default english)
@@ -349,7 +349,7 @@ export def trans [
   }
 }
 
-#check if drive is mounted
+# [nu_lib] check if drive is mounted
 export def is-mounted [drive:string] {
   let count = (ls "~/media" | find $"($drive)" | length)
 
@@ -360,22 +360,22 @@ export def is-mounted [drive:string] {
   }
 }
 
-#get phone number from google contacts (requires goobook)
+# [nu_lib] get phone number from google contacts (requires goobook)
 export def get-phone-number [search:string] {
   goobook dquery $search | from ssv | rename results | where results =~ '(?P<plus>\+)(?P<nums>\d+)'
 }
 
-#ping with plot (requires ttyplot)
+# [nu_lib] ping with plot (requires ttyplot)
 export def nu-png-plot [] {
   bash -c "ping 1.1.1.1 | sed -u 's/^.*time=//g; s/ ms//g' | ttyplot -t \'ping to 1.1.1.1\' -u ms"
 }
 
-#plot download-upload speed (requires ttyplot and fast-cli)
+# [nu_lib] plot download-upload speed (requires ttyplot and fast-cli)
 export def nu-downup-plot [] {
   bash -c "fast --single-line --upload |  stdbuf -o0 awk '{print $2 \" \" $6}' | ttyplot -2 -t 'Download/Upload speed' -u Mbps"
 }
 
-#plot data table using gnuplot
+# [nu_lib] plot data table using gnuplot
 export def gnu-plot [
   data?           #1 or 2 column table
   --title:string  #title
@@ -404,23 +404,23 @@ export def gnu-plot [
   rm data*.txt | ignore
 }
 
-# date string YYYY-MM-DD
+# [nu_lib] date string YYYY-MM-DD
 export def ymd [] {
   (date now | format date %Y-%m-%d)
 }
 
-# date string DD-MM-YYYY
+# [nu_lib] date string DD-MM-YYYY
 export def dmy [] {
   (date now | format date %d-%m-%Y)
 }
 
-# create directory and cd into it.
+# [nu_lib] create directory and cd into it.
 export def --env md [dir] {
   mkdir $dir
   cd $dir
 }
 
-# Fuzzy finds a value in a newline-separated-string or a list, using an
+# [nu_lib] Fuzzy finds a value in a newline-separated-string or a list, using an
 # optional preview. If the string or the list contains only one item,
 # it is returned immediately.
 # Requires the external binary 'skim'.
@@ -460,7 +460,7 @@ export def skim [
   }
 }
 
-# Group list values that match the next-group regex.
+# [nu_lib] Group list values that match the next-group regex.
 # This function is a useful helper to quick and dirty parse data
 # that contains line-wise a 'header', followed by a variable number
 # of data entries. The return value is a table of header-keys with

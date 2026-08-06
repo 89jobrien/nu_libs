@@ -28,7 +28,7 @@ def "grab repo name" [ghrepo: string]: [string -> string] {
 # gh repo clone nushell/nu_scripts /home/my-dir/nu_scripts
 # (note that it doesn't create the organization folder)
 
-# Clones all the `list_of_repos` into `destination` folder
+# [nu_lib] Clones all the `list_of_repos` into `destination` folder
 export def "clone all" [list_of_repos: list<string>, destination: path] {
         print $" creating ($destination) folder"
         mkdir $destination

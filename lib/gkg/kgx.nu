@@ -7,7 +7,7 @@
 #   .kgx/wiki/index.md — generated index of all entries
 #   .kgx/wiki/log.md   — append-only write log
 
-# Resolve the .kgx root for a given repo path.
+# [nu_lib] Resolve the .kgx root for a given repo path.
 export def kgx-root [repo: string = "."]: nothing -> string {
     $"($repo | path expand)/.kgx"
 }
@@ -16,7 +16,7 @@ export def kgx-root [repo: string = "."]: nothing -> string {
 # restricted to known wiki directories, and slugs should reject path separators, `..`, and empty
 # components so read/write/verify cannot escape `.kgx/wiki/<section>/`.
 
-# List all entries of a given section (entity, summary, topic).
+# [nu_lib] List all entries of a given section (entity, summary, topic).
 export def "kgx list" [
     section: string = "entity"  # entity | summary | topic
     --repo (-r): string = "."
@@ -33,7 +33,7 @@ export def "kgx list" [
     }
 }
 
-# Read a single wiki entry by section and slug.
+# [nu_lib] Read a single wiki entry by section and slug.
 export def "kgx read" [
     slug: string        # Entry slug (filename without .md)
     --section (-s): string = "entity"
@@ -46,7 +46,7 @@ export def "kgx read" [
     open $f
 }
 
-# Write (create or overwrite) a wiki entry, appending to log.md.
+# [nu_lib] Write (create or overwrite) a wiki entry, appending to log.md.
 export def "kgx write" [
     slug: string          # Entry slug
     content: string       # Markdown content
@@ -61,7 +61,7 @@ export def "kgx write" [
     $"- write: ($slug)\n" | save --append $log
 }
 
-# Rebuild index.md from actual files on disk.
+# [nu_lib] Rebuild index.md from actual files on disk.
 export def "kgx reindex" [
     --repo (-r): string = "."
 ]: nothing -> nothing {
@@ -83,7 +83,7 @@ export def "kgx reindex" [
     $lines | str join "\n" | save --force $"($root)/index.md"
 }
 
-# Verify that a set of expected entity slugs all have files in .kgx/wiki/entity/.
+# [nu_lib] Verify that a set of expected entity slugs all have files in .kgx/wiki/entity/.
 # Returns a table of {slug, exists} for any missing entries.
 export def "kgx verify" [
     ...slugs: string    # Expected entity slugs

@@ -1,4 +1,4 @@
-# Count in-scope commands by type (built-in/external/custom/keyword/plugin) and total.
+# [nu_lib] Count in-scope commands by type (built-in/external/custom/keyword/plugin) and total.
 export def main [] {
     let builtin = (scope commands | where type == "built-in" | length)
     let external = (scope commands | where type == "external" | length)

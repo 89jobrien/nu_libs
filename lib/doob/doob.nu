@@ -14,7 +14,7 @@ def doob-project-args [project: string]: nothing -> list<string> {
     if ($project | is-empty) { [] } else { ["--project" $project] }
 }
 
-# List pending todos, scoped to this repo by default.
+# [nu_lib] List pending todos, scoped to this repo by default.
 export def "doob pending" [
     --project (-p): string = $DEFAULT_PROJECT  # Project name to filter by
     --json                                     # Emit doob JSON output
@@ -30,7 +30,7 @@ export def "doob pending" [
     ^doob ...$args
 }
 
-# Search todos and notes, scoped to this repo by default.
+# [nu_lib] Search todos and notes, scoped to this repo by default.
 export def "doob find" [
     query: string                              # Search query
     --project (-p): string = $DEFAULT_PROJECT  # Project name to filter by
@@ -48,7 +48,7 @@ export def "doob find" [
     ^doob ...$args
 }
 
-# List doob handoff items.
+# [nu_lib] List doob handoff items.
 export def "doob handoff list" [
     --json             # Emit doob JSON output
     --db: string = ""  # Override doob database path
@@ -62,7 +62,7 @@ export def "doob handoff list" [
     ^doob ...$args
 }
 
-# Sync HANDOFF state through doob.
+# [nu_lib] Sync HANDOFF state through doob.
 export def "doob handoff sync" [
     --json             # Emit doob JSON output
     --db: string = ""  # Override doob database path
@@ -76,7 +76,7 @@ export def "doob handoff sync" [
     ^doob ...$args
 }
 
-# List notes.
+# [nu_lib] List notes.
 export def "doob note list" [
     --json             # Emit doob JSON output
     --db: string = ""  # Override doob database path
@@ -90,7 +90,7 @@ export def "doob note list" [
     ^doob ...$args
 }
 
-# Add a note.
+# [nu_lib] Add a note.
 export def "doob note add" [
     text: string        # Note text
     --json              # Emit doob JSON output
@@ -105,7 +105,7 @@ export def "doob note add" [
     ^doob ...$args
 }
 
-# Pass raw arguments through to doob for subcommands not wrapped here.
+# [nu_lib] Pass raw arguments through to doob for subcommands not wrapped here.
 export def "doob raw" [
     ...args: string  # Arguments to pass to doob
 ]: nothing -> any {

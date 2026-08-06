@@ -74,7 +74,7 @@ def _parse_crs_toml [file: string] {
     }
 }
 
-# Discover all agent harness hooks reachable from a root directory.
+# [nu_lib] Discover all agent harness hooks reachable from a root directory.
 export def main [
     --root: string = ""     # Directory to search from (default: ~)
     --event: string = ""    # Filter to this event (e.g. PreToolUse, Stop)

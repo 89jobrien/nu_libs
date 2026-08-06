@@ -1,6 +1,6 @@
 # simple bookmark module
 
-# Prints general information about bm.
+# [nu_lib] Prints general information about bm.
 export def main [] {
   print -n (help bm)
 
@@ -14,7 +14,7 @@ export def main [] {
   )
 }
 
-# List all bookmarked paths
+# [nu_lib] List all bookmarked paths
 export def list [] {
   let bm_path = (get_path)
 
@@ -59,14 +59,14 @@ def save_path [] {
   save -f (get_path)
 }
 
-# Reset the bookmarks
+# [nu_lib] Reset the bookmarks
 export def reset [] {
   list |
   where name == "prev" |
   save -f (get_path)
 }
 
-# Add a new bookmark with an optional name
+# [nu_lib] Add a new bookmark with an optional name
 export def add [
   pth: path       # Path to bookmark to.
   name?: string   # Optional name to give to it
@@ -78,7 +78,7 @@ export def add [
   }
 }
 
-# remove one or more bookmarks
+# [nu_lib] remove one or more bookmarks
 export def bm-remove [] {
   let rm_these = (
     list | 
@@ -102,7 +102,7 @@ def marks [] {
   }
 }
 
-# Goto your bookmark
+# [nu_lib] Goto your bookmark
 export def --env goto [
   pth: path@marks # Path to "go to"
   ] {
@@ -111,7 +111,7 @@ export def --env goto [
   change_prev $prev
 }
 
-# Experimental use of `input` instead of completion
+# [nu_lib] Experimental use of `input` instead of completion
 export def --env goto_alternative [] {
   let prev = $env.PWD
   list | input list -f | cd $in.path

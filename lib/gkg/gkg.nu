@@ -25,7 +25,7 @@ def gkg-url [endpoint: string, workspace: string, project: string]: nothing -> s
     $"($GKG_BASE)/api/graph/($endpoint)/($w)/($p)"
 }
 
-# Index a repo (or workspace of repos) with gkg.
+# [nu_lib] Index a repo (or workspace of repos) with gkg.
 # Runs gkg index and reports completion.
 export def "gkg index" [
     path: string = "."  # Path to index (default: current dir)
@@ -39,7 +39,7 @@ export def "gkg index" [
     ^gkg ...$args
 }
 
-# Get stats for an indexed project.
+# [nu_lib] Get stats for an indexed project.
 # Returns a record with total_nodes, total_relationships, node_counts, etc.
 export def "gkg stats" [
     project: string = "."  # Project path (default: cwd)
@@ -51,7 +51,7 @@ export def "gkg stats" [
     http get $url
 }
 
-# Search for symbols in an indexed project.
+# [nu_lib] Search for symbols in an indexed project.
 # Returns a table of matching nodes with file, line, fqn, and type.
 export def "gkg search" [
     term: string           # Search term (symbol name, fqn fragment, etc.)
@@ -85,7 +85,7 @@ export def "gkg search" [
     }
 }
 
-# Check whether gkg server is reachable and a project is indexed.
+# [nu_lib] Check whether gkg server is reachable and a project is indexed.
 export def "gkg status" [
     project: string = "."
     --workspace (-w): string
@@ -113,7 +113,7 @@ export def "gkg status" [
     }
 }
 
-# List all symbols of a given type in the graph (sampled via a broad search).
+# [nu_lib] List all symbols of a given type in the graph (sampled via a broad search).
 # Useful for discovering what's indexed.
 export def "gkg list-defs" [
     --project (-p): string = "."

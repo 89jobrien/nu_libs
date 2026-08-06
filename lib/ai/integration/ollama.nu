@@ -13,17 +13,17 @@ def cmpl-models [] {
     | each {{value: $in.name, description: $in.modified_at}}
 }
 
-# Show details for a local ollama model.
+# [nu_lib] Show details for a local ollama model.
 export def ollama-info [--model(-m): string@cmpl-models] {
     http post -t application/json $"($env.OLLAMA_BASEURL)/api/show" {name: $model}
 }
 
-# Delete a local ollama model.
+# [nu_lib] Delete a local ollama model.
 export def ollama-delete [--model(-m): string@cmpl-models] {
     http delete -t application/json $"($env.OLLAMA_BASEURL)/api/delete" -d {name: $model}
 }
 
-# Get an embedding vector for `input` from a local ollama model.
+# [nu_lib] Get an embedding vector for `input` from a local ollama model.
 export def ollama-embed [
     input: string
     --model(-m): string@cmpl-models
@@ -35,7 +35,7 @@ export def ollama-embed [
 }
 
 
-# One-shot ollama /api/generate call (non-streaming), with {} substituted by piped-in content and optional image.
+# [nu_lib] One-shot ollama /api/generate call (non-streaming), with {} substituted by piped-in content and optional image.
 export def ollama-gen [
     prompt: string
     --model(-m): string@cmpl-models
@@ -62,7 +62,7 @@ export def ollama-gen [
 }
 
 
-# Send a message to ollama /api/chat, streaming the response and maintaining per-model history in $env.OLLAMA_CHAT unless --oneshot.
+# [nu_lib] Send a message to ollama /api/chat, streaming the response and maintaining per-model history in $env.OLLAMA_CHAT unless --oneshot.
 export def --env ollama-chat [
     message: string
     --model(-m): string@cmpl-models
@@ -134,7 +134,7 @@ def cmpl-ollama-model [] {
     ls **/* | where type == file | get name
 }
 
-# Export a local ollama model's blobs into a standalone directory with a Modelfile and source reference.
+# [nu_lib] Export a local ollama model's blobs into a standalone directory with a Modelfile and source reference.
 export def ollama-export [
     target
     --model(-m): string@cmpl-ollama-model
@@ -194,14 +194,14 @@ export def ollama-export [
     print 'success'
 }
 
-# Re-import a model previously exported by ollama-export.
+# [nu_lib] Re-import a model previously exported by ollama-export.
 export def ollama-import [dir] {
     cd $dir
     let model = cat source.txt
     ollama create $model
 }
 
-# Import a raw .gguf file into ollama as a new model.
+# [nu_lib] Import a raw .gguf file into ollama as a new model.
 export def gguf-to-ollama [file --name(-n):string] {
     let name = if ($name | is-empty) {
         $file  | path basename | split row '-' | slice 0..<-1 | str join '-'

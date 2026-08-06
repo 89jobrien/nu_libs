@@ -1,5 +1,5 @@
 
-# Convert Fahrenheit to Celsius
+# [nu_lib] Convert Fahrenheit to Celsius
 export def f-to-c [
      fahren: number # Degrees Fahrenheit
      --round(-r): int = 2 # Digits of precision to round to
@@ -10,7 +10,7 @@ export def f-to-c [
     $"($fahren) °F is ($celsius) °C"
 }
 
-# Convert Fahrenheit to Kelvin
+# [nu_lib] Convert Fahrenheit to Kelvin
 export def f-to-k [
      fahren: number # Degrees Fahrenheit
      --round(-r): int = 2 # Digits of precision to round to
@@ -22,7 +22,7 @@ export def f-to-k [
     $"($fahren) °F is ($kelvin) °K"
 }
 
-# Convert Celsius to Fahrenheit
+# [nu_lib] Convert Celsius to Fahrenheit
 export def c-to-f [
      celsius: number # Degrees Celsius
      --round(-r): int = 2 # Digits of precision to round to
@@ -34,7 +34,7 @@ export def c-to-f [
     $"($celsius) °C is ($fahren) °F"
 }
 
-# Convert Celsius to Kelvin
+# [nu_lib] Convert Celsius to Kelvin
 export def c-to-k [
      celsius: number # Degrees Celsius
      --round(-r): int = 2 # Digits of precision to round to
@@ -47,7 +47,7 @@ export def c-to-k [
     $"($celsius) °C is ($kelvin) °K"
 }
 
-# Convert Kelvin to Fahrenheit
+# [nu_lib] Convert Kelvin to Fahrenheit
 export def k-to-f [
      kelvin:number # Degrees Fahrenheit
      --round(-r): int = 2 # Digits of precision to round to
@@ -59,7 +59,7 @@ export def k-to-f [
     $"($kelvin) °K is ($fahren) °F"
 }
 
-# Convert Kelvin to Celsius
+# [nu_lib] Convert Kelvin to Celsius
 export def k-to-c [
      kelvin:number # Degrees Celsius
      --round(-r): int = 2 # Digits of precision to round to

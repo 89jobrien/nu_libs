@@ -20,7 +20,7 @@ def bamlish-call [subcommand: string, payload: record] {
 
 # ── Cloud functions ───────────────────────────────────────────────────────────
 
-# Quick-summarize a Claude session from first/last message excerpts.
+# [nu_lib] Quick-summarize a Claude session from first/last message excerpts.
 # Returns: {summary: string}
 export def baml-quick-summarize [
     first_messages: string
@@ -34,7 +34,7 @@ export def baml-quick-summarize [
     }
 }
 
-# Extract key decisions from a conversation excerpt.
+# [nu_lib] Extract key decisions from a conversation excerpt.
 # Returns: list of decision records
 export def baml-extract-decisions [
     conversation_excerpt: string
@@ -42,7 +42,7 @@ export def baml-extract-decisions [
     bamlish-call "extract-decisions" {conversation_excerpt: $conversation_excerpt}
 }
 
-# Summarize a full Claude conversation transcript.
+# [nu_lib] Summarize a full Claude conversation transcript.
 # Returns: ConversationSummary record
 export def baml-summarize-conversation [
     transcript_excerpt: string
@@ -60,7 +60,7 @@ export def baml-summarize-conversation [
 
 # ── Local / Ollama functions ──────────────────────────────────────────────────
 
-# Send a message to the local Ollama model via bamlish.
+# [nu_lib] Send a message to the local Ollama model via bamlish.
 # Returns: {response: string}
 export def baml-local-chat [
     message: string
@@ -68,7 +68,7 @@ export def baml-local-chat [
     bamlish-call "local-chat" {message: $message}
 }
 
-# Analyze agent state strings with the local Ollama model.
+# [nu_lib] Analyze agent state strings with the local Ollama model.
 # Returns: {summary: string}
 export def baml-local-agent-summary [
     agents: string
@@ -79,7 +79,7 @@ export def baml-local-agent-summary [
 # ── Daemon functions (kept for compatibility) ─────────────────────────────────
 # These require the nu-ai-daemon HTTP server (see docs/plans/2026-06-09-baml-agent-daemon.md).
 
-# Run an agent session via the BAML daemon.
+# [nu_lib] Run an agent session via the BAML daemon.
 export def baml-agent-run [
     agent: string
     message: string
@@ -101,14 +101,14 @@ export def baml-agent-run [
     http post --content-type application/json $"($daemon)/agent/($agent)" $body
 }
 
-# Trigger daemon warm-up: skill discovery, BAML function registration, connection pool priming.
+# [nu_lib] Trigger daemon warm-up: skill discovery, BAML function registration, connection pool priming.
 # Returns a status record: {agents, tools, providers, mcp, duration_ms}.
 export def baml-warm [] {
     let daemon = $env.NU_AI_DAEMON? | default "http://127.0.0.1:9876"
     http post --content-type application/json $"($daemon)/warm" {}
 }
 
-# Check whether the BAML daemon is reachable.
+# [nu_lib] Check whether the BAML daemon is reachable.
 export def baml-health [] {
     let daemon = $env.NU_AI_DAEMON? | default "http://127.0.0.1:9876"
     try {
@@ -119,7 +119,7 @@ export def baml-health [] {
     }
 }
 
-# Configure the daemon address for this session.
+# [nu_lib] Configure the daemon address for this session.
 export def --env baml-use-daemon [addr: string] {
     $env.NU_AI_DAEMON = $addr
 }

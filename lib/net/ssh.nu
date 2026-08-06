@@ -1,3 +1,4 @@
+# Return cached data from `cache`, regenerating via `action` if any of `paths` was modified more recently.
 export def ensure-cache [cache paths action] {
     mut cfgs = []
     for i in $paths {
@@ -17,6 +18,7 @@ export def ensure-cache [cache paths action] {
     open $cache
 }
 
+# Length of the longest string in the input list.
 export def 'str max-length' [] {
     $in | reduce -f 0 {|x, a|
         if ($x|is-empty) { return $a }
@@ -29,6 +31,7 @@ def "nu-complete ssh host" [] {
     rg -LNI '^Host [a-z0-9_\-\.]+' ~/.ssh | lines | each {|x| $x | split row ' '| get 1}
 }
 
+# Parse an SSH config file's Host blocks into structured rows, tagging each with `group`.
 export def parse-ssh-file [group] {
     $in
     | parse -r '(?<k>Host|HostName|User|Port|IdentityFile)\s+(?<v>.+)'
@@ -45,6 +48,7 @@ export def parse-ssh-file [group] {
     | where {|x| not (($x.Host | is-empty) or $x.Host =~ '\*')}
 }
 
+# List all parsed SSH hosts found under ~/.ssh (config and config.d/*).
 export def ssh-list [] {
     rg -L -l 'Host' ~/.ssh
     | lines
@@ -91,6 +95,7 @@ def "nu-complete ssh" [] {
     }
 }
 
+# ssh wrapper with tab-completion over configured hosts.
 export extern main [
     host: string@"nu-complete ssh"      # host
     ...cmd                              # cmd
@@ -127,6 +132,7 @@ def "nu-complete scp" [cmd: string, offset: int] {
     }
 }
 
+# scp -r wrapper with tab-completion over configured SSH hosts and remote/local paths.
 export def --wrapped scp [
     lhs: string@"nu-complete scp",
     rhs: string@"nu-complete scp"

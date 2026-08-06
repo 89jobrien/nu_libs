@@ -28,6 +28,7 @@ def comp-user [ctx] {
     }
 }
 
+# Print a bitwarden entry's password and TOTP code together (rbw get + rbw code).
 export def rbws [
     pattern:string@comp-host
     user:string@comp-user

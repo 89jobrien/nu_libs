@@ -70,6 +70,7 @@ export def sarif-group-by [field: string] {
     group-by {|r| $r.properties | get $field }
 }
 
+# Enrich a raw SARIF report's results with extra derived properties (e.g. grouping keys).
 export def enrich-sarif [
     input?: string           # Path to raw SARIF JSON (omit to read from pipeline)
     --out: string = ""       # Write enriched SARIF to this path (default: print to stdout)

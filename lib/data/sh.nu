@@ -1,3 +1,4 @@
+# Parse `export KEY=VALUE` lines from a piped-in shell script into a record.
 export def "parse sh-export" [] {
     $in
     | lines

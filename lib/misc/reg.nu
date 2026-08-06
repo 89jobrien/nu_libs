@@ -22,6 +22,7 @@ def cmpl-cmd [ctx] {
     sqlx $"select command from dirs join commands on id = dir_id where dir = (Q $dir)" | get command
 }
 
+# Create the project-state SQLite database (dirs/commands/mods tables) if it doesn't exist yet.
 export def --env 'project init-registry' [] {
     init-db PROJECT_STATE ([$nu.data-dir 'project.db'] | path join) {|sqlx|
         for s in [
@@ -97,6 +98,7 @@ def sqlx [s] {
     open $env.PROJECT_STATE | query db $s
 }
 
+# Register a directory's module commands in the project registry, so `project exec`/`xx` knows what to load.
 export def --env 'project register' [
     --mod:string=$ID
     dir?:string
@@ -114,6 +116,7 @@ export def --env 'project register' [
         do update set dir_id = EXCLUDED.dir_id, command = EXCLUDED.command"
 }
 
+# Remove a directory's registered commands from the project registry.
 export def 'project unregister' [
     --dir:string
 ] {

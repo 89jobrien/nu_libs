@@ -1440,6 +1440,7 @@ def _list-rust-files [...paths:string] {
 
 # ---------- collectors per kind ---------------------------------------------
 
+# Collect function-definition records (name, params, body location, etc.) across the given Rust paths.
 export def rust-fn-records [...paths:string] {
   let targets = (_target-list ...$paths)
 
@@ -2641,6 +2642,7 @@ def _render_callers_forest_inverted [
   $out
 }
 
+# Print a tree-formatted call graph for functions matching `pattern` (forward or --reverse callers) up to --max-depth.
 export def rust-print-call-graph [
   pattern:string,
   --max-depth:int = 3,
@@ -3051,6 +3053,7 @@ def _tree_from_fqpaths [
   [ (_nest "crate") ]
 }
 
+# Print (or emit as records) a nested tree of which crate modules use a given dependency.
 export def rust-print-dep-usage [
   dep?: string
   --max-depth:int = 4
@@ -3320,16 +3323,19 @@ def _sg_cache_get [k:string] {
   try { $cur | get $k } catch { null }
 }
 
+# Internal: store a value in the ast-grep JSON result cache ($env.__SG_JSON_CACHE).
 export def --env _sg_cache_put [k:string, v:any] {
   let cur  = (try { $env | get __SG_JSON_CACHE } catch { {} })
   let next = ($cur | upsert $k $v)
   load-env { __SG_JSON_CACHE: $next }
 }
 
+# Internal: reset the ast-grep JSON result cache.
 export def --env _sg_cache_clear [] {
   load-env { __SG_JSON_CACHE: {} }
 }
 
+# Internal: initialize $env.__SG_JSON_CACHE if not already present.
 export def --env _ensure-caches [] {
   if (try { $env | get __SG_JSON_CACHE } catch { null }) == null {
     load-env { __SG_JSON_CACHE: {} }

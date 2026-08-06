@@ -33,6 +33,7 @@ export-env {
 # prompt
 PROMPT_COMMAND: { build-prompt }
 
+# Build the interactive shell prompt string used by PROMPT_COMMAND.
 export def build-prompt [] {
     let usr_str = (if $env.SHOW_USER {
         [

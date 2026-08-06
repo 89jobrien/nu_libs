@@ -15,6 +15,7 @@ def autojump_add_to_database [dir] {
         autojump --add $dir
 }
 
+# Jump to a directory tracked by autojump.
 export def --env j [...dir] {
         $env.AUTOJUMP_SOURCED = 1
         cd (autojump ...$dir)

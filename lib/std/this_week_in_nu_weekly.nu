@@ -1,5 +1,6 @@
 use std-rfc/str
 
+# Generate a "This Week in Nu" issue draft by searching merged PRs in the given weekly window.
 export def generate-twin [
     --issue-number (-i): int
 ] {

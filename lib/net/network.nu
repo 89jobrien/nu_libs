@@ -1,5 +1,6 @@
 export alias site-mirror = wget -m -k -E -p -np -e robots=off
 
+# Structured `netstat -aplnetu` — active connections/listeners as a table.
 export def ns [] {
     netstat -aplnetu
     | awk '(NR>2)'
@@ -7,6 +8,7 @@ export def ns [] {
 }
 
 
+# Structured `ip route` output as a table.
 export def ip-route [] {
     ip route
     | lines
@@ -19,6 +21,7 @@ export def ip-route [] {
     ] | str join '\s*')
 }
 
+# curl a host over HTTPS while resolving its DNS name to a specific IP (bypasses DNS, keeps SNI/Host header).
 export def curls [
     host: string
     --addr(-a): string

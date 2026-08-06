@@ -33,6 +33,7 @@ def cmpl-just-args [context: string, offset: int] {
 
 }
 
+# `just` wrapper with tab-completion over recipes and their args. Called `just` since it's an `export def main`.
 export def main [
     recipes?: string@cmpl-just-recipes
     ...args: any@cmpl-just-args

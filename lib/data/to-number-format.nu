@@ -1,3 +1,4 @@
+# Format a number with thousands separators, fixed decimal digits, padding, and an optional denomination suffix.
 export def number-format [
     num                             # Number to format
     --thousands_delim (-t) = ' '    # Thousands delimiter: number-format 1000 -t ': 1'000

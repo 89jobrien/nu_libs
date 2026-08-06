@@ -30,6 +30,7 @@ def listify [lst] {
   }
 }
 
+# Print expand's usage plus worked examples.
 export def help [] {
   print -n ( main -h )
 

@@ -7,6 +7,7 @@ const dictionary = [
 
 const padding_char = '='
 
+# Hand-rolled base64 encoder (educational — prefer `encode base64`). Called `base64_encode` since it's an `export def main`.
 export def main [input: string] {
   mut result = ""
   mut counter = 0

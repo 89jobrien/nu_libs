@@ -1,3 +1,4 @@
+# Parse `git log --stat` into per-commit file/insertion/deletion counts. Internal helper for gl/glv.
 export def _git_stat [n]  {
     do -i {
         git log -n $n --pretty=»¦«%h --stat
@@ -33,6 +34,7 @@ export def _git_stat [n]  {
     }
 }
 
+# Parse `git log` into structured rows (sha/message/author/email/date), optionally merged with stat counts. Internal helper for gl/glv.
 export def _git_log [v num] {
     let stat = if $v {
         _git_stat $num
@@ -64,6 +66,7 @@ def "nu-complete git branches" [] {
     | each {|x| $"($x|str trim)"}
 }
 
+# Structured git log as a table; with a commit, shows its full diff instead.
 export def gl [
     commit?: string@"nu-complete git log"
     --verbose(-v)
@@ -76,6 +79,7 @@ export def gl [
     }
 }
 
+# Structured git log with stat counts (files/insertions/deletions) always included.
 export def glv [
     commit?: string@"nu-complete git log"
     --num(-n):int=32
@@ -87,14 +91,17 @@ export def glv [
     }
 }
 
+# Checkout a branch (with completion over local branches).
 export def gco [branch: string@"nu-complete git branches"] {
     git checkout $branch
 }
 
+# Force-delete a local branch.
 export def gbD [branch: string@"nu-complete git branches"] {
     git branch -D $branch
 }
 
+# Pull, stage everything, amend HEAD, and force-push. Destructive — rewrites remote history.
 export def gpp! [] {
     git pull
     git add --all
@@ -102,6 +109,7 @@ export def gpp! [] {
     git push --force
 }
 
+# Commit-count histogram by author, most commits first.
 export def gha [] {
     git log --pretty=%h»¦«%aN»¦«%s»¦«%aD
     | lines
@@ -111,6 +119,7 @@ export def gha [] {
     | reverse
 }
 
+# Expire all reflog entries and aggressively garbage-collect the repo. Destructive — reflog history is unrecoverable after this.
 export def gsq [] {
     git reflog expire --all --expire=now
     git gc --prune=now --aggressive
@@ -120,15 +129,18 @@ def "nu-complete git remotes" [] {
   ^git remote | lines | each { |line| $line | str trim }
 }
 
+# Show details for a remote (defaults to origin).
 export def gr [remote?: string@"nu-complete git remotes"] {
     let remote = if ($remote|is-empty) { 'origin' } else { $remote }
     git remote show $remote
 }
 
+# Reset the current branch to a commit (mixed reset by default).
 export def grh [commit: string@"nu-complete git log"] {
     git reset $commit
 }
 
+# Fetch a branch from a remote (defaults to origin).
 export def gf [
     branch: string@"nu-complete git branches"
     remote?: string@"nu-complete git remotes"
@@ -141,6 +153,7 @@ export def gf [
 #     git merge $branch
 # }
 
+# Rebase a branch onto the current branch's upstream.
 export def grb [branch:string@"nu-complete git branches"] {
     git rebase (gstat).branch $branch
 }

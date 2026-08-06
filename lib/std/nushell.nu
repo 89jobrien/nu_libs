@@ -15,12 +15,14 @@ export extern "nu" [
   ...script:string
 ]
 
+# Save piped-in data as YAML to `file` (for inspection) and pass it through unchanged.
 export def inspect-file [file:path='~/.cache/nonstdout'] {
     let x = $in
     $x | to yaml | save -f $file
     $x
 }
 
+# Append piped-in output to a side-channel log file instead of stdout; --view tails it, --flush overwrites instead of appending.
 export def nonstdout [--view(-v) --flush(-f)] {
     let o = $in
     let f = '~/.cache/nonstdout'
@@ -35,6 +37,7 @@ export def nonstdout [--view(-v) --flush(-f)] {
     }
 }
 
+# Open piped-in text in $env.EDITOR via a temp file, returning the edited content.
 export def block-edit [] {
     let content = $in
     let tf = mktemp -t temp-XXXX
@@ -103,6 +106,7 @@ export-env {
     ]
 }
 
+# Git-pull the config repos for every tool in $env.CONFIG_FILE_PATH that's installed.
 export def 'config update' [
     --rebase(-r)
 ] {
@@ -131,6 +135,7 @@ def cmpl-config-scripts [] {
     }
 }
 
+# Open a config script under $nu.default-config-dir/scripts in $env.EDITOR.
 export def 'config edit' [script: string@cmpl-config-scripts] {
     let f = ([$nu.default-config-dir scripts $'($script).nu'] | path join)
     e $f
@@ -140,6 +145,7 @@ def cmpl-config-table-modes [] {
     table -l
 }
 
+# Switch the active table display mode (rounded, compact, etc).
 export def --env 'config table mode' [mode: string@cmpl-config-table-modes] {
     {
         config: {
@@ -149,6 +155,7 @@ export def --env 'config table mode' [mode: string@cmpl-config-table-modes] {
     | load-env
 }
 
+# Toggle between the normal and alternative display_output hooks (swaps table rendering modes).
 export def --env 'switch display output' [] {
     {
         config: { hooks: { display_output: $env.alternative_display_output_hook } }
@@ -157,6 +164,7 @@ export def --env 'switch display output' [] {
     | load-env
 }
 
+# Regenerate nu's default config.nu/env.nu, re-adding the source line for scripts/main/mod.nu.
 export def 'config reset' [] {
     config nu --default | save -f $nu.config-path
     [
@@ -169,6 +177,7 @@ export def 'config reset' [] {
     config env --default | save -f $nu.env-path
 }
 
+# Build a nu snippet that removes a specific hook (matched by key/id) from $env.config.hooks.<selector> — used by one-shot hooks to unregister themselves.
 export def 'self-destruct-hook' [selector key id] {
     $"$env.config.hooks.($selector) = $env.config.hooks.($selector) | where {|x| \($x | describe -d\).type != record or $x.($key)? != ($id | into string) }"
 }

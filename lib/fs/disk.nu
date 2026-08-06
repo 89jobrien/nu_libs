@@ -2,6 +2,7 @@ def cmpl-df-ex [] {
     [tmpfs overlay devtmpfs efivarfs]
 }
 
+# Structured `df -h` for real filesystems, enriched with type/removable/kind from `sys disks`. Pass -x to exclude filesystem types instead of the default `/`-prefix filter.
 export def dfx [-x:list<string>] {
     mut sys_disks = {}
     for i in (sys disks) {

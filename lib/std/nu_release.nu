@@ -1,5 +1,6 @@
 use std log
 
+# Publish the nushell subcrates in dependency-ordered waves to crates.io. Called `nu-release` since it's an `export def main`.
 export def main [] {
     let subcrates_wave_1 = [
         nu-glob,

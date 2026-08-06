@@ -1,3 +1,4 @@
+# Loopback, gateway, LAN, and (if present) container-network IPs for this host.
 export def common-ips [] {
     let addr = ip-route
     mut r = {
@@ -26,6 +27,7 @@ def cmpl-proxys [context: string, offset: int] {
     }
 }
 
+# Set http_proxy/https_proxy/all_proxy env vars to `proxy` (default 127.0.0.1:7890), or clear them if already set and no argument given.
 export def --env "toggle proxy" [
     proxy?:string@cmpl-proxys
 ] {

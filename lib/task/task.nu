@@ -430,6 +430,7 @@ export def set-parallel-limit [
 
 const HERE = (path self)
 
+# List all `task <cmd>` pueue-wrapper commands with their descriptions. Called `task` since it's an `export def main`.
 export def main [] {
   let mod_name = $HERE | path basename | str replace -r '\.nu$' ''
   scope commands | where name =~ $"^($mod_name) " | select name description | transpose -rd

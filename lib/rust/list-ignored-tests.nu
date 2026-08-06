@@ -10,6 +10,7 @@
 #   list-ignored-tests --by-crate           # grouped markdown report
 #   list-ignored-tests --json               # raw JSON
 
+# List all #[ignore]d tests in a Rust workspace with file, line, crate, and function name.
 export def list-ignored-tests [
     --root: string = "."  # Workspace root to search from
     --by-crate            # Print a grouped markdown report instead of a table

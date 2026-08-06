@@ -45,6 +45,7 @@ export def categorize-conflicts [
     }
 }
 
+# Preview merge conflicts against a ref without touching the working tree (uses `git merge-tree`).
 export def merge-conflicts [
     --against: string = "origin/main"  # Ref to preview merge against
     --json                             # Output JSON instead of human summary

@@ -73,6 +73,7 @@ def _candidate_files [root: string] {
     | where {|f| ($f | str length) > 0 }
 }
 
+# Add reason strings to bare `#[ignore]` attributes across a Rust workspace, driven by a TOML rule registry.
 export def apply-ignore-reasons [
     --rules: string       # Path to TOML rule registry (required)
     --root: string = "."  # Workspace root to search for Rust files

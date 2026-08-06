@@ -1,3 +1,4 @@
+# Record a terminal session with asciinema, optionally uploading it and/or converting it to a gif.
 export def ascii-rec [
     name
     --target(-t): path = '~/Pictures'

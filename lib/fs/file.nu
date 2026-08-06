@@ -1,7 +1,9 @@
+# Heuristic: does the first 512 bytes contain a null byte (typical of binary files)?
 export def is-binary-file []: binary -> bool {
     $in | first 512 | bytes index-of 0x[00] | $in >= 0
 }
 
+# Check whether binary data is a well-formed file of the given format (jpg/jpeg/webp only).
 export def verify-integrity [fmt: string]: binary -> bool {
     let n = $in
     match $fmt {
@@ -14,6 +16,7 @@ export def verify-integrity [fmt: string]: binary -> bool {
     }
 }
 
+# Run `act` with cwd set to `path` (creating it first if missing, prompting unless --yes), then restore cwd.
 export def with-cd [path act --yes(-y)] {
     if not ($path | path exists) {
         if $yes or ([y n] | input list $"create dir ($path)?") == 'y' {
@@ -27,6 +30,7 @@ export def with-cd [path act --yes(-y)] {
     do $act $path $old
 }
 
+# True if piped-in path is NOT a subpath of `p`.
 export def not-subpath [p] {
     let sub = $in
     do -i { $sub | path relative-to ($p) } | default '' |  is-empty
@@ -69,6 +73,7 @@ export def --env nd [
     }
 }
 
+# Copy each piped-in path into `target`, preserving its relative directory structure.
 export def into-tree [target: path, --cwd(-c): path]: list<string> -> nothing  {
     let n = $in
     let target = $target | path expand
@@ -85,6 +90,7 @@ export def into-tree [target: path, --cwd(-c): path]: list<string> -> nothing  {
     }
 }
 
+# Rename files (piped-in, or cwd sorted by mtime) to zero-padded sequence numbers starting at --base.
 export def rename-by-modified [--base: int = 1] {
     let f = $in
     let f = if ($f | is-empty) {

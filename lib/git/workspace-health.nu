@@ -8,6 +8,7 @@
 #   workspace-health
 #   workspace-health --dev-dir /path/to/dev
 
+# Scan all git repos under --dev-dir and report a health summary (active/dirty/extra-worktree/all).
 export def workspace-health [
     --dev-dir: string = "/Users/joe/dev"  # Root directory to scan
 ] {

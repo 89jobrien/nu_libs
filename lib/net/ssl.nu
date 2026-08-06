@@ -1,3 +1,4 @@
+# Generate (or reuse) an RSA key and issue a self-signed X.509 cert for the given common name(s).
 export def selfsigned-certificate [
     ...common_name: string
     --server: string="default"

@@ -1,7 +1,9 @@
+# Serialize a value to a JSON string with quotes escaped, for embedding inline.
 export def 'json-to-string' [json] {
     $json | to json -r | str replace --all '"' '\"'
 }
 
+# Open piped-in text in $env.EDITOR via a temp file, stashing --context in $env.AI_EDITOR_CONTEXT for ai-editor-run to pick up later.
 export def block-edit [
     temp
     --context: record
@@ -20,6 +22,7 @@ export def block-edit [
     $c
 }
 
+# Substitute {{var}} placeholders in a piped-in template string with values from `vars`.
 export def render [vars: record] {
     let tmpl = $in
     let v = $tmpl
@@ -35,6 +38,7 @@ export def render [vars: record] {
     }
 }
 
+# Best-effort deserialize a piped-in string as YAML, then JSON, then NUON; pass non-strings through unchanged.
 export def try_json [] {
     let i = $in
     if ($i | describe) == 'string' {

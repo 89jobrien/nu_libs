@@ -1,3 +1,4 @@
+# Transcribe an audio file via a local whisper-asr-webservice endpoint.
 export def audio-request [file --host:string = 'http://localhost:4010'] {
     # USE: onerahmet/openai-whisper-asr-webservice:latest
     http post --content-type multipart/form-data $"($host)/asr" {
@@ -21,6 +22,7 @@ def audio_record [file?: path] {
     $a
 }
 
+# Record from the microphone until [q], then transcribe it via the whisper-asr endpoint.
 export def audio-to-text [--host:string = 'http://localhost:4010'] {
     let a = audio_record
     print $"(ansi grey)Recording stopped. Starting recognition...(ansi reset)"

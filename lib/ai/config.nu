@@ -3,15 +3,18 @@ use common.nu *
 use completion.nu *
 use data.nu *
 
+# Show the current session record (api_key redacted unless --all).
 export def ai-session [--all(-a)] {
     data session
     | if $all { $in } else { $in | reject api_key }
 }
 
+# Show recent assistant-session message history.
 export def ai-history-assistant [--num(-n):int = 1000 --sql] {
     data messages --sql=$sql $num
 }
 
+# Show ai-do call history, optionally filtered by tag prefix or limited to the current session.
 export def ai-history-do [tag?: string@cmpl-prompt --num(-n):int] {
     mut w = []
     if ($tag | is-empty) {
@@ -36,22 +39,26 @@ export def ai-history-do [tag?: string@cmpl-prompt --num(-n):int] {
     | reverse
 }
 
+# Show recent ai-do scratch entries, optionally filtered by content search.
 export def ai-history-scratch [search?:string --num(-n)=10] {
     let s = if ($search | is-empty) { '' } else { $"where content like '%($search)%'" }
     sqlx $"select id, type, args, model, content from scratch ($s) order by updated desc limit ($num)"
     | reverse
 }
 
+# Register a prompt definition into $env.AI_PROMPTS under `name`.
 export def --env ai-config-env-prompts [name, defs] {
     let defs = $defs | upsert name $name
     $env.AI_PROMPTS = $env.AI_PROMPTS | merge deep {$name: $defs}
 }
 
+# Register a tool schema into $env.AI_TOOLS under `name`.
 export def --env ai-config-env-tools [name, defs] {
     let defs = $defs | merge deep {schema: {name: $name}}
     $env.AI_TOOLS = $env.AI_TOOLS | merge deep {$name: $defs}
 }
 
+# Create or edit a provider row in the config DB, opening it in $EDITOR when no piped-in input is given.
 export def ai-config-upsert-provider [
     name?: string@cmpl-provider
     --delete
@@ -76,6 +83,7 @@ export def ai-config-upsert-provider [
     }
 }
 
+# Create or edit a prompt row in the config DB, opening it in $EDITOR when no piped-in input is given.
 export def ai-config-upsert-prompt [
     name?: string@cmpl-prompt
     --delete
@@ -100,6 +108,7 @@ export def ai-config-upsert-prompt [
     }
 }
 
+# Create or edit a model row in the config DB, opening it in $EDITOR when no piped-in input is given.
 export def ai-config-upsert-model [
     name?: string@cmpl-models
     --delete
@@ -124,6 +133,7 @@ export def ai-config-upsert-model [
     }
 }
 
+# Assign (or --purge) the tools allocated to a named prompt.
 export def ai-config-alloc-tools [
     name: string@cmpl-prompt
     --tools(-t): list<string>@cmpl-tools
@@ -140,6 +150,7 @@ export def ai-config-alloc-tools [
     }
 }
 
+# Set the current session's temperature (and optionally the provider's default).
 export def ai-switch-temperature [
     o: string@cmpl-temperature
     --global(-g)
@@ -153,6 +164,7 @@ export def ai-switch-temperature [
     ai-session
 }
 
+# Switch the current session (and optionally the global default) to a different provider/model.
 export def ai-switch-provider [
     provider: string@cmpl-provider
     model?: string@cmpl-models-pos
@@ -175,6 +187,7 @@ export def ai-switch-provider [
     ai-session
 }
 
+# Switch the current session (and optionally the provider's default) to a different model.
 export def ai-switch-model [
     model: string@cmpl-models
     --global(-g)

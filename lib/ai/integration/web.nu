@@ -8,6 +8,7 @@ export-env {
     }
 }
 
+# Fetch a URL, convert it to markdown, and optionally run a registered transform (e.g. summary) on the content.
 export def --wrapped 'mdurl' [
     ...args
     --transform(-t): any@cmpl-transform

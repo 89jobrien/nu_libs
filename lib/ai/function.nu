@@ -6,6 +6,7 @@ export-env {
     }
 }
 
+# Convert a list of tool names/schemas into OpenAI-format function-tool schemas, resolving closure-valued description/enum/context fields.
 export def closure-list [list] {
     $list
     | reduce -f [] {|i,a|
@@ -51,6 +52,7 @@ export def closure-list [list] {
     }
 }
 
+# Prompt the user to confirm before running `act` (falls back to `alt` if declined); used by tool handlers that need human approval.
 export def ConfirmExec [msg cond act alt] {
     print $"(ansi yellow)($msg)(ansi reset)"
     if $cond and ([yes no] | input list 'confirm') == 'no' {
@@ -62,6 +64,7 @@ export def ConfirmExec [msg cond act alt] {
     }
 }
 
+# Execute the tool calls an LLM returned, dispatching each to its registered $env.AI_TOOLS handler in parallel.
 export def closure-run [list --fallback: string] {
     $list
     | par-each {|x|
@@ -94,6 +97,7 @@ export def closure-run [list --fallback: string] {
     }
 }
 
+# Pull `fields` out of a record, returning {err: [missing fields], data: {found fields}}.
 export def extract [o, fields] {
     if ($o | is-empty) {
         return {err: ["data"], data: null}
@@ -109,6 +113,7 @@ export def extract [o, fields] {
     }
 }
 
+# Handle the assistant's "call a named prompt" tool call: validate its args against the prompt's placeholders (prompting the user for missing ones), then run ai-do.
 export def prompts-call [rep c] {
     let f = $rep | get -o result.tools.0.function
     let aj = $f.arguments | default {}

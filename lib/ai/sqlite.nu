@@ -1,12 +1,15 @@
+# Quote/escape a value (or joined values) for safe inline use in a SQL string.
 export def Q [...t --sep:string=''] {
     let s = $t | str join $sep | str replace -a "'" "''"
     $"'($s)'"
 }
 
+# Run a SQL statement against $env.AI_STATE.
 export def sqlx [s] {
     open $env.AI_STATE | query db $s
 }
 
+# Create a SQLite database at `file` (running `hook` to set up schema) if it doesn't exist, and point $env.<env_name> at it.
 export def --env init-db [env_name:string, file:string, hook: closure] {
     let begin = date now
     if $env_name not-in $env {
@@ -20,6 +23,7 @@ export def --env init-db [env_name:string, file:string, hook: closure] {
     print $"(ansi grey)created database: $env.($env_name), takes ((date now) - $begin)(ansi reset)"
 }
 
+# INSERT a record into `table` with ON CONFLICT upsert (or DO NOTHING) keyed on `pk`.
 export def db-upsert [table pk --do-nothing] {
     let r = $in
     let d = if $do_nothing { 'NOTHING' } else {
@@ -32,6 +36,7 @@ export def db-upsert [table pk --do-nothing] {
         ON CONFLICT\(($pk | str join ', ')\) DO ($d);"
 }
 
+# Merge piped-in fields onto a config's defaults, run an optional transform action, and select only the default's columns.
 export def table-merge [
     config
     --action: closure
@@ -46,6 +51,7 @@ export def table-merge [
     $d | select ...($config.default | columns)
 }
 
+# Insert/update (or --delete) a config-table row, built via table-merge, keyed on config.pk.
 export def table-upsert [
     config
     --delete
@@ -73,6 +79,7 @@ export def table-upsert [
     }
 }
 
+# Insert (prompt, tool) pairs into prompt_tools from a piped-in record of {prompt: [tools]}.
 export def insert-prompt-tools [] {
     $in
     | transpose k v

@@ -24,6 +24,7 @@ export-env {
     use data/assistant/supervisor
 }
 
+# Install a command-not-found hook that routes unrecognized commands to ai-assistant.
 export def --env hook-ai-assistant [] {
     $env.config.hooks.pre_execution ++= [
         { || $env.CURRENT_INPUT = (commandline) }

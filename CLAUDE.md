@@ -36,7 +36,7 @@ lib/
   task/           task runner, todo, history, bookmarks, just completions, hosts/path
   rust/           cargo search, rust AST, coverage
   doob/           doob wrappers for repo-scoped todos, search, notes, handoff sync
-  misc/           asciinema, zellij, rustic, rbw, website builder
+  misc/           asciinema, zellij, rustic, bw/rbw, website builder
   hooks/          git hook helpers
   ai/             LLM agent primitives (vendored from ai_nu — see below)
 

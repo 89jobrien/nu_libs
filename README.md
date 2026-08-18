@@ -16,7 +16,7 @@ lib/
   task/       Productivity: task runner, todo, history, bookmarks, just completions, hosts/path
   rust/       Rust/Cargo: cargo search, rust AST, coverage
   doob/       Doob wrappers: repo-scoped todos, search, notes, handoff sync
-  misc/       Misc tools: asciinema, zellij, rustic, rbw, website builder
+  misc/       Misc tools: asciinema, zellij, rustic, bw/rbw, website builder
 
 scripts/      Standalone scripts (not modules — contain top-level executable code)
 ai_nu/        Separate repo: AI/LLM agent primitives (OpenAI, Gemini, Ollama)

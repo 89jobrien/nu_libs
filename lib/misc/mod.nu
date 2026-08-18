@@ -1,6 +1,7 @@
 # misc — Miscellaneous tools: terminal recording, password manager, backup, multiplexer
 
 export use ./asciinema.nu *
+export use ./bw.nu *
 export use ./rbw.nu *
 export use ./reg.nu *
 # rustic.nu requires a `parser` module not available in this repo, use directly if needed

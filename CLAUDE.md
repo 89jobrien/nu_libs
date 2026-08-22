@@ -6,10 +6,25 @@ repository.
 ## What This Is
 
 `nu_libs` is a collection of Nushell modules organized by domain. There is no build system —
-modules are sourced directly. There are no tests in the traditional sense; validation is done
-by loading modules in a live Nu session.
+modules are sourced directly. There are no unit tests to speak of (one exception:
+`lib/ui/bar.nu` has a `#[test]` block); validation means checking that modules parse and load,
+which `scripts/test-load.rs` does for the whole tree.
 
 ## Validating Nu Syntax
+
+The whole tree at once:
+
+```bash
+./scripts/test-load.rs --inventory
+```
+
+This parses every file with `nu-check --as-module` (no execution) and loads each
+category in a subprocess. CI runs it on every push. Prefer it over ad-hoc `use`
+calls when checking a change that touches more than one file — and note that
+`use`-ing a bare-pipeline script executes it, which is why the script uses
+`nu-check` for the per-file pass.
+
+For a single file or category:
 
 ```nu
 # Check a single file parses without errors

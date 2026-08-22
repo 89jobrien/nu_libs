@@ -29,6 +29,33 @@ lib/mod.nu    top-level re-export of all categories
 scripts/      Standalone scripts (not modules — contain top-level executable code)
 ```
 
+## Testing
+
+```bash
+./scripts/test-load.rs               # load test
+./scripts/test-load.rs --inventory   # + per-category inventory
+```
+
+A [rust-script](https://rust-script.org/) — dependency-free, so it needs only a
+Rust toolchain and `rust-script` on `PATH`. Nushell must also be installed; the
+harness shells out to it and tells you plainly if it is missing.
+
+Two checks, both free of side effects. `nu-check --as-module` parses every
+`.nu` file without executing it — which matters, since several files are bare
+pipelines that would run git commands if `use`d. Then each category is loaded
+with `use lib/<category>/mod.nu *` in a subprocess, so the `export-env` blocks
+scattered through the tree cannot leak into your shell.
+
+The contract comes from the `mod.nu` files themselves: a file a category
+glob-re-exports must parse as a module. Files `mod.nu` deliberately leaves out
+are reported, never failed — being unloadable is often exactly why they were
+excluded. `--inventory` adds command counts per category and flags the two
+shapes that surprise people: globbed files that export nothing, and categories
+globbing more than one file that exports `main`.
+
+Runs on every push via `.github/workflows/load-test.yml`, which compiles the
+script directly with `rustc` rather than installing `rust-script`.
+
 ## Usage
 
 ```nu

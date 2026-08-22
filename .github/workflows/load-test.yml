@@ -1,0 +1,33 @@
+name: load-test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Deliberately tracks the latest Nushell rather than pinning. This repo is
+      # version-sensitive by nature — lib/data/from-env.nu documents itself
+      # against 0.109.1 and lib/std/dynamic-load.nu broke at 0.95 — so the load
+      # test earns its keep by telling us when a release moves something.
+      - uses: hustcer/setup-nu@v3
+        with:
+          version: "*"
+
+      - name: Versions
+        run: nu --version && rustc --version
+
+      # test-load.rs carries a rust-script shebang for local use, but it has no
+      # dependencies, so CI compiles it directly: seconds with the toolchain
+      # already on the runner, versus installing rust-script first.
+      - name: Build the harness
+        run: rustc --edition 2021 -O scripts/test-load.rs -o "$RUNNER_TEMP/test-load"
+
+      - name: Load test + inventory
+        run: |
+          "$RUNNER_TEMP/test-load" --inventory

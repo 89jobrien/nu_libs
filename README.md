@@ -24,10 +24,9 @@ does *not* re-export and why, and external tool requirements.
 | [`lib/misc`](lib/misc/README.md)    | asciinema, zellij, rbw, project registry, unit conversion            |
 | [`lib/extensions`](lib/extensions/README.md) | Project-specific integrations (magi)                        |
 
-```
-lib/mod.nu    top-level re-export of all categories
-scripts/      Standalone scripts (not modules — contain top-level executable code)
-```
+`lib/mod.nu` re-exports every category at once.
+[`scripts/`](scripts/README.md) holds standalone scripts — these are *not*
+modules: they contain top-level executable code, so `use`-ing one runs it.
 
 ## Testing
 

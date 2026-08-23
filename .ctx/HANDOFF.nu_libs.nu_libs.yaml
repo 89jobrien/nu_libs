@@ -1,49 +1,54 @@
 project: nu_libs
 id: nu_libs
-updated: 2026-08-05
+updated: 2026-08-23
 items:
-  - id: "3"
-    doob_uuid: null
-    name: null
-    priority: P2
-    status: open
-    title: Add README for lib/ai and lib subcategories
-    description: |
-      lib/ai/ vendored as first-party source. Review lib/ai/README and TODO content
-      for open items; add subcategory READMEs as needed.
-    files:
-      - lib/ai/mod.nu
-    completed: null
-    extra: []
-  - id: "4"
-    doob_uuid: null
-    name: null
-    priority: P1
-    status: open
-    title: Implement lib/ai/clients/baml.nu — Nu wrapper for nu-ai-daemon
-    description: |
-      Thin Nu client over the BAML agent daemon HTTP API. Requires nu-ai-daemon
-      and numcp to be operational. See design doc:
-      docs/plans/2026-06-09-baml-agent-daemon.md
-    files:
-      - lib/ai/clients/baml.nu
-      - lib/ai/mcp.nu
-    completed: null
-    extra: []
+- id: '3'
+  doob_uuid: null
+  name: null
+  priority: P2
+  status: open
+  title: Add README for lib/ai and lib subcategories
+  description: |
+    lib/ai/ vendored as first-party source. Review lib/ai/README and TODO content
+    for open items; add subcategory READMEs as needed.
+  files:
+  - lib/ai/mod.nu
+  completed: null
+  extra: []
+- id: '4'
+  doob_uuid: null
+  name: null
+  priority: P1
+  status: open
+  title: Implement lib/ai/clients/baml.nu — Nu wrapper for nu-ai-daemon
+  description: |
+    Thin Nu client over the BAML agent daemon HTTP API. Requires nu-ai-daemon
+    and numcp to be operational. See design doc:
+    docs/plans/2026-06-09-baml-agent-daemon.md
+  files:
+  - lib/ai/clients/baml.nu
+  - lib/ai/mcp.nu
+  completed: null
+  extra: []
 log:
-  - date: 20260609::193954
-    summary: Designed BAML agent daemon + numcp architecture; bootstrapped numcp repo; implemented numcp Phase 1 (config + registry, 12 tests green)
-    commits: []
-    session: 4
-  - date: 20260609::140255
-    summary: Dropped ai_nu submodule; vendored lib/ai as regular files, removed .gitmodules
-    commits: []
-    session: 3
-  - date: 20260609::094615
-    summary: Initial commit and push to GitHub; ai_nu wired as git submodule
-    commits: []
-    session: 2
-  - date: 20260609::094034
-    summary: Bootstrapped HANDOFF for nu_libs — new repo, no commits yet
-    commits: []
-    session: 1
+- date: 20260823::session-end
+  summary: "Session-end handoff: 1 commit since 2026-08-06 (docs: description comments). Uncommitted: README.md update for taskit-release export, to-number-format.nu bug fix (reduce enumerate handling), lib/rust/taskit-release.nu new file (untracked). Main branch 4 commits ahead of origin/main."
+  commits:
+  - afad9cf
+  session: current
+- date: 20260609::193954
+  summary: Designed BAML agent daemon + numcp architecture; bootstrapped numcp repo; implemented numcp Phase 1 (config + registry, 12 tests green)
+  commits: []
+  session: 4
+- date: 20260609::140255
+  summary: Dropped ai_nu submodule; vendored lib/ai as regular files, removed .gitmodules
+  commits: []
+  session: 3
+- date: 20260609::094615
+  summary: Initial commit and push to GitHub; ai_nu wired as git submodule
+  commits: []
+  session: 2
+- date: 20260609::094034
+  summary: Bootstrapped HANDOFF for nu_libs — new repo, no commits yet
+  commits: []
+  session: 1

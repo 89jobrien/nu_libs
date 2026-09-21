@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: pactum
+description: Validate Pactum protocol contracts for conformance
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+  - name: validate <COMMAND>
+    description: Validate Pactum contracts
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: document --kind <KIND> [INPUT]
+        description: Validate one standalone JSON document
+        flags:
+          --kind=!: Select the Pactum document kind
+          --version=: Select the canonical protocol version [default 1.0]
+          --json: Emit a machine-readable JSON result
+          -h, --help: Print help
+        completion:
+          flag:
+            kind:
+              - "manifest"
+              - "operation-request"
+              - "operation-acceptance"
+              - "progress-event"
+              - "completion-outcome"
+              - "cancellation-request"
+              - "cancellation-acknowledgement"
+            version: ["1.0\tcurrent canonical version"]
+          positional:
+            - ["$files([.json])"]
+      - name: stream [INPUT]
+        description: Validate a Pactum JSONL stream
+        flags:
+          --version=: Select the canonical protocol version [default 1.0]
+          --json: Emit a machine-readable JSON result
+          -h, --help: Print help
+        completion:
+          flag:
+            version: ["1.0\tcurrent canonical version"]
+          positional:
+            - ["$files([.jsonl, .ndjson])"]
+      - name: kit <DIRECTORY>
+        description: Validate every case in a language-neutral conformance kit
+        flags:
+          --version=: Select the canonical protocol version [default 1.0]
+          --json: Emit a machine-readable JSON result
+          -h, --help: Print help
+        completion:
+          flag:
+            version: ["1.0\tcurrent canonical version"]
+          positional:
+            - ["$directories"]

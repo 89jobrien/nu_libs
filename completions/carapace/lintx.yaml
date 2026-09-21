@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: lintx
+description: Analyze structural quality across seven Rust code dimensions
+flags:
+  -v, --verbose: Show all functions, not just findings
+  --findings: Show only findings with file and line locations
+  --json: Output results as JSON
+  --format=: Output format
+  -c, --config=: Path to the rustqual configuration file
+  --strict-closures: Treat closures as logic
+  --strict-iterators: Treat iterator chains as logic
+  --allow-recursion: Do not count recursive calls as violations
+  --strict-error-propagation: Count the ? operator as logic
+  --no-fail: Do not fail on quality findings
+  --fail-on-warnings: Treat warnings as errors
+  --init: Generate a default rustqual.toml
+  --completions=: Generate completions for a shell
+  --save-baseline=: Save current analysis results as a baseline
+  --compare=: Compare results against a saved baseline
+  --fail-on-regression: Fail only when the quality score regresses
+  --watch: Watch for file changes and re-analyze continuously
+  --suggestions: Show refactoring suggestions for IOSP violations
+  --min-quality-score=: Fail below this quality score from 0 to 100
+  --sort-by-effort: Sort IOSP violations by highest refactoring effort
+  --diff?: Analyze only files changed against a Git ref [default HEAD]
+  --coverage=: LCOV coverage file for test-quality analysis
+  --explain=: Explain architecture-rule classification for one file
+  -h, --help: Print help
+  -V, --version: Print version
+completion:
+  flag:
+    format:
+      - "text\thuman-readable report (default)"
+      - "json\tJSON report"
+      - "github\tGitHub annotations"
+      - "dot\tGraphviz DOT graph"
+      - "sarif\tSARIF report"
+      - "html\tHTML report"
+      - "ai\tAI-oriented text"
+      - "ai-json\tAI-oriented JSON"
+    config: ["$files([.toml])"]
+    completions: ["bash", "elvish", "fish", "powershell", "zsh"]
+    save-baseline: ["$files([.json])"]
+    compare: ["$files([.json])"]
+    min-quality-score: ["0", "50", "70", "80", "90", "95", "100"]
+    diff: ["HEAD"]
+    coverage: ["$files([.lcov, .info])"]
+    explain: ["$files([.rs])"]
+  positional:
+    - ["$files"]

@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: bz
+description: Generate the Bazaar project showcase site
+flags:
+  --output-dir=: Output directory for generated site files
+  --readme=: README markdown output path [default README.md]
+  --pypi-toml=: PyPI package configuration [default pypi.toml]
+  --plugin-manifest=: Claude plugin marketplace manifest [default .claude-plugin/marketplace.json]
+  --header-config=: Showcase header configuration [default examples/header.yaml]
+  --showcase-yaml=: Showcase data file [default examples/showcase.yaml]
+  --profile=: Profile data file [default examples/profile.yaml]
+  --usage=: Usage data file [default examples/ccusage.json]
+  --insights=: Daily Claude insights data [default examples/insights.yaml]
+  --enrich: Run LLM enrichment through Crux pipelines
+  --force-enrich: Force enrichment even when cached results exist
+  --export-json: Export data.json alongside data.yaml
+  --deploy: Push the generated site to the GitHub Pages repository
+  --deploy-repo=: GitHub Pages repository in owner/name form [default 89jobrien/89jobrien.github.io]
+  --max-commits=: Maximum recent commits shown per project [default 3]
+  --watch: Regenerate continuously
+  --interval=: Watch interval in seconds [default 300]
+  -h, --help: Print help
+completion:
+  flag:
+    output-dir: ["$directories"]
+    readme: ["$files([.md])"]
+    pypi-toml: ["$files([.toml])"]
+    plugin-manifest: ["$files([.json])"]
+    header-config: ["$files([.yaml, .yml])"]
+    showcase-yaml: ["$files([.yaml, .yml])"]
+    profile: ["$files([.yaml, .yml])"]
+    usage: ["$files([.json])"]
+    insights: ["$files([.yaml, .yml])"]
+    deploy-repo:
+      ["89jobrien/89jobrien.github.io\tdefault deployment repository"]
+    max-commits: ["1", "3\tdefault", "5", "10"]
+    interval:
+      ["60\tone minute", "300\tfive minutes (default)", "900\tfifteen minutes"]

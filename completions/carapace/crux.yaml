@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: crux
+description: Run, discover, and generate Crux pipelines
+flags:
+  -h, --help: Print help
+commands:
+  - name: list [ROOT]
+    description: List discovered .crux pipeline files under a directory
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+        - ["$directories"]
+  - name: check <PATHS>...
+    description: Compile-check one or more .crux pipelines or Cruxfiles
+    flags:
+      -S, --strict: Require complete contracts and reject dynamic boundaries
+      --plugins=: Use the specified plugins.toml
+      -h, --help: Print help
+    completion:
+      flag:
+        plugins: ["$files([.toml])"]
+      positionalany: ["$files([.crux, Cruxfile])"]
+  - name: run [PIPELINE] [TARGET_OR_INPUT]
+    description: Execute a .crux pipeline or Cruxfile
+    flags:
+      --check: Validate the pipeline without executing it
+      --target=: Select a Cruxfile target
+      --input=: Read pipeline input from a JSON file
+      --plugins=: Use the specified plugins.toml
+      -q, --quiet: Suppress all output except errors
+      --summary: Emit the concise human-readable summary
+      --json: Emit compact machine-readable JSON
+      -v, --verbose: Show pipeline metadata and the full trace
+      -n, --dry-run: Print the execution plan without running it
+      --replay=: Replay from a previous trace JSON file
+      --replay-mode=: Select replay matching mode [default strict]
+      -S, --strict: Error on unregistered handlers
+      --save-trace=: Override the automatic trace output path
+      -h, --help: Print help
+    exclusiveflags:
+      - [quiet, summary, json, verbose]
+    completion:
+      flag:
+        input: ["$files([.json])"]
+        plugins: ["$files([.toml])"]
+        replay: ["$files([.json])"]
+        replay-mode:
+          [
+            "strict\tmatch exact step order",
+            "lenient\tallow forward name matching",
+          ]
+        save-trace: ["$files([.json])"]
+      positional:
+        - [
+            "-\tread pipeline from standard input",
+            "Cruxfile\tproject Cruxfile",
+            "$files([.crux, Cruxfile])",
+          ]
+        - ["$files([.json])"]
+  - name: plan --goal <GOAL>
+    description: Generate a pipeline from a natural-language goal
+    flags:
+      --goal=!: Natural-language goal
+      -o, --output=: Write output to a file instead of standard output
+      --constraints=: Additional constraints for the LLM planner
+      --output-type=: Select output format [default yaml]
+      --plugins=: Use the specified plugins.toml
+      --planner=: Select planner backend [default rule]
+      -h, --help: Print help
+    completion:
+      flag:
+        output: ["$files([.crux, .yaml, .yml, .json])"]
+        output-type:
+          - "yaml\traw pipeline YAML"
+          - "json\tpipeline definition as JSON"
+          - "pretty\tYAML with an explanatory header"
+          - "dry-run\tprint parsed step names and handlers"
+          - "handoff\tHANDOFF-compatible task list"
+        plugins: ["$files([.toml])"]
+        planner: ["rule\tdeterministic planner", "llm\tBAML-backed LLM planner"]

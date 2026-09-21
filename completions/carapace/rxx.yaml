@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: rxx
+description: Execute compatible scripts directly
+parsing: non-interspersed
+flags:
+  -h, --help: Print help
+completion:
+  positional:
+    - ["$files"]
+  positionalany: ["$files"]

@@ -64,30 +64,6 @@ module completions {
     branch: string            # Branch name to analyze
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop git help" [
-  ]
-
-  # List all branches with summary info
-  export extern "devloop git help branches" [
-  ]
-
-  # Show detail for a single branch
-  export extern "devloop git help branch" [
-  ]
-
-  # Show timeline of commits and Claude sessions
-  export extern "devloop git help timeline" [
-  ]
-
-  # AI-powered branch analysis (requires InsightProvider)
-  export extern "devloop git help analyze" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop git help help" [
-  ]
-
   def "nu-complete devloop gkg format" [] {
     [ "json" "text" ]
   }
@@ -116,22 +92,6 @@ module completions {
   export extern "devloop gkg index" [
     --format: string@"nu-complete devloop gkg index format"
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop gkg help" [
-  ]
-
-  # Show code structure metrics for current repo
-  export extern "devloop gkg help metrics" [
-  ]
-
-  # Index current repo into GKG (requires gkg CLI)
-  export extern "devloop gkg help index" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop gkg help help" [
   ]
 
   def "nu-complete devloop pipeline format" [] {
@@ -170,22 +130,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop pipeline help" [
-  ]
-
-  # Start the data aggregation pipeline
-  export extern "devloop pipeline help start" [
-  ]
-
-  # Show pipeline metrics
-  export extern "devloop pipeline help metrics" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop pipeline help help" [
-  ]
-
   def "nu-complete devloop mcp-server format" [] {
     [ "json" "text" ]
   }
@@ -194,62 +138,6 @@ module completions {
   export extern "devloop mcp-server" [
     --format: string@"nu-complete devloop mcp-server format"
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop help" [
-  ]
-
-  # Repository insights — branches, timeline, analysis
-  export extern "devloop help git" [
-  ]
-
-  # List all branches with summary info
-  export extern "devloop help git branches" [
-  ]
-
-  # Show detail for a single branch
-  export extern "devloop help git branch" [
-  ]
-
-  # Show timeline of commits and Claude sessions
-  export extern "devloop help git timeline" [
-  ]
-
-  # AI-powered branch analysis (requires InsightProvider)
-  export extern "devloop help git analyze" [
-  ]
-
-  # Code structure — index, query, metrics
-  export extern "devloop help gkg" [
-  ]
-
-  # Show code structure metrics for current repo
-  export extern "devloop help gkg metrics" [
-  ]
-
-  # Index current repo into GKG (requires gkg CLI)
-  export extern "devloop help gkg index" [
-  ]
-
-  # Multi-source event aggregation pipeline
-  export extern "devloop help pipeline" [
-  ]
-
-  # Start the data aggregation pipeline
-  export extern "devloop help pipeline start" [
-  ]
-
-  # Show pipeline metrics
-  export extern "devloop help pipeline metrics" [
-  ]
-
-  # Start MCP server for Claude Code integration
-  export extern "devloop help mcp-server" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "devloop help help" [
   ]
 
 }

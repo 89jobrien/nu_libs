@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: prefixe
+description: Learn and apply shell command prefixes
+commands:
+  - name: rewrite [--dry-run] [--config <path>] <command...>
+    description: Rewrite a command using the learned prefix rules
+    parsing: non-interspersed
+    flags:
+      --dry-run: Print the rewritten command without further side effects
+      --config=: Use a specific prefix configuration file
+    completion:
+      flag:
+        config: ["$files([.toml])"]
+      positional:
+        - ["$executables"]
+      positionalany: ["$files"]
+  - name: post-hook
+    description: Process a Claude Code hook payload from standard input

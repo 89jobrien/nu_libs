@@ -14,18 +14,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "ail help" [
-  ]
-
-  # Run the improvement loop (all phases or from a specific phase)
-  export extern "ail help run" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "ail help help" [
-  ]
-
 }
 
 export use completions *

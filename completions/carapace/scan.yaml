@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: scan
+description: Scan a unified diff for secrets using obfsck and gitleaks
+flags:
+  --staged: Scan the staged Git diff instead of stdin
+  -l, --level=: Obfuscation level for obfsck patterns
+  --no-gitleaks: Skip the gitleaks scan
+  --require-gitleaks: Treat a missing gitleaks binary as an error
+  -h, --help: Print help
+completion:
+  flag:
+    level: [minimal, standard, paranoid]

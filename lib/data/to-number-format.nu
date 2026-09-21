@@ -17,13 +17,14 @@ export def number-format [
         $parts.0
         | split chars
         | reverse
+        | enumerate
         | reduce -f [] {
             |it, acc| if ((($it.index + 1) mod 3) == 0) {
-                $acc.item
+                $acc
                 | append $it.item
                 | append $thousands_delim
             } else {
-                $acc.item
+                $acc
                 | append $it.item
             }
         }

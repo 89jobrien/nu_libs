@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: obfsck
+description: Redact and analyze sensitive log data
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+  - name: redact
+    description: Redact secrets and PII from a file or stdin
+    flags:
+      -o, --output=: Write redacted output to this file instead of stdout
+      -l, --level=: Obfuscation level
+      -c, --config=: Path to the secrets YAML configuration
+      --audit: Print a per-pattern match report to stderr
+      --profile=: Preset redaction profile
+      --pii=: Enable or disable PII redaction
+      --allowlist*=: Value to never redact
+      --allowlist-file=: File containing allowlist entries
+      -h, --help: Print help
+    completion:
+      flag:
+        output: [$files]
+        level: [minimal, standard, paranoid]
+        config: [$files]
+        profile: [default, pii, full, paranoid]
+        pii: ["on", "off", "true", "false", "yes", "no", "1", "0"]
+        allowlist-file: [$files]
+      positional:
+        - [$files]
+  - name: analyze
+    description: Fetch and analyze security alerts
+    flags:
+      -c, --config=: Analyzer configuration file
+      -p, --priority=: Filter alerts by priority
+      -l, --last=: Lookback duration
+      -n, --limit=: Maximum alerts to analyze
+      -d, --dry-run: Build analysis requests without provider calls
+      -s, --store: Store analysis results
+      -v, --verbose: Show verbose analysis details
+      -j, --json: Emit JSON output
+      --loki-url=: Override the Loki endpoint
+      --victorialogs-url=: Override the VictoriaLogs endpoint
+      -b, --backend=: Select the storage backend
+      -h, --help: Print help
+    completion:
+      flag:
+        config: [$files]
+        priority: [low, medium, high, critical]
+        backend: [loki, victorialogs]
+  - name: help
+    description: Print help for a command
+    completion:
+      positional:
+        - [redact, analyze, help]

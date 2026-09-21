@@ -23,26 +23,6 @@ module completions {
     path?: path               # Target directory (defaults to configured directories)
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "maid help" [
-  ]
-
-  # Organise files in a directory
-  export extern "maid help run" [
-  ]
-
-  # Preview what would happen without moving files
-  export extern "maid help preview" [
-  ]
-
-  # Undo the last organisation
-  export extern "maid help undo" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "maid help help" [
-  ]
-
 }
 
 export use completions *

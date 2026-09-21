@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: harvestrs
+description: Sync memory and harvest configured data sources to JSONL
+flags:
+  -o, --output=: Write harvested items to a file instead of standard output
+  --dedup-db=: SQLite deduplication database [default ~/.harvestrs/dedup.db]
+  --vault=: Obsidian vault root; overrides OBSIDIAN_VAULT_PATH
+  --no-sync: Skip memory synchronization to the vault
+  --git-max-commits=: Maximum git commits harvested per repository [default 20]
+  --disable-source=*: Disable a source; may be specified multiple times
+  -h, --help: Print help
+completion:
+  flag:
+    output: ["$files([.jsonl, .ndjson, .json])"]
+    dedup-db: ["$files([.db, .sqlite, .sqlite3])"]
+    vault: ["$directories"]
+    git-max-commits: ["5", "10", "20\tdefault", "50", "100"]
+    disable-source:
+      - "facets\tClaude facets data"
+      - "memory\tClaude memory files"
+      - "git\tGit repository history"
+      - "obsidian\tObsidian vault content"
+      - "pieces\tPieces long-term memory"

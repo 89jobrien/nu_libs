@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: crux-task
+description: Manage project tasks for Crux
+persistentflags:
+  --json: Output in JSON format
+  --db=: Use the specified redb database
+  --sqlite=: Use the specified SQLite database
+  -h, --help: Print help
+completion:
+  flag:
+    db: ["$files([.redb, .db])"]
+    sqlite: ["$files([.sqlite, .sqlite3, .db])"]
+commands:
+  - name: add <TITLE>
+    description: Add a new task
+    flags:
+      -p, --priority=: Set task priority [default p2]
+      -l, --labels=: Set comma-separated labels
+      -d, --description=: Set task description
+      -s, --status=: Set initial task status [default open]
+    completion:
+      flag:
+        priority: ["p0\tcritical", "p1\thigh", "p2\tnormal", "p3\tlow"]
+        labels: ["$list(,)", "$uniquelist(,)"]
+        status: ["open", "in-progress", "done", "blocked", "cancelled"]
+  - name: list
+    description: List tasks
+    flags:
+      --status=: Filter by status
+      --priority=: Filter by priority
+      --label=: Filter by label
+      --ready: Show only unblocked open tasks
+    completion:
+      flag:
+        status: ["open", "in-progress", "done", "blocked", "cancelled"]
+        priority: ["p0\tcritical", "p1\thigh", "p2\tnormal", "p3\tlow"]
+  - name: show <ID>
+    description: Show a task by ID
+  - name: update <ID>
+    description: Update a task
+    flags:
+      --status=: Set task status
+      --priority=: Set task priority
+      --add-label=*: Add a label
+      --rm-label=*: Remove a label
+    completion:
+      flag:
+        status: ["open", "in-progress", "done", "blocked", "cancelled"]
+        priority: ["p0\tcritical", "p1\thigh", "p2\tnormal", "p3\tlow"]
+  - name: block --by <BY> <ID>
+    description: Block a task on another task
+    flags:
+      --by=!: Set the blocker task ID
+  - name: unblock --from <FROM> <ID>
+    description: Remove a blocker from a task
+    flags:
+      --from=!: Set the blocker task ID to remove
+  - name: ready
+    description: Show ready tasks
+  - name: stats
+    description: Show task statistics

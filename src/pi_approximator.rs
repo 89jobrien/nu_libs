@@ -1,3 +1,5 @@
+//! Defines pi approximation algorithms and a timing helper.
+
 use rand::Rng;
 use std::time::Instant;
 
@@ -6,6 +8,7 @@ pub trait PiApproximator {
     /// Approximate π using the algorithm.
     ///
     /// * `terms` – number of terms or iterations; interpretation depends on implementor.
+    ///
     /// Returns a floating‑point approximation.
     fn approximate(&mut self, terms: usize) -> f64;
 }

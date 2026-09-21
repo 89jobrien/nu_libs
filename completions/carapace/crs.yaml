@@ -1,0 +1,237 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: crs
+description: Claude Code course-correction hook pipeline
+flags:
+  -h, --help: Print help
+commands:
+  - name: pre
+    description: Run the PreToolUse course-correction hook
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      --state=: Override the global state file
+      -h, --help: Print help
+    completion:
+      flag: &profile-rules-state
+        rules: [$files]
+        state: [$files]
+  - name: post
+    description: Record failures from a PostToolUse hook payload
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      --state=: Override the global state file
+      -h, --help: Print help
+    completion:
+      flag: *profile-rules-state
+  - name: filter
+    description: Filter PostToolUse output
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      --state=: Override the global state file
+      -h, --help: Print help
+    completion:
+      flag: *profile-rules-state
+  - name: rewrite
+    description: Rewrite a PreToolUse command
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      -h, --help: Print help
+    completion:
+      flag:
+        rules: [$files]
+  - name: discover
+    description: Discover missed savings from Claude Code session history
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      -a, --all: Include all projects
+      -l, --limit=: Maximum findings
+      -s, --since=: Number of days to inspect
+      -f, --format=: Output format
+      --generate-filters: Generate project-local obfsck filters
+      --min-count=: Minimum occurrence count
+      -h, --help: Print help
+    completion:
+      flag:
+        rules: [$files]
+        format: [text, json]
+  - name: validate
+    description: Validate rule patterns, examples, and exceptions
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      -h, --help: Print help
+    completion:
+      flag:
+        rules: [$files]
+  - name: probe
+    description: Probe a command from stdin against all rules
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      -h, --help: Print help
+    completion:
+      flag:
+        rules: [$files]
+  - name: stats
+    description: Show cumulative block counts by rule
+    flags:
+      --profile=: Named coursers profile
+      -h, --help: Print help
+  - name: insights
+    description: Analyze session facets enriched with Git context
+    flags:
+      -f, --format=: Output format
+      -s, --since=: Number of days to inspect
+      -r, --repo=: Repository name or path
+      -h, --help: Print help
+    completion:
+      flag:
+        format: [text, json]
+        repo: [$directories]
+  - name: audit
+    description: Show rx prefix learning state
+    flags:
+      --remove=: Remove a learned command mapping
+      -h, --help: Print help
+  - name: suggest
+    description: Suggest new rules from unhandled commands
+    flags:
+      --profile=: Named coursers profile
+      --rules=: Override the rules file
+      -a, --all: Include all projects
+      -s, --since=: Number of days to inspect
+      -l, --limit=: Maximum suggestions
+      -f, --format=: Output format
+      -h, --help: Print help
+    completion:
+      flag:
+        rules: [$files]
+        format: [text, json]
+  - name: history
+    description: Show recent blocked commands
+    flags:
+      -l, --limit=: Maximum history entries
+      -r, --rule=: Filter by rule identifier
+      -f, --format=: Output format
+      -h, --help: Print help
+    completion:
+      flag:
+        format: [text, json]
+  - name: export
+    description: Dump rules, statistics, and state as portable JSON
+    flags:
+      -o, --out=: Output file
+      -h, --help: Print help
+    completion:
+      flag:
+        out: [$files]
+  - name: hook
+    description: Run the generic hook pipeline for an event
+    flags:
+      --target=: Agent client protocol target
+      -h, --help: Print help
+    completion:
+      flag:
+        target: [claude, codex, opencode]
+      positional:
+        - [
+            pre-tool-use,
+            post-tool-use,
+            session-start,
+            session-end,
+            permission-request,
+            pre-compact,
+            post-compact,
+            user-prompt-submit,
+            subagent-start,
+            stop,
+            subagent-stop,
+          ]
+  - name: validate-hooks
+    description: Validate hook pipeline configuration
+    flags:
+      --target=: Agent client protocol target
+      -h, --help: Print help
+    completion:
+      flag:
+        target: [claude, codex, opencode]
+  - name: log
+    description: Query the hook execution log
+    flags:
+      -l, --limit=: Maximum log entries
+      -e, --event=: Filter by hook event
+      -o, --outcome=: Filter by outcome kind
+      -f, --format=: Output format
+      --prune-hours=: Remove entries older than this many hours
+      -h, --help: Print help
+    completion:
+      flag:
+        event:
+          [
+            pre-tool-use,
+            post-tool-use,
+            session-start,
+            session-end,
+            permission-request,
+            pre-compact,
+            post-compact,
+            user-prompt-submit,
+            subagent-start,
+            stop,
+            subagent-stop,
+          ]
+        outcome: [pass, deny, rewrite, side-effect, notify]
+        format: [text, json]
+  - name: heat
+    description: Show a heatmap of rule firings
+    flags:
+      -r, --rule=: Filter by rule identifier
+      -h, --help: Print help
+  - name: replay
+    description: Replay a session's Bash commands through the current ruleset
+    flags:
+      -s, --session=: Session identifier or file
+      -f, --format=: Output format
+      -h, --help: Print help
+    completion:
+      flag:
+        session: [$files]
+        format: [text, json]
+  - name: nu-check
+    description: Validate Nushell scripts using nu --ide-check
+    flags:
+      --hooks: Validate configured hook scripts
+      --nu-libs: Validate nu_libs scripts
+      -h, --help: Print help
+    completion:
+      positionalany: [$files]
+  - name: help
+    description: Print help for a command
+    completion:
+      positional:
+        - [
+            pre,
+            post,
+            filter,
+            rewrite,
+            discover,
+            validate,
+            probe,
+            stats,
+            insights,
+            audit,
+            suggest,
+            history,
+            export,
+            hook,
+            validate-hooks,
+            log,
+            heat,
+            replay,
+            nu-check,
+            help,
+          ]

@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: ragrs
+description: Hybrid dense and lexical text retrieval CLI
+flags:
+  -h, --help: Print help
+commands:
+  - name: index --source-id <SOURCE_ID> --index-dir <INDEX_DIR> <PATH>
+    description: Index a text file as a single chunk
+    flags:
+      --source-id=!: Identifier of the source document this chunk belongs to
+      --index-dir=!: Directory backing the lexical Tantivy index
+      -h, --help: Print help
+    completion:
+      flag:
+        index-dir: ["$directories"]
+      positional:
+        - ["$files"]
+  - name: query [OPTIONS] --index-dir <INDEX_DIR> <TEXT>
+    description: Query the retriever and print the resulting evidence
+    flags:
+      --index-dir=!: Directory backing the lexical Tantivy index
+      --k=: Number of results to retrieve from each stage [default 5]
+      --with-graph: Enable graph-guided expansion of results
+      --graph-db=: Path to the agdb graph database; required with --with-graph
+      --max-hops=: Maximum graph expansion hops [default 1]
+      -h, --help: Print help
+    completion:
+      flag:
+        index-dir: ["$directories"]
+        k: ["1", "3", "5\tdefault", "10", "20"]
+        graph-db: ["$files([.agdb, .db])"]
+        max-hops: ["1\tdefault", "2", "3"]
+  - name: relate [OPTIONS] --from-source-id <FROM_SOURCE_ID> --to-source-id <TO_SOURCE_ID> --graph-db <GRAPH_DB> <FROM_PATH> <TO_PATH>
+    description: Record a relation between two chunks in the graph database
+    flags:
+      --from-source-id=!: Identifier of the source chunk
+      --to-source-id=!: Identifier of the destination chunk
+      --kind=: Relation kind [default cites]
+      --graph-db=!: Path to the agdb graph database
+      -h, --help: Print help
+    completion:
+      flag:
+        kind:
+          - "cites\tcitation relation (default)"
+          - "same-section\tchunks in the same section"
+          - "same-source\tchunks from the same source"
+        graph-db: ["$files([.agdb, .db])"]
+      positional:
+        - ["$files"]
+        - ["$files"]
+  - name: help [COMMAND]
+    description: Print help for a command
+    completion:
+      positional:
+        - ["index", "query", "relate", "help"]

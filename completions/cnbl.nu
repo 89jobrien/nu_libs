@@ -40,30 +40,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "cnbl help" [
-  ]
-
-  # Walk a foreign repo and figure out what's in it (outputs JSONL)
-  export extern "cnbl help scan" [
-  ]
-
-  # Decide where each file should go in your Rust ecosystem (outputs JSONL)
-  export extern "cnbl help plan" [
-  ]
-
-  # Create empty Rust stubs for everything that needs to be ported
-  export extern "cnbl help gen" [
-  ]
-
-  # Copy stubs into your repos and archive the originals — this does the actual work
-  export extern "cnbl help eat" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "cnbl help help" [
-  ]
-
 }
 
 export use completions *

@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: surgeon
+description: Analyze and improve code with configurable analysis passes
+flags:
+  -p, --passes=: Select comma-separated analysis passes
+  --fix: Automatically apply suggested fixes
+  --model=: Select the LLM model for analysis and fixes
+  --json: Emit JSON output
+  -h, --help: Print help
+completion:
+  flag:
+    passes:
+      - "$list(,)"
+      - "$uniquelist(,)"
+      - "clippy\tClippy lint analysis"
+      - "rustqual\trustqual quality analysis"
+      - "kani\tKani model checking"
+      - "agentlint\tagent harness linting"
+      - "cargo_test\tCargo test execution"
+      - "test\talias for cargo_test"
+      - "llm\tLLM-assisted analysis"
+  positional:
+    - ["$files"]

@@ -1,0 +1,119 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: rulery
+description: Compile, analyze, test, and render Rulery policy packages
+flags:
+  -h, --help: Print help
+commands:
+  - name: init [PATH]
+    description: Initialize a package
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+        - ["$directories"]
+  - name: fmt [PATH]
+    description: Format source documents
+    flags:
+      --check: Check formatting without writing changes
+      -h, --help: Print help
+    completion:
+      positional:
+        - ["$files"]
+  - name: check [PATH]
+    description: Validate a package
+    flags:
+      --frozen: Require exact lock agreement
+      --deny-warnings: Promote eligible warnings
+      --format=: Select output format [default human]
+      -h, --help: Print help
+    completion:
+      flag:
+        format: ["human\thuman-readable text", "json\tJSON", "sarif\tSARIF"]
+      positional:
+        - ["$directories"]
+  - name: analyze [PATH]
+    description: Analyze a package
+    flags:
+      --frozen: Require exact lock agreement
+      --deny-warnings: Promote eligible warnings
+      --max-states=: Set the state budget [default 100000]
+      --max-witnesses=: Set the witness budget [default 1000]
+      --format=: Select output format [default human]
+      -h, --help: Print help
+    completion:
+      flag:
+        format: ["human\thuman-readable text", "json\tJSON", "sarif\tSARIF"]
+        max-states: ["10000", "100000\tdefault", "1000000"]
+        max-witnesses: ["100", "1000\tdefault", "10000"]
+      positional:
+        - ["$directories"]
+  - name: test [PATH]
+    description: Run root scenarios
+    flags:
+      --frozen: Require exact lock agreement
+      --deny-warnings: Promote eligible warnings
+      --filter=: Filter by scenario name or tag
+      --format=: Select output format [default human]
+      -h, --help: Print help
+    completion:
+      flag:
+        format: ["human\thuman-readable text", "json\tJSON"]
+      positional:
+        - ["$directories"]
+  - name: explain --decision <DECISION> --facts <FACTS> [PATH]
+    description: Explain one decision
+    flags:
+      --decision=!: Select the decision identity
+      --facts=!: Read facts from a file
+      --at=: Evaluate at a fixed RFC3339 instant
+      --frozen: Require exact lock agreement
+      --deny-warnings: Promote eligible warnings
+      --format=: Select output format [default human]
+      -h, --help: Print help
+    completion:
+      flag:
+        facts: ["$files([.json, .yaml, .yml])"]
+        format: ["human\thuman-readable text", "json\tJSON"]
+      positional:
+        - ["$directories"]
+  - name: diff <BEFORE> <AFTER>
+    description: Semantically diff two packages
+    flags:
+      --decision=: Filter by decision identity
+      --max-states=: Set the state budget [default 100000]
+      --max-witnesses=: Set the witness budget [default 1000]
+      --frozen: Require exact lock agreement
+      --deny-warnings: Promote eligible warnings
+      --format=: Select output format [default human]
+      -h, --help: Print help
+    completion:
+      flag:
+        format: ["human\thuman-readable text", "json\tJSON"]
+        max-states: ["10000", "100000\tdefault", "1000000"]
+        max-witnesses: ["100", "1000\tdefault", "10000"]
+      positional:
+        - ["$directories"]
+        - ["$directories"]
+  - name: render --format <FORMAT> [PATH]
+    description: Render policy artifacts
+    flags:
+      --format=!: Select render format
+      --decision=: Select a decision; required for decision tables
+      --frozen: Require exact lock agreement
+      --deny-warnings: Promote eligible warnings
+      -h, --help: Print help
+    completion:
+      flag:
+        format:
+          - "markdown\tMarkdown"
+          - "json\tJSON"
+          - "decision-table\tdecision table"
+      positional:
+        - ["$directories"]
+  - name: lock [PATH]
+    description: Resolve and atomically write the complete lock
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+        - ["$directories"]

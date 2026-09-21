@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: praxis
+description: Self-improving agent runtime demo and trace ingestion CLI
+flags:
+  -h, --help: Print help
+  --live: Run the live self-improvement demo
+commands:
+  - name: live-demo
+    aliases: [live]
+    description: Run the live self-improvement demo
+  - name: ingest
+    description: Ingest Crux trace files and update a persisted strategy
+    flags:
+      --strategy=: Strategy state file
+    completion:
+      flag:
+        strategy: [$files]
+      positionalany: [$directories]
+  - name: help
+    description: Print help

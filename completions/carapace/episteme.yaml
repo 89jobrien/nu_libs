@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: episteme
+description: Run local-first knowledge ingestion and intelligence workflows
+flags:
+  --config=: Load settings from a TOML file [default episteme.toml]
+  -h, --help: Print help
+  -V, --version: Print version
+completion:
+  flag:
+    config: ["$files([.toml])"]
+commands:
+  - name: doctor
+    description: Check configuration and required executables
+    flags:
+      -h, --help: Print help
+  - name: init
+    description: Create configured runtime directories
+    flags:
+      -h, --help: Print help
+  - name: ingest <SOURCE>
+    description: Ingest one stable source from the configured inbox
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+        - ["$files([.pdf, .html, .htm, .png, .jpg, .jpeg, .tif, .tiff, .webp])"]
+  - name: classify [--force] <SOURCE>
+    description: Classify one stable source from the configured inbox
+    flags:
+      --force: Ignore matching versioned cache entries
+      -h, --help: Print help
+    completion:
+      positional:
+        - ["$files([.pdf, .html, .htm, .png, .jpg, .jpeg, .tif, .tiff, .webp])"]
+  - name: classify-batch [OPTIONS]
+    description: Classify every supported source beneath the configured inbox
+    flags:
+      --force: Ignore matching versioned cache entries
+      --retry-failed: Retry sources whose latest attempt is retryable
+      --concurrency=: Set maximum concurrent local model requests [default 2]
+      --batch-id=: Set durable batch identity [default inbox]
+      --summary=: Write an atomically reconciled JSON summary
+      -h, --help: Print help
+    completion:
+      flag:
+        concurrency: ["1", "2\tdefault", "4", "8"]
+        batch-id: ["inbox\tdefault batch"]
+        summary: ["$files([.json])"]
+  - name: analyze [--force] <SOURCE>
+    description: Extract evidence-grounded summary, claims, entities, and relations
+    flags:
+      --force: Ignore matching versioned cache entries
+      -h, --help: Print help
+    completion:
+      positional:
+        - ["$files([.pdf, .html, .htm, .png, .jpg, .jpeg, .tif, .tiff, .webp])"]
+  - name: watch
+    description: Poll the configured inbox and ingest stable files
+    flags:
+      -h, --help: Print help

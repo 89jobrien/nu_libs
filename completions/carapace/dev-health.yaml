@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: dev-health
+description: Inspect child directories and report repository and project types
+flags:
+  -h, --help: Print usage
+commands:
+  - name: scan [PATH ...]
+    description: Scan one or more directory roots; defaults to the current directory
+    completion:
+      positionalany: ["$directories"]

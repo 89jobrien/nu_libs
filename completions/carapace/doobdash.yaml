@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: doobdash
+description: Open the interactive doob handoff dashboard
+completion:
+  positional:
+    - ["$files([.yaml, .yml])"]

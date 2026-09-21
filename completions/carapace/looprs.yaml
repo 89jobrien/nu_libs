@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: looprs
+description: LLM agent loop CLI and interactive runtime
+flags:
+  -h, --help: Print help and exit
+  -V, --version: Print version and exit
+  -p, --prompt=: Run with a single prompt and exit
+  -f, --file=: Read the prompt from a file
+  -m, --model=: Override the default model
+  -q, --quiet: Suppress context and observation display
+  --no-hooks: Skip loading hooks
+  --json: Output the response as structured JSON
+  --machine-log: Emit machine-readable JSONL events to stderr
+  --machine-protocol=: Select the machine protocol version
+  --run-id=: Stable run identifier included in machine events
+  --deadline-seconds=: Cancel an active run after this many seconds
+  --cancel-file=: Cancel an active run when this file exists
+completion:
+  flag:
+    file: [$files]
+    machine-protocol: [looprs-machine/v1]
+    cancel-file: [$files]
+commands:
+  - name: seed
+    description: Write example configuration files without overwriting existing files
+    completion:
+      positional:
+        - [$directories]
+  - name: provider
+    description: Interactively choose the active provider and model
+  - name: tui
+    description: Launch the alternate chat TUI

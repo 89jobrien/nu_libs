@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: notfiles
+description: Manage dotfiles with symlinks or copies
+persistentflags:
+  --dir=: Path to the dotfiles directory [default ~/.notfiles]
+  --config=: Path to the configuration file [default ~/.config/notfiles/notfiles.toml]
+  --dry-run: Show what would be done without making changes
+  -v, --verbose: Show verbose output
+  --json: Output in JSON format
+  -h, --help: Print help
+completion:
+  flag:
+    dir: ["$directories"]
+    config: ["$files([.toml])"]
+commands:
+  - name: init
+    description: Create a starter notfiles.toml
+  - name: link [OPTIONS] [PACKAGES]...
+    description: Create symlinks or copies for packages
+    flags:
+      --force: Overwrite existing files after backing them up
+      --no-backup: Skip backups when using --force
+    completion:
+      positionalany: ["$directories"]
+  - name: unlink [PACKAGES]...
+    description: Remove managed symlinks or copies
+    completion:
+      positionalany: ["$directories"]
+  - name: status [PACKAGES]...
+    description: Show link state per package
+    completion:
+      positionalany: ["$directories"]
+  - name: check
+    description: Validate configuration without making changes
+  - name: completions <SHELL>
+    description: Generate shell completions
+    completion:
+      positional:
+        - ["bash", "elvish", "fish", "powershell", "zsh"]
+  - name: diff [PACKAGES]...
+    description: Show differences for copy-method packages
+    completion:
+      positionalany: ["$directories"]
+  - name: detect
+    description: Auto-detect existing dotfile managers
+  - name: doctor
+    description: Detect broken links, conflicts, orphans, dirty Git state, and config drift
+  - name: adopt <PACKAGE> <FILES>...
+    description: Move existing files into a package and replace them with symlinks
+    completion:
+      positional:
+        - ["$directories"]
+      positionalany: ["$files"]
+  - name: help [COMMAND]
+    description: Print help for a command
+    completion:
+      positional:
+        - [
+            "init",
+            "link",
+            "unlink",
+            "status",
+            "check",
+            "completions",
+            "diff",
+            "detect",
+            "doctor",
+            "adopt",
+            "help",
+          ]

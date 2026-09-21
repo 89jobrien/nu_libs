@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: sparkfile
+description: Scaffold projects from named presets
+flags:
+  -h, --help: Print usage
+commands:
+  - name: new <preset> <name> [--description <text>] [--root <path>]
+    description: Create a project from a scaffold preset
+    flags:
+      --description=: Set the project description
+      --root=: Set the parent directory for the generated project
+      -h, --help: Print usage
+    completion:
+      flag:
+        root: ["$directories"]
+      positional:
+        - ["rust-cli\tRust command-line application"]

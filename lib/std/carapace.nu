@@ -1,15 +1,102 @@
 # carapace.nu — Generate carapace completion specs from loaded Nu commands
 #
 # Carapace spec format: https://carapace-sh.github.io/carapace-bin/spec.html
-# Specs are installed to ~/.config/carapace/specs/<command>.yaml
+# Specs are installed to Carapace's platform/XDG config directory.
 #
 # Usage:
 #   use lib/std/carapace.nu *
 #   nul-carapace --filter "magi-"           # preview spec YAML
-#   nul-carapace --filter "magi-" --install # write to ~/.config/carapace/specs/
+#   nul-carapace --filter "magi-" --install # write to the Carapace specs directory
+#   sync-carapace-specs                     # install tracked completion specs
+
+const CARAPACE_MODULE_PATH = (path self)
+
+def platform-config-home [] {
+    if $nu.os-info.name == "macos" {
+        $env.HOME | path join "Library" "Application Support"
+    } else if $nu.os-info.name == "windows" {
+        $env.APPDATA? | default ($env.HOME | path join "AppData" "Roaming")
+    } else {
+        $env.HOME | path join ".config"
+    }
+}
 
 def carapace-specs-dir [] {
-    $env.HOME | path join ".config" "carapace" "specs"
+    let xdg_config_home = $env.XDG_CONFIG_HOME? | default ""
+    let expanded_xdg = if ($xdg_config_home | is-empty) {
+        ""
+    } else {
+        $xdg_config_home | path expand --no-symlink
+    }
+
+    if ($xdg_config_home | is-not-empty) and $xdg_config_home == $expanded_xdg {
+        $xdg_config_home | path join "carapace" "specs"
+    } else {
+        platform-config-home | path join "carapace" "specs"
+    }
+}
+
+def nu-libs-root [] {
+    $CARAPACE_MODULE_PATH | path dirname | path dirname | path dirname
+}
+
+def tracked-carapace-specs [] {
+    let repo_root = nu-libs-root
+    glob ($repo_root | path join "completions" "carapace" "*.yaml")
+    | sort
+}
+
+def atomic-copy [source: path, destination: path] {
+    let destination_dir = $destination | path dirname
+    let temporary = (
+        $destination_dir
+        | path join $".($destination | path basename).(random uuid).tmp"
+    )
+
+    try {
+        cp $source $temporary
+        mv --force $temporary $destination
+    } catch {|err|
+        if ($temporary | path exists) {
+            rm $temporary
+        }
+        error make {msg: $"failed to install ($source): ($err.msg)"}
+    }
+}
+
+# [nu_lib] Install tracked Carapace YAML specs with atomic per-file replacement.
+export def sync-carapace-specs [
+    --dry-run # report copies without changing the specs directory
+] {
+    let specs_dir = carapace-specs-dir
+    let specs = tracked-carapace-specs
+
+    if ($specs | is-empty) {
+        error make {msg: $"no tracked Carapace specs found under (nu-libs-root)"}
+    }
+
+    if not $dry_run {
+        mkdir $specs_dir
+    }
+
+    $specs | each {|source|
+        let destination = $specs_dir | path join ($source | path basename)
+
+        if $dry_run {
+            {
+                spec: ($source | path basename)
+                destination: $destination
+                status: "would-copy"
+            }
+        } else {
+            atomic-copy $source $destination
+            {
+                spec: ($source | path basename)
+                destination: $destination
+                status: "copied"
+            }
+        }
+    }
 }
 
 # Map Nu param type to a carapace completion action string (empty = freeform)
@@ -69,10 +156,10 @@ def cmd-to-spec [cmd: record] {
     $spec
 }
 
-# [nu_lib] Generate carapace spec YAML for loaded custom commands; optionally install to ~/.config/carapace/specs/
+# [nu_lib] Generate carapace spec YAML for loaded custom commands; optionally install it.
 export def nul-carapace [
     --filter(-f): string = ""   # filter command names by substring
-    --install(-i)               # write spec files to ~/.config/carapace/specs/
+    --install(-i)               # write spec files to the Carapace specs directory
     --dry-run                   # show what would be written without writing
 ] {
     let cmds = (
@@ -85,7 +172,9 @@ export def nul-carapace [
 
     if $install {
         let specs_dir = carapace-specs-dir
-        mkdir $specs_dir
+        if not $dry_run {
+            mkdir $specs_dir
+        }
         $specs | each {|spec|
             let filename = $spec.name | str replace --all " " "-"
             let dest = $specs_dir | path join $"($filename).yaml"

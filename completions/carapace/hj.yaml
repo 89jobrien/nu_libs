@@ -1,0 +1,193 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: hj
+description: Manage handoff state, reconciliation, rendering, and closeout
+flags:
+  -h, --help: Print help
+commands:
+  - name: detect [OPTIONS]
+    description: Resolve the active handoff path, repository root, or project name
+    flags:
+      --name: Print the resolved handoff filename
+      --root: Print the Git repository root
+      --project: Print the resolved project slug
+      --init: Initialize or refresh .ctx before resolving the target
+      -h, --help: Print help
+  - name: handoff [OPTIONS]
+    description: Record session closeout state and synchronize handoff outputs
+    flags:
+      --handoff=: Use an explicit handoff YAML file
+      --project=: Override the inferred project name
+      --force-refresh: Rebuild managed .ctx scaffolding
+      --allow-create: Create a missing handoff model
+      --build=: Record build state
+      --tests=: Record test state
+      --notes=: Record freeform session notes
+      --log-summary=: Add a session log entry
+      --commit=*: Attach a commit SHA; may be repeated
+      -h, --help: Print help
+    completion:
+      flag:
+        handoff: ["$files([.yaml, .yml])"]
+        build: ["clean", "passing", "failing", "not-run", "unknown"]
+        tests: ["passing", "failing", "not-run", "unknown"]
+  - name: handon [OPTIONS]
+    description: Print grouped P0, P1, and P2 triage from the current handoff
+    flags:
+      --handoff=: Use an explicit handoff YAML file
+      --project=: Override the inferred project name
+      -h, --help: Print help
+    completion:
+      flag:
+        handoff: ["$files([.yaml, .yml])"]
+  - name: handover [OPTIONS]
+    description: Regenerate HANDOVER.md from the current handoff and session state
+    flags:
+      --handoff=: Use an explicit handoff YAML file
+      --project=: Override the inferred project name
+      -h, --help: Print help
+    completion:
+      flag:
+        handoff: ["$files([.yaml, .yml])"]
+  - name: handoff-db <COMMAND>
+    description: Inspect or update the handoff SQLite store
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: init
+        description: Initialize the handoff database
+        flags:
+          -h, --help: Print help
+      - name: upsert --project <PROJECT> --handoff <HANDOFF>
+        description: Synchronize a project's handoff items into the database
+        flags:
+          --project=!: Project name
+          --handoff=!: Handoff YAML file to synchronize
+          -h, --help: Print help
+        completion:
+          flag:
+            handoff: ["$files([.yaml, .yml])"]
+      - name: query --project <PROJECT>
+        description: Query handoff items for a project
+        flags:
+          --project=!: Project name
+          -h, --help: Print help
+      - name: complete --project <PROJECT> --id <ID>
+        description: Mark a handoff item done
+        flags:
+          --project=!: Project name
+          --id=!: Handoff item identifier
+          -h, --help: Print help
+      - name: status --project <PROJECT> --id <ID> --status <STATUS>
+        description: Set the status of a handoff item
+        flags:
+          --project=!: Project name
+          --id=!: Handoff item identifier
+          --status=!: New status
+          -h, --help: Print help
+        completion:
+          flag:
+            status:
+              - "open\tactive item"
+              - "in-progress\twork is underway"
+              - "done\tcompleted item"
+              - "blocked\tunable to proceed"
+              - "parked\tdeferred item"
+              - "cancelled\tcancelled item"
+      - name: help [COMMAND]
+        description: Print help for a database command
+        completion:
+          positional:
+            - ["init", "upsert", "query", "complete", "status", "help"]
+  - name: handup [OPTIONS]
+    description: Scan nested repositories and TODO markers and emit a handup report
+    flags:
+      --max-depth=: Maximum directory traversal depth [default 5]
+      -h, --help: Print help
+    completion:
+      flag:
+        max-depth: ["1", "2", "3", "5\tdefault", "8", "10"]
+  - name: install [OPTIONS]
+    description: Install hj binaries from the current checkout
+    flags:
+      --root=: Installation prefix [default ~/.local]
+      -h, --help: Print help
+    completion:
+      flag:
+        root: ["$directories"]
+  - name: update [OPTIONS]
+    description: Update installed hj binaries to the latest published release
+    flags:
+      --root=: Installation prefix [default ~/.local]
+      -h, --help: Print help
+    completion:
+      flag:
+        root: ["$directories"]
+  - name: update-all [OPTIONS]
+    description: Update all installed hj compatibility binaries
+    flags:
+      --root=: Installation prefix [default ~/.local]
+      -h, --help: Print help
+    completion:
+      flag:
+        root: ["$directories"]
+  - name: refresh [OPTIONS]
+    description: Scaffold .ctx and add gitignore entries for managed state files
+    flags:
+      --force: Recreate managed setup even when it is already initialized
+      -h, --help: Print help
+  - name: reconcile [OPTIONS]
+    description: Create missing doob todos for open handoff items
+    flags:
+      --handoff=: Use an explicit handoff YAML file
+      --project=: Override the inferred project name
+      -h, --help: Print help
+    completion:
+      flag:
+        handoff: ["$files([.yaml, .yml])"]
+  - name: audit [OPTIONS]
+    description: Report handoff items not covered by doob without changing state
+    flags:
+      --handoff=: Use an explicit handoff YAML file
+      --project=: Override the inferred project name
+      -h, --help: Print help
+    completion:
+      flag:
+        handoff: ["$files([.yaml, .yml])"]
+  - name: close [OPTIONS]
+    description: Alias for hj handoff
+    flags:
+      --handoff=: Use an explicit handoff YAML file
+      --project=: Override the inferred project name
+      --force-refresh: Rebuild managed .ctx scaffolding
+      --allow-create: Create a missing handoff model
+      --build=: Record build state
+      --tests=: Record test state
+      --notes=: Record freeform session notes
+      --log-summary=: Add a session log entry
+      --commit=*: Attach a commit SHA; may be repeated
+      -h, --help: Print help
+    completion:
+      flag:
+        handoff: ["$files([.yaml, .yml])"]
+        build: ["clean", "passing", "failing", "not-run", "unknown"]
+        tests: ["passing", "failing", "not-run", "unknown"]
+  - name: help [COMMAND]
+    description: Print help for a command
+    completion:
+      positional:
+        - [
+            "detect",
+            "handoff",
+            "handon",
+            "handover",
+            "handoff-db",
+            "handup",
+            "install",
+            "update",
+            "update-all",
+            "refresh",
+            "reconcile",
+            "audit",
+            "close",
+            "help",
+          ]

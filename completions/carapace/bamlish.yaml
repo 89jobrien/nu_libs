@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: bamlish
+description: Invoke typed BAML functions from a terminal or automation
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+  - name: quick-summarize
+    description: Summarize the beginning and end of a message sequence
+    flags:
+      -h, --help: Print help
+  - name: extract-decisions
+    description: Extract key decisions from a conversation excerpt
+    flags:
+      -h, --help: Print help
+  - name: summarize-conversation
+    description: Produce a structured conversation summary
+    flags:
+      -h, --help: Print help
+  - name: local-chat
+    description: Send a message to the local Ollama-backed model
+    flags:
+      -h, --help: Print help
+  - name: local-agent-summary
+    description: Summarize local agent activity
+    flags:
+      -h, --help: Print help
+  - name: serve
+    description: Process concurrent version 1 JSONL requests from stdin
+    flags:
+      --max-in-flight=: Maximum concurrent provider calls
+      -h, --help: Print help
+  - name: help
+    description: Print help for a command
+    completion:
+      positional:
+        - [
+            quick-summarize,
+            extract-decisions,
+            summarize-conversation,
+            local-chat,
+            local-agent-summary,
+            serve,
+            help,
+          ]

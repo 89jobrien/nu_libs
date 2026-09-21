@@ -17,7 +17,7 @@
 
 ## Local Install
 
-```
+```text
 ollama pull hf.co/unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K
 ollama run  hf.co/unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K
 ```

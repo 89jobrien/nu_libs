@@ -25,7 +25,7 @@ etc.) via the MCP protocol.
 
 ## Architecture
 
-```
+```text
 Nu (caller)                 nu-ai-daemon (Rust)          LLM API
 ───────────                 ──────────────────────       ────────
 baml-agent-run "research"
@@ -174,7 +174,7 @@ duplicating prompts or tool schemas in BAML or config.
 
 ### Discovery Paths (searched in order, merged)
 
-```
+```text
 .claude/agents/          # repo-local agent definitions
 .claude/skills/          # repo-local skill/tool definitions
 ~/.claude/agents/        # user-global agents
@@ -290,7 +290,7 @@ No model check required: no arithmetic on external inputs, no `unsafe`.
 
 Fuzz targets live in `fuzz/fuzz_targets/` (excluded from workspace). Required targets:
 
-```
+```text
 fuzz_agent_toml      — arbitrary bytes into agent.toml parser
 fuzz_tool_toml       — arbitrary bytes into tool.toml parser
 fuzz_skill_frontmatter — arbitrary bytes into SKILL.md YAML header parser

@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: xtui
+description: Discover and run project commands in an interactive TUI
+flags:
+  --path=: Project directory to open
+completion:
+  flag:
+    path: [$directories]
+  positional:
+    - [$directories]

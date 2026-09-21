@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: slash
+description: Parse and execute slash-command language expressions
+parsing: interspersed
+flags:
+  --redact: Redact secrets and PII from command output
+  --list: List registered slash commands and methods
+  --ast-json: Parse the command string and emit its AST as JSON
+completion:
+  positionalany:
+    - "/echo\temit text"
+    - "/echo.text(value)\temit an explicit text value"
+    - "/read\tread file contents"
+    - "/write\twrite piped input to a file"
+    - "/write.append\tappend piped input to a file"
+    - "/exec\trun a shell command"
+    - "/exec.verbose\trun a shell command verbosely"
+    - "/find\tfind files by glob"
+    - "/find.content(value)\tfind files containing text"
+    - "/obfsck\tredact secrets and PII"
+    - "/obfsck.level(value)\tselect the obfuscation level"
+    - "|\tpipe stdout"
+    - "|&\tpipe stdout and stderr"
+    - "&&\trun the next pipeline on success"
+    - "||\trun the next pipeline on failure"

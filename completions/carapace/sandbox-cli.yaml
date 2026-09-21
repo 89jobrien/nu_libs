@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: sandbox-cli
+description: Execute shell-like commands in an isolated in-memory sandbox
+parsing: non-interspersed
+flags:
+  -c=: Execute the supplied command string
+completion:
+  flag:
+    c: &sandbox-builtins
+      - "echo\twrite arguments to standard output"
+      - "printf\tformat and print data"
+      - "cat\tconcatenate files"
+      - "read\tread a value from standard input"
+      - "head\tprint the beginning of a file"
+      - "tail\tprint the end of a file"
+      - "test\tevaluate a conditional expression"
+      - "[\tevaluate a bracketed conditional expression"
+      - "cd\tchange the sandbox working directory"
+      - "pwd\tprint the sandbox working directory"
+      - "ls\tlist sandbox files"
+      - "mkdir\tcreate sandbox directories"
+      - "rm\tremove sandbox files or directories"
+      - "cp\tcopy sandbox files"
+      - "mv\tmove sandbox files"
+      - "touch\tcreate or update a sandbox file"
+      - "find\tfind paths in the sandbox filesystem"
+      - "true\treturn success"
+      - "false\treturn failure"
+      - "exit\texit with a status code"
+      - "export\tset and export a variable"
+      - "set\tset a shell variable"
+      - "unset\tremove a shell variable"
+      - "wc\tcount lines, words, or bytes"
+      - "basename\tstrip a path directory and suffix"
+      - "dirname\tprint a path directory"
+      - "sort\tsort text lines"
+      - "uniq\tfilter adjacent duplicate lines"
+      - "tee\tcopy input to output and files"
+      - "grep\tsearch text for a pattern"
+  positional:
+    - *sandbox-builtins

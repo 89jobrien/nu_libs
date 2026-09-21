@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: disyn-app
+description: Run the Disyn hybrid symbolic-neural agent pipeline
+flags:
+  --provider=: LLM provider [env DISYN_PROVIDER] [default openai]
+  --api-key=: OpenAI API key [env OPENAI_API_KEY]
+  --model=: Model name [env DISYN_MODEL] [default gpt-4o]
+  --max-tokens=: Maximum token budget [env DISYN_MAX_TOKENS] [default 10000]
+  --step-timeout-secs=: Per-step shell timeout in seconds [env DISYN_STEP_TIMEOUT_SECS] [default 30]
+  -h, --help: Print help
+  -V, --version: Print version
+completion:
+  flag:
+    provider:
+      - "openai\tOpenAI API (default)"
+      - "ollama\tlocal Ollama server"
+    model:
+      - "gpt-4o\tdefault OpenAI model"
+    max-tokens: ["1000", "5000", "10000\tdefault", "20000", "50000"]
+    step-timeout-secs: ["10", "30\tdefault", "60", "120", "300"]

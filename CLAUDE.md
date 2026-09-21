@@ -24,7 +24,7 @@ nu --no-config-file --no-std-lib --commands 'source scripts/file_cat.nu'
 
 ## Module Structure
 
-```
+```text
 lib/
   mod.nu          top-level re-export of all categories
   git/            branch age/cleanup, gone branches, hooks, bump-version, clone-all

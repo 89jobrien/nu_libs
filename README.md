@@ -4,7 +4,7 @@ A library of Nushell modules organized by category.
 
 ## Structure
 
-```
+```text
 lib/
   mod.nu      top-level re-export of all categories
   git/        Git helpers: log stats, branch age/cleanup, gone branches, hooks
@@ -35,6 +35,22 @@ use lib/data/typeof.nu *
 use lib/mod.nu *
 ```
 
+## CLI completions
+
+`completions/*.nu` contains native Nushell extern definitions emitted by local CLIs.
+`completions/carapace/*.yaml` covers active local CLIs that do not emit Nushell completions.
+
+Carapace is already used as Nushell's external completer. Install or refresh the tracked specs:
+
+```nu
+sync-carapace-specs
+```
+
+The command honors an absolute `XDG_CONFIG_HOME`, uses
+`~/Library/Application Support/carapace/specs` on macOS, `%APPDATA%/carapace/specs` on
+Windows, and `~/.config/carapace/specs` elsewhere. It updates tracked specs without removing
+unrelated user specs. Use `sync-carapace-specs --dry-run` to preview destinations.
+
 ### Files with `export def main`
 
 These conflict when glob-re-exported, so use them directly by file path:
@@ -50,6 +66,7 @@ These conflict when glob-re-exported, so use them directly by file path:
 | `lib/std/nu_release.nu`         | `nu-release`                 |
 | `lib/task/after.nu`             | `after` (wait for process)   |
 | `lib/task/just.nu`              | `just` (completions wrapper) |
+| `lib/rust/taskit-release.nu`    | `taskit-release`             |
 
 ```nu
 use lib/fs/loc.nu

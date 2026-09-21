@@ -1,0 +1,115 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: opavs
+description: Orient-Plan-Act-Verify-Ship phase discipline CLI
+flags:
+  -h, --help: Print help
+  -V, --version: Print version
+commands:
+  - name: init
+    description: Scaffold OPAVS state and instruction links in a repository
+    flags:
+      -h, --help: Print help
+    completion:
+      positional:
+        - [$directories]
+  - name: phase
+    description: Get or set the current OPAVS phase
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: get
+        description: Print the current phase
+        flags:
+          -h, --help: Print help
+      - name: set
+        description: Set the current phase
+        flags:
+          -h, --help: Print help
+        completion:
+          positional:
+            - [ORIENT, PLAN, ACT, VERIFY, SHIP]
+      - name: help
+        description: Print help for a phase command
+        completion:
+          positional:
+            - [get, set, help]
+  - name: tasks
+    description: Inspect and mutate the task graph
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: list
+        description: List all tasks with their status
+        flags:
+          -h, --help: Print help
+      - name: runnable
+        description: List tasks that are runnable now
+        flags:
+          -h, --help: Print help
+      - name: validate
+        description: Validate task dependencies and cycles
+        flags:
+          -h, --help: Print help
+      - name: set-status
+        description: Set a task status
+        flags:
+          -h, --help: Print help
+        completion:
+          positional:
+            - []
+            - [todo, in_progress, done]
+      - name: import
+        description: Merge an external GODMODE.tasks.yaml task graph
+        flags:
+          -h, --help: Print help
+        completion:
+          positional:
+            - [$files]
+      - name: help
+        description: Print help for a tasks command
+        completion:
+          positional:
+            - [list, runnable, validate, set-status, import, help]
+  - name: guard
+    description: Evaluate a PreToolUse hook JSON payload from stdin
+    flags:
+      -h, --help: Print help
+  - name: plugin
+    description: Install OPAVS integrations for agent clients
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: install
+        description: Install integration for one client target or all targets
+        flags:
+          --home=: Override the home directory used for installation
+          -h, --help: Print help
+        completion:
+          flag:
+            home: [$directories]
+          positional:
+            - [claude, codex, gemini, opencode, all]
+      - name: help
+        description: Print help for a plugin command
+        completion:
+          positional:
+            - [install, help]
+  - name: upgrade
+    description: Download and install the newest GitHub release
+    flags:
+      -h, --help: Print help
+  - name: doctor
+    description: Diagnose repository and client integration state
+    flags:
+      --home=: Override the home directory inspected for integrations
+      -h, --help: Print help
+    completion:
+      flag:
+        home: [$directories]
+      positional:
+        - [$directories]
+  - name: help
+    description: Print help for a command
+    completion:
+      positional:
+        - [init, phase, tasks, guard, plugin, upgrade, doctor, help]

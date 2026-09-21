@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: atelier
+description: Generate and run Atelier harness integrations
+flags:
+  -h, --help: Print help
+commands:
+  - name: validate
+    flags:
+      -h, --help: Print help
+  - name: generate
+    flags:
+      -h, --help: Print help
+  - name: install
+    flags:
+      -h, --help: Print help
+  - name: hook
+    flags:
+      -h, --help: Print help
+  - name: handoff <COMMAND>
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: init
+        flags:
+          -h, --help: Print help
+      - name: detect
+        flags:
+          -h, --help: Print help
+      - name: migrate
+        flags:
+          -h, --help: Print help
+      - name: db
+        flags:
+          -h, --help: Print help
+      - name: reconcile
+        flags:
+          -h, --help: Print help
+      - name: render
+        flags:
+          -h, --help: Print help
+      - name: diagrams
+        flags:
+          -h, --help: Print help
+  - name: schema <COMMAND>
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: infer
+        flags:
+          -h, --help: Print help
+  - name: repo-hook <COMMAND>
+    flags:
+      -h, --help: Print help
+    commands:
+      - name: pre-commit
+        flags:
+          -h, --help: Print help
+      - name: pre-push
+        flags:
+          -h, --help: Print help
+      - name: post-commit
+        flags:
+          -h, --help: Print help

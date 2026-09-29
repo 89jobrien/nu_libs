@@ -17,6 +17,7 @@ use /Users/joe/dev/nu_libs/lib/sys/sys-reap.nu *
 use /Users/joe/dev/nu_libs/lib/sys/sys-disk.nu *
 use /Users/joe/dev/nu_libs/lib/sys/sys-audit.nu *
 use /Users/joe/dev/nu_libs/lib/sys/test-fixture.nu *
+use /Users/joe/dev/nu_libs/lib/sys/disk-classify.nu *
 
 def check [label: string, ok: bool] {
   # Keep the interpolation flat.
@@ -54,12 +55,19 @@ print "--- reaper ignores an already-dead pid ---"
 let dead = (sys-reap --pids [999999] --exclude-self --dry-run)
 $results = ($results | append (check "dead pid yields no targets" (($dead | get survived | is-empty))))
 
-print "--- disk report (shallow, small target) ---"
-# valerie is tiny, so this only proves the plumbing; use a real tree manually
-# when you want to see real numbers.
-let disk = (sys-disk --root /Users/joe/dev/valerie --depth 1 --min-mb 1)
-$results = ($results | append (check "disk reports a total" (($disk | get total_mb) >= 0.0)))
-$results = ($results | append (check "disk categorises" (($disk | get summary | length) == 4)))
+print "--- disk report (fixture tree) ---"
+# Previously this scanned ~/dev/valerie, which is small enough that gdu
+# returned zero rows, and both checks still passed: total_mb >= 0.0 holds for
+# 0.0, and summary length == 4 was a constant from a hardcoded literal. The
+# fixture makes these assert something.
+let disk_fixture = (make-fixture --label "validate-fixture")
+let disk = (sys-disk --root $disk_fixture --depth 3 --min-mb 0)
+$results = ($results | append (check "disk reports rows" (($disk | get entries | length) > 0)))
+$results = ($results | append (check "disk reports a total" (($disk | get total_mb) > 0.0)))
+$results = ($results | append (check "disk summary matches declared categories" (
+  (($disk | get summary | get category) == (category-names --profile "dev"))
+)))
+drop-fixture $disk_fixture
 
 print "--- --only help names every category ---"
 # The flag comment used to list rebuildable | git | source and omit `worktree`,

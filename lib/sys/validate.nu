@@ -59,6 +59,18 @@ let disk = (sys-disk --root /Users/joe/dev/valerie --depth 1 --min-mb 1)
 $results = ($results | append (check "disk reports a total" (($disk | get total_mb) >= 0.0)))
 $results = ($results | append (check "disk categorises" (($disk | get summary | length) == 4)))
 
+print "--- --only help names every category ---"
+# The flag comment used to list rebuildable | git | source and omit `worktree`,
+# which is the one category that must never be deleted blind. `complete` only
+# wraps externals, so help text is captured from a nested nu process.
+let help_out = (
+  ^nu --no-config-file -c "use /Users/joe/dev/nu_libs/lib/sys/sys-disk.nu *; sys-disk --help"
+  | complete | get stdout
+)
+let only_line = ($help_out | lines | where {|l| $l | str contains "--only"} | first)
+$results = ($results | append (check "--only help mentions worktree" ($only_line | str contains "worktree")))
+$results = ($results | append (check "--only help mentions rebuildable" ($only_line | str contains "rebuildable")))
+
 let fails = ($results | where {|x| $x == false} | length)
 print ""
 if $fails == 0 {

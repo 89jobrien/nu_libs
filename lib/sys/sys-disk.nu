@@ -32,7 +32,7 @@ export def main [
   --depth: int = 1                  # 1 = per top-level project
   --top: int = 20                   # how many rows per category
   --min-mb: int = 100               # ignore entries below this size
-  --only: string = ""               # restrict: rebuildable | git | source
+  --only: string = ""               # restrict: rebuildable | worktree | git | source
 ] {
   let has_gdu = (which gdu | is-not-empty)
 

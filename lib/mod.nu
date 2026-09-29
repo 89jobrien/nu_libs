@@ -16,6 +16,8 @@ export use ./misc/mod.nu *
 # ai/mod.nu requires ollama/baml runtime deps and version-specific query web API — use directly:
 #   use /Users/joe/dev/nu_libs/lib/ai/mod.nu *
 export use ./hooks/mod.nu *
+export use ./sys/mod.nu *
+export use ./workspace/mod.nu *
 # TODO(review): Document lib/gkg in README.md and CLAUDE.md now that it is top-level exported,
 # including the localhost gkg server dependency.
 export use ./gkg/mod.nu *

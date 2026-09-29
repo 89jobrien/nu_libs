@@ -14,6 +14,8 @@
 # parse.
 
 use /Users/joe/dev/nu_libs/lib/sys/disk-classify.nu *
+use /Users/joe/dev/nu_libs/lib/sys/sys-disk.nu *
+use /Users/joe/dev/nu_libs/lib/sys/test-fixture.nu *
 
 def check [label: string, ok: bool] {
   # Keep the interpolation flat.
@@ -85,6 +87,53 @@ let dedup_results = [
 ]
 
 let results = ($case_results | append $cat_results | append $dedup_results)
+
+print "--- real rows from a synthetic tree ---"
+# The pure cases above prove classify-disk-path in isolation. These prove the
+# whole pipeline: gdu output -> tab split -> size filter -> classify. Before
+# the fixture existed, the disk checks ran against a repo so small that gdu
+# returned zero rows and every assertion passed anyway.
+let fx = (make-fixture --label "classify-fixture")
+let rows = (sys-disk --root $fx --depth 3 --min-mb 0)
+let entries = ($rows | get entries)
+
+let row_checks = [
+  (check "fixture yields rows" (($entries | length) > 0))
+  (check "proj/target classifies rebuildable" (
+    $entries | any {|e| ($e.path | str ends-with "proj/target") and $e.category == "rebuildable"}
+  ))
+  (check "proj/.git classifies git" (
+    $entries | any {|e| ($e.path | str ends-with "proj/.git") and $e.category == "git"}
+  ))
+  (check "proj/src classifies source" (
+    $entries | any {|e| ($e.path | str ends-with "proj/src") and $e.category == "source"}
+  ))
+  # The safety property the inline comment always claimed and nothing asserted:
+  # a worktree's own target/ is real work, never rebuildable.
+  (check "worktree target/ is NOT rebuildable" (
+    $entries | any {|e| ($e.path | str ends-with "worktrees/w1/target") and $e.category == "worktree"}
+  ))
+  (check "no worktree row is labelled rebuildable" (
+    not ($entries | any {|e| ($e.path | str contains "worktrees/") and $e.category == "rebuildable"})
+  ))
+  (check "a space-bearing path survives" (
+    $entries | any {|e| $e.path | str contains "My Notes"}
+  ))
+  # The summary must cover exactly the declared categories. `length == 4` was
+  # a constant before; comparing against category-names is a real invariant.
+  (check "summary categories match the declared profile" (
+    (($rows | get summary | get category) == (category-names --profile "dev"))
+  ))
+  (check "every emitted category is declared" (
+    $entries | all {|e| $e.category in (category-names --profile "dev")}
+  ))
+  (check "summary counts match the entries" (
+    (($rows | get summary | where category == "git" | first | get count) == ($entries | where category == "git" | length))
+  ))
+]
+drop-fixture $fx
+
+let results = ($results | append $row_checks)
 
 let fails = ($results | where {|x| $x == false} | length)
 print ""

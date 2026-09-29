@@ -71,6 +71,19 @@ let only_line = ($help_out | lines | where {|l| $l | str contains "--only"} | fi
 $results = ($results | append (check "--only help mentions worktree" ($only_line | str contains "worktree")))
 $results = ($results | append (check "--only help mentions rebuildable" ($only_line | str contains "rebuildable")))
 
+print "--- a missing root must not look like an empty tree ---"
+# Previously this returned total_mb 0.00 with a full four-row summary --
+# indistinguishable from a real, genuinely empty directory, so a typo in --root
+# produced a confident, wrong answer.
+let missing = (
+  ^nu --no-config-file -c "use /Users/joe/dev/nu_libs/lib/sys/sys-disk.nu *; sys-disk --root /Users/joe/dev/NO_SUCH_DIR_XYZ --depth 1 --min-mb 1"
+  | complete
+)
+$results = ($results | append (check "missing root exits non-zero" (($missing.exit_code) != 0)))
+$results = ($results | append (check "missing root says why" (
+  (($missing.stdout | lines | append ($missing.stderr)) | str join "\n") | str contains "NO_SUCH_DIR_XYZ"
+)))
+
 let fails = ($results | where {|x| $x == false} | length)
 print ""
 if $fails == 0 {

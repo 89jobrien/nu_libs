@@ -34,6 +34,13 @@ export def main [
   --min-mb: int = 100               # ignore entries below this size
   --only: string = ""               # restrict: rebuildable | worktree | git | source
 ] {
+  # A typo in --root used to produce a well-formed all-zero report, which is
+  # indistinguishable from a genuinely empty tree. A report that claims to have
+  # scanned something it never read is worse than no report.
+  if not ($root | path exists) {
+    error make { msg: $"sys-disk: root does not exist: ($root)" }
+  }
+
   let has_gdu = (which gdu | is-not-empty)
 
   # `complete` only works when attached directly to an external call, so it

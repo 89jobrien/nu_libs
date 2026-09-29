@@ -54,8 +54,10 @@ export def main [
   --exclude: list<string> = [Library/Containers "Library/Application Support/CloudDocs" .minibox]
                                   # path substrings to drop from the report
 ] {
-  # `const` cannot reference `$env`, so the home default is resolved at runtime.
-  let root = (if $root == null { $nu.home-path } else { $root })
+  # `const` cannot reference `$env`, so the home default is resolved at
+  # runtime. The field is `home-dir` on nu 0.111; `home-path` looks plausible
+  # but does not exist, and reading it fails only when --root is omitted.
+  let root = (if $root == null { $nu.home-dir } else { $root })
 
   if not ($root | path exists) {
     error make { msg: $"sys-audit: root does not exist: ($root)" }

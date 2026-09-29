@@ -170,7 +170,7 @@ $results = ($results | append (check "audit never emits a dev-only category" (
 
 print "--- the never-deletes contract is documented ---"
 # The single most important property of both disk commands. If someone adds a
-# --delete flag without reading this, the guard is a comment nobody sees.
+# --delete flag without reading this, the guard is a comment nobody else sees.
 let audit_src = (open --raw /Users/joe/dev/nu_libs/lib/sys/sys-audit.nu)
 $results = ($results | append (check "sys-audit header says it never deletes" (
   $audit_src | str downcase | str contains "never deletes"
@@ -183,6 +183,16 @@ $results = ($results | append (check "sys-audit documents its cost" (
 )))
 $results = ($results | append (check "sys-audit documents what it cannot see" (
   $audit_src | str contains "TCC"
+)))
+# Omitting --root must resolve to the home directory, but proving that means a
+# real ~-wide scan (~90s+), which is too slow for this script -- gdu stats every
+# file even at --depth 0. So pin the field name instead: it is `home-dir` on
+# nu 0.111, and `home-path` looks plausible enough to be a silent trap.
+$results = ($results | append (check "sys-audit resolves home via home-dir" (
+  $audit_src | str contains "$nu.home-dir"
+)))
+$results = ($results | append (check "sys-audit does not reference \$nu.home-path" (
+  not ($audit_src | str contains "$nu.home-path")
 )))
 drop-fixture $fixture
 

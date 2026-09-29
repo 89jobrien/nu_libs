@@ -26,6 +26,12 @@
 # filesystem. This file stays I/O-only: one gdu pass, then classify the rows.
 use ./disk-classify.nu *
 
+# Substring match: `--exclude Caches` drops anything whose path contains it,
+# which is what "exclude this tree" means in practice.
+def _excluded [path: string, patterns: list<string>] {
+  $patterns | any {|x| $path | str contains $x}
+}
+
 # [nu_lib] Categorised disk report. Never deletes.
 export def main [
   --root: path = "/Users/joe/dev"   # tree to scan
@@ -33,6 +39,8 @@ export def main [
   --top: int = 20                   # how many rows per category
   --min-mb: int = 100               # ignore entries below this size
   --only: string = ""               # restrict: rebuildable | worktree | git | source
+  --exclude: list<string> = [Library/Containers "Library/Application Support/CloudDocs"]
+                                  # path substrings to drop from the report
 ] {
   # A typo in --root used to produce a well-formed all-zero report, which is
   # indistinguishable from a genuinely empty tree. A report that claims to have
@@ -107,6 +115,15 @@ export def main [
   # Drop the root's own total row so it is not counted as a child of itself.
   let root_norm = ($root | str trim)
   let rows = ($rows | where {|r| $r.path != $root_norm })
+
+  # Apply --exclude before classification so excluded rows never reach a
+  # category total, and record them as skipped rather than dropping them
+  # silently -- an exclusion is a choice, not an absence.
+  let dropped = ($rows | where {|r| _excluded $r.path $exclude } | each {|r|
+    { path: $r.path, reason: "excluded" }
+  })
+  let rows = ($rows | where {|r| not (_excluded $r.path $exclude) })
+  let skipped = ($skipped | append $dropped)
 
   let rows = (
     $rows

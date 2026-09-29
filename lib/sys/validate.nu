@@ -95,6 +95,19 @@ $results = ($results | append (check "skipped rows name a path" (
   ($denied | get skipped | first | get path | str length) > 0
 )))
 
+print "--- --exclude removes rows without touching the scan ---"
+# A home-wide run wants the TCC-heavy trees dropped up front, not carried
+# through the scan only to be filtered out of the report afterwards.
+let libs = (sys-disk --root /Users/joe/Library --depth 1 --min-mb 0)
+$results = ($results | append (check "disk accepts --exclude" (($libs | get skipped) != null)))
+let pruned = (sys-disk --root /Users/joe/Library --depth 1 --min-mb 0 --exclude [Caches])
+$results = ($results | append (check "excluded path is absent from entries" (
+  ($pruned | get entries | where {|e| $e.path | str contains "Library/Caches"} | length) == 0
+)))
+$results = ($results | append (check "excluded path is recorded as skipped" (
+  ($pruned | get skipped | any {|s| $s.reason == "excluded" and ($s.path | str contains "Library/Caches")})
+)))
+
 let fails = ($results | where {|x| $x == false} | length)
 print ""
 if $fails == 0 {

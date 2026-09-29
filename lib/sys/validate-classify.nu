@@ -68,7 +68,23 @@ let cat_results = [
   (check "classifier never emits an undeclared category" ($emitted | all {|c| $c in ($dev_cats | append $home_cats)}))
 ]
 
-let results = ($case_results | append $cat_results)
+# Guard against the exact regression this refactor removed. The category list
+# used to be hardcoded in TWO places in sys-disk.nu -- the if/else chain and the
+# summary literal -- so a category could be classified but never summarised.
+# Task 8 adds the behavioural fixture that proves real rows classify; this
+# assertion is what stops the duplication coming back.
+print "--- no duplicated category vocabulary ---"
+let src = (open --raw /Users/joe/dev/nu_libs/lib/sys/sys-disk.nu)
+let dedup_results = [
+  (check "sys-disk does not redeclare REBUILDABLE" (not ($src | str contains "const REBUILDABLE")))
+  (check "sys-disk does not hardcode the category list" (
+    not ($src | str contains "[\"rebuildable\" \"worktree\" \"git\" \"source\"]")
+  ))
+  (check "sys-disk calls the shared classifier" ($src | str contains "classify-disk-path"))
+  (check "sys-disk uses the shared category list" ($src | str contains "category-names"))
+]
+
+let results = ($case_results | append $cat_results | append $dedup_results)
 
 let fails = ($results | where {|x| $x == false} | length)
 print ""

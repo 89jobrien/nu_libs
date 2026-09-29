@@ -97,11 +97,18 @@ export def main [
     | lines
     | where {|l| ($l | str trim) != "" }
     | each {|l|
-        let parts = ($l | str trim | split row -r '\s+' | where {|p| ($p | str length) > 0})
+        # gdu and du separate size from path with a TAB. Splitting on
+        # whitespace instead truncated every path containing a space --
+        # '/Users/joe/Library/Application Support' became
+        # '/Users/joe/Library/Application', silently dropping a real tree
+        # from the report. Fall back to whitespace only if there is no tab.
+        let t = ($l | str trim --right)
+        let tabbed = ($t | split row (char tab) | where {|p| ($p | str length) > 0 })
+        let parts = (if ($tabbed | length) >= 2 { $tabbed } else { $t | split row -r '\s+' | where {|p| ($p | str length) > 0 } })
         if ($parts | length) < 2 {
           null
         } else {
-          let kb = (try { $parts | get 0 | into float } catch { 0.0 })
+          let kb = (try { $parts | get 0 | str trim | into float } catch { 0.0 })
           let path = ($parts | get 1 | str trim)
           # gdu reports bytes with -B1; du reports KB.
           let mb = (if $has_gdu { $kb / 1048576.0 } else { $kb / 1024.0 })

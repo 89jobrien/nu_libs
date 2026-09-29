@@ -108,6 +108,19 @@ $results = ($results | append (check "excluded path is recorded as skipped" (
   ($pruned | get skipped | any {|s| $s.reason == "excluded" and ($s.path | str contains "Library/Caches")})
 )))
 
+print "--- paths containing spaces survive parsing ---"
+# gdu and du separate size from path with a TAB, but the parser split on
+# whitespace, so '/Users/joe/Library/Application Support' was truncated to
+# '/Users/joe/Library/Application'. That silently drops a large, real tree
+# from any home-wide report.
+let spaced = (sys-disk --root /Users/joe/Library --depth 1 --min-mb 0)
+$results = ($results | append (check "a spaced path is parsed intact" (
+  $spaced | get entries | any {|e| $e.path | str ends-with "Library/Application Support"}
+)))
+$results = ($results | append (check "no entry path is truncated at a space" (
+  not ($spaced | get entries | any {|e| $e.path | str ends-with "Library/Application"})
+)))
+
 let fails = ($results | where {|x| $x == false} | length)
 print ""
 if $fails == 0 {

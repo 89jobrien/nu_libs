@@ -15,6 +15,8 @@ use /Users/joe/dev/nu_libs/lib/sys/sys-scan.nu *
 use /Users/joe/dev/nu_libs/lib/sys/sys-triage.nu *
 use /Users/joe/dev/nu_libs/lib/sys/sys-reap.nu *
 use /Users/joe/dev/nu_libs/lib/sys/sys-disk.nu *
+use /Users/joe/dev/nu_libs/lib/sys/sys-audit.nu *
+use /Users/joe/dev/nu_libs/lib/sys/test-fixture.nu *
 
 def check [label: string, ok: bool] {
   # Keep the interpolation flat.
@@ -120,6 +122,26 @@ $results = ($results | append (check "a spaced path is parsed intact" (
 $results = ($results | append (check "no entry path is truncated at a space" (
   not ($spaced | get entries | any {|e| $e.path | str ends-with "Library/Application"})
 )))
+
+print "--- sys-audit: the home profile ---"
+$results = ($results | append (check "sys-audit exported" ("sys-audit" in $names)))
+
+let fixture = (make-fixture --label "audit-fixture")
+let audited = (sys-audit --root $fixture --depth 2 --min-mb 0)
+$results = ($results | append (check "audit returns rows" (($audited | get entries | length) > 0)))
+$results = ($results | append (check "audit labels target/ rebuildable" (
+  $audited | get entries | any {|e| ($e.path | str ends-with "proj/target") and $e.category == "rebuildable"}
+)))
+$results = ($results | append (check "audit labels .cache as cache" (
+  $audited | get entries | any {|e| ($e.path | str ends-with "/.cache") and $e.category == "cache"}
+)))
+$results = ($results | append (check "audit leaves a plain directory as source" (
+  $audited | get entries | any {|e| ($e.path | str ends-with "/notes") and $e.category == "source"}
+)))
+$results = ($results | append (check "audit never emits a dev-only category" (
+  not ($audited | get entries | any {|e| $e.category in ["git" "worktree"]})
+)))
+drop-fixture $fixture
 
 let fails = ($results | where {|x| $x == false} | length)
 print ""

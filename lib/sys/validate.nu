@@ -84,6 +84,17 @@ $results = ($results | append (check "missing root says why" (
   (($missing.stdout | lines | append ($missing.stderr)) | str join "\n") | str contains "NO_SUCH_DIR_XYZ"
 )))
 
+print "--- unreadable paths are reported, not swallowed ---"
+# gdu/du print "Operation not permitted" to stderr for macOS TCC-protected
+# trees. Piping only stdout discarded them, so a scan could silently miss most
+# of ~/Library and still report a confident total. Every denial must surface.
+let denied = (sys-disk --root /Users/joe/Library/Containers --depth 1 --min-mb 0)
+$results = ($results | append (check "disk has a skipped key" ("skipped" in ($denied | columns))))
+$results = ($results | append (check "skipped is non-empty on a TCC tree" (($denied | get skipped | length) > 0)))
+$results = ($results | append (check "skipped rows name a path" (
+  ($denied | get skipped | first | get path | str length) > 0
+)))
+
 let fails = ($results | where {|x| $x == false} | length)
 print ""
 if $fails == 0 {

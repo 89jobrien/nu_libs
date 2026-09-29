@@ -47,13 +47,41 @@ export def main [
   # lives inside each branch rather than on the `if` expression.
   # gdu defaults to 1K blocks like du, so ask for exact bytes with -B1 rather
   # than guessing the unit from the number's magnitude.
-  let out = (
+  #
+  # Keep the WHOLE complete record. Piping only stdout used to throw away the
+  # "Operation not permitted" lines that gdu/du emit for macOS TCC-protected
+  # trees, which let a scan miss most of ~/Library while still reporting a
+  # confident total. A ~-wide scan hits hundreds of these.
+  let scan = (
     if $has_gdu {
-      ^gdu -B1 -d $depth $root | complete | get stdout
+      ^gdu -B1 -d $depth $root | complete
     } else {
       print "gdu not found, falling back to du (much slower)"
-      ^du -k -d $depth $root | complete | get stdout
+      ^du -k -d $depth $root | complete
     }
+  )
+
+  let out = ($scan | get stdout)
+
+  # Every subtree the scanner was not allowed to read. Reported, never guessed
+  # at, and never silently folded into the total.
+  let skipped = (
+    $scan
+    | get stderr
+    | lines
+    | where {|l| ($l | str trim) != "" }
+    | parse --regex '(?P<denied_path>.+): (?P<why>Operation not permitted|Permission denied)$'
+    | each {|m|
+        let p = (
+          $m.denied_path
+          | str replace --all --regex '^gdu: cannot read directory ' ''
+          | str replace --all --regex '^du: ' ''
+          | str replace --all --regex "^'" ''
+          | str replace --all --regex "'$" ''
+          | str trim
+        )
+        { path: $p, reason: ($m.why | str downcase) }
+      }
   )
 
   let rows = (
@@ -67,7 +95,7 @@ export def main [
         } else {
           let kb = (try { $parts | get 0 | into float } catch { 0.0 })
           let path = ($parts | get 1 | str trim)
-          # The `apparent-size` flag reports bytes for gdu; du reports KB.
+          # gdu reports bytes with -B1; du reports KB.
           let mb = (if $has_gdu { $kb / 1048576.0 } else { $kb / 1024.0 })
           { path: $path, mb: $mb }
         }
@@ -111,6 +139,8 @@ export def main [
     depth: $depth
     tool: (if $has_gdu { "gdu" } else { "du" })
     total_mb: $total_mb
+    skipped_count: ($skipped | length)
+    skipped: $skipped
     summary: $summary
     entries: ($rows | sort-by --reverse mb | first $top)
   }

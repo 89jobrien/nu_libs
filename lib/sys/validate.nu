@@ -167,6 +167,23 @@ $results = ($results | append (check "audit leaves a plain directory as source" 
 $results = ($results | append (check "audit never emits a dev-only category" (
   not ($audited | get entries | any {|e| $e.category in ["git" "worktree"]})
 )))
+
+print "--- the never-deletes contract is documented ---"
+# The single most important property of both disk commands. If someone adds a
+# --delete flag without reading this, the guard is a comment nobody sees.
+let audit_src = (open --raw /Users/joe/dev/nu_libs/lib/sys/sys-audit.nu)
+$results = ($results | append (check "sys-audit header says it never deletes" (
+  $audit_src | str downcase | str contains "never deletes"
+)))
+$results = ($results | append (check "sys-audit has no delete flag" (
+  not ($audit_src | str contains "--delete")
+)))
+$results = ($results | append (check "sys-audit documents its cost" (
+  $audit_src | str downcase | str contains "costs real time"
+)))
+$results = ($results | append (check "sys-audit documents what it cannot see" (
+  $audit_src | str contains "TCC"
+)))
 drop-fixture $fixture
 
 let fails = ($results | where {|x| $x == false} | length)

@@ -14,6 +14,7 @@
 # Run with:  nu --no-config-file lib/sys/validate-load.nu
 
 use /Users/joe/dev/nu_libs/lib/mod.nu *
+use /Users/joe/dev/nu_libs/lib/sys/test-fixture.nu *
 
 mut results = []
 
@@ -23,9 +24,9 @@ def check [label: string, ok: bool] {
   $ok
 }
 
-let want = ["sys-scan" "sys-triage" "sys-reap" "sys-disk"]
+let want = ["sys-scan" "sys-triage" "sys-reap" "sys-disk" "sys-audit"]
 let have = (scope commands | get name)
-$results = ($results | append (check "all four commands visible" ($want | all {|n| $n in $have})))
+$results = ($results | append (check "all five commands visible" ($want | all {|n| $n in $have})))
 
 let cols = (ps | columns)
 let need = ["pid" "ppid" "name" "mem"]
@@ -44,9 +45,22 @@ $results = ($results | append (check "reaper refuses own ancestry under full loa
 let would = ($guard | get survived | length)
 $results = ($results | append (check "reaper signals nothing under full load" ($would == 0)))
 
-let disk = (sys-disk --root /Users/joe/dev/valerie --depth 1 --min-mb 1)
-let cats = ($disk | get summary | length)
-$results = ($results | append (check "disk runs under full load" ($cats == 4)))
+# Was scanning ~/dev/valerie, which gdu reports as zero rows, so the check
+# only proved the command resolved. Use the fixture so it asserts real rows.
+let fx = (make-fixture --label "load-fixture")
+let disk = (sys-disk --root $fx --depth 3 --min-mb 0)
+$results = ($results | append (check "disk runs under full load" (($disk | get entries | length) > 0)))
+$results = ($results | append (check "disk categorises under full load" (
+  ($disk | get entries | all {|e| $e.category in ["rebuildable" "worktree" "git" "source"]})
+)))
+drop-fixture $fx
+
+# sys-audit must resolve through the aggregate load, not just by file path.
+# It is the command that reaches $HOME, so a shadowing or parse failure here
+# would break exactly the scan most likely to be run.
+let audit = (sys-audit --root /Users/joe/Library --depth 1 --min-mb 0)
+$results = ($results | append (check "audit runs under full load" (($audit | get entries | length) > 0)))
+$results = ($results | append (check "audit reports skipped under full load" (($audit | get skipped_count) > 0)))
 
 let fails = ($results | where {|x| $x == false} | length)
 print ""

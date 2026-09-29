@@ -1,0 +1,69 @@
+#!/usr/bin/env nu
+# Validation for the sys category: load every module, confirm the expected
+# commands are exported, and smoke-test the read-only paths end to end.
+# Run with:  nu --no-config-file /Users/joe/dev/nu_libs/lib/sys/validate.nu
+#
+# Gotchas this file works around, all hit while writing the category:
+#   - closures cannot mutate an outer `mut`, so `check` returns a bool and the
+#     results are tallied at the end
+#   - `mut x = null` types x as `nothing` and then cannot be reassigned
+#   - `null` is not a usable expression, so `(x != null)` will not parse
+#   - nesting $"..." inside $"..." does not parse
+
+# `use` requires literal paths, so no const interpolation here.
+use /Users/joe/dev/nu_libs/lib/sys/sys-scan.nu *
+use /Users/joe/dev/nu_libs/lib/sys/sys-triage.nu *
+use /Users/joe/dev/nu_libs/lib/sys/sys-reap.nu *
+use /Users/joe/dev/nu_libs/lib/sys/sys-disk.nu *
+
+def check [label: string, ok: bool] {
+  # Keep the interpolation flat.
+  let mark = (if $ok { "ok  " } else { "FAIL" })
+  print $"($mark) ($label)"
+  $ok
+}
+
+let names = (scope commands | get name)
+
+mut results = []
+$results = ($results | append (check "sys-scan exported" ("sys-scan" in $names)))
+$results = ($results | append (check "sys-triage exported" ("sys-triage" in $names)))
+$results = ($results | append (check "sys-reap exported" ("sys-reap" in $names)))
+$results = ($results | append (check "sys-disk exported" ("sys-disk" in $names)))
+
+print "--- scan + triage end to end (read-only) ---"
+let scan = (sys-scan --no-footprint)
+$results = ($results | append (check "scan returns groups" (($scan | get groups | length) > 0)))
+$results = ($results | append (check "scan returns swap ctx" (($scan | get ctx | get swap_total_mb) > 0.0)))
+
+let triage = ($scan | sys-triage)
+$results = ($results | append (check "triage has findings" (($triage | get findings | length) > 0)))
+$results = ($results | append (check "triage counts present" (($triage | get counts | columns | length) == 4)))
+$results = ($results | append (check "triage has escalate flag" ("escalated" in ($triage | columns))))
+
+print "--- reaper refuses its own ancestry ---"
+let ppid = (ps | where pid == $nu.pid | first | get ppid)
+let guard = (sys-reap --pids [$nu.pid $ppid] --exclude-self --dry-run)
+$results = ($results | append (check "own ancestry refused" (($guard | get refused | length) == 2)))
+$results = ($results | append (check "nothing would be signalled" (($guard | get survived | is-empty))))
+$results = ($results | append (check "dry run signalled nothing" (($guard | get signalled | is-empty))))
+
+print "--- reaper ignores an already-dead pid ---"
+let dead = (sys-reap --pids [999999] --exclude-self --dry-run)
+$results = ($results | append (check "dead pid yields no targets" (($dead | get survived | is-empty))))
+
+print "--- disk report (shallow, small target) ---"
+# valerie is tiny, so this only proves the plumbing; use a real tree manually
+# when you want to see real numbers.
+let disk = (sys-disk --root /Users/joe/dev/valerie --depth 1 --min-mb 1)
+$results = ($results | append (check "disk reports a total" (($disk | get total_mb) >= 0.0)))
+$results = ($results | append (check "disk categorises" (($disk | get summary | length) == 4)))
+
+let fails = ($results | where {|x| $x == false} | length)
+print ""
+if $fails == 0 {
+  print "ALL CHECKS PASSED"
+} else {
+  print $"($fails) of ($results | length) checks failed"
+  exit 1
+}

@@ -39,6 +39,8 @@ let cases = [
   { path: "/Users/joe/Library/Caches", profile: "home", want: "cache" }
   { path: "/Users/joe/.npm", profile: "home", want: "cache" }
   { path: "/Users/joe/.minibox", profile: "home", want: "vm" }
+  { path: "/Users/joe/.mbx", profile: "home", want: "vm" }
+  { path: "/Users/joe/.colima", profile: "home", want: "container" }
   { path: "/Users/joe/.docker", profile: "home", want: "container" }
   { path: "/Users/joe/Movies", profile: "home", want: "media" }
   { path: "/Users/joe/Downloads/thing.dmg", profile: "home", want: "archive" }

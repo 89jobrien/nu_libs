@@ -34,7 +34,9 @@ const REBUILDABLE = [
 # list first, so it lands here.
 const HOME_CACHE = [".cache" ".npm"]
 
-const HOME_VM = [".minibox" "minibox" "omarchy-vm" "Virtual Machines" "libvirt" "vagrant"]
+# `.mbx` and `.minibox` are the same tool: minibox splits its VM images and
+# container data across both. Listing one without the other hid 63 GB.
+const HOME_VM = [".minibox" "minibox" ".mbx" "omarchy-vm" "Virtual Machines" "libvirt" "vagrant"]
 const HOME_CONTAINER = [".docker" ".colima" "colima" ".lima" "lima" "minikube"]
 const HOME_MEDIA = ["Movies" "Music" "Pictures"]
 const ARCHIVE_EXT = [

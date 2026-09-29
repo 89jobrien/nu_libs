@@ -55,6 +55,24 @@ print "--- reaper ignores an already-dead pid ---"
 let dead = (sys-reap --pids [999999] --exclude-self --dry-run)
 $results = ($results | append (check "dead pid yields no targets" (($dead | get survived | is-empty))))
 
+print "--- SIGKILL is a separate, opt-in decision ---"
+# The sys-usage invariant: "I approved a kill" must never silently become "I
+# force-killed". The default path sends SIGTERM only, so `killed` must stay
+# empty and `escalated` must be false unless --escalate was passed explicitly.
+let term_only = (sys-reap --pids [999999] --exclude-self --dry-run)
+$results = ($results | append (check "default path does not escalate" (($term_only | get escalated) == false)))
+$results = ($results | append (check "default path force-kills nothing" (($term_only | get killed | is-empty))))
+
+let opt_in = (sys-reap --pids [999999] --exclude-self --dry-run --escalate)
+$results = ($results | append (check "--escalate is what sets escalated" (($opt_in | get escalated) == true)))
+
+let reap_help = (
+  ^nu --no-config-file -c "use /Users/joe/dev/nu_libs/lib/sys/sys-reap.nu *; sys-reap --help"
+  | complete | get stdout
+)
+let esc_line = ($reap_help | lines | where {|l| $l | str contains "--escalate"} | first)
+$results = ($results | append (check "--escalate help says it is off by default" ($esc_line | str contains "off by default")))
+
 print "--- disk report (fixture tree) ---"
 # Previously this scanned ~/dev/valerie, which is small enough that gdu
 # returned zero rows, and both checks still passed: total_mb >= 0.0 holds for

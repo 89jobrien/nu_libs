@@ -38,6 +38,8 @@ lib/
   doob/           doob wrappers for repo-scoped todos, search, notes, handoff sync
   misc/           asciinema, zellij, rustic, rbw, website builder
   hooks/          git hook helpers
+  sys/            macOS system inspection: process memory, swap pressure, disk bloat
+  workspace/      multi-repo workspace introspection (proj-index)
   ai/             LLM agent primitives (vendored from ai_nu — see below)
 
 scripts/          Standalone scripts — contain top-level executable code, NOT safe to `use`
@@ -53,27 +55,83 @@ use lib/mod.nu *         # load everything (slow, may conflict)
 
 ### Files with `export def main` — load by file path, not glob
 
-These conflict when re-exported from a category mod:
+These files are **deliberately omitted from their category `mod.nu`**, so
+globbing the category does not bring them into scope. Load them by path:
+
+```nu
+use lib/fs/loc.nu *        # `loc` is NOT available via `use lib/fs *`
+```
+
+The earlier framing here — that glob re-export _strips_ `export def main` — is
+**wrong**, and the table above conflated two different things. Glob re-export
+preserves `export def main`; these files are simply not listed in their mod.
+
+Verified: `lib/data/mod.nu` exports `typeof.nu` and `typeof` resolves through
+`use lib/data *`. Likewise `std/mod.nu` exports `cmd_stats.nu`, and `fs/mod.nu`
+exports `up.nu` and `pwd-short.nu` — all three are in the table below yet work
+fine via glob. `lib/sys/mod.nu` exports all five of its `main` files and all
+five resolve.
 
 | File                            | Command                       |
 | ------------------------------- | ----------------------------- |
 | `lib/git/bump-version.nu`       | `bump-version`                |
 | `lib/fs/loc.nu`                 | `loc` (tokei wrapper)         |
 | `lib/fs/wc.nu`                  | `wc`                          |
-| `lib/fs/pwd-short.nu`           | `pwd-short`                   |
-| `lib/fs/up.nu`                  | `up`                          |
+| `lib/fs/pwd-short.nu`           | `pwd-short` (also globbed)    |
+| `lib/fs/up.nu`                  | `up` (also globbed)           |
 | `lib/data/expand.nu`            | `expand`                      |
-| `lib/data/typeof.nu`            | `typeof`                      |
+| `lib/data/typeof.nu`            | `typeof` (also globbed)       |
 | `lib/data/base64_encode.nu`     | `base64_encode`               |
 | `lib/data/remove-diacritics.nu` | `remove-diacritics`           |
 | `lib/std/nu_deps.nu`            | `nu-deps`                     |
 | `lib/std/nu_release.nu`         | `nu-release`                  |
-| `lib/std/cmd_stats.nu`          | `cmd_stats`                   |
+| `lib/std/cmd_stats.nu`          | `cmd_stats` (also globbed)    |
 | `lib/task/after.nu`             | `after` (wait for process)    |
 | `lib/task/just.nu`              | `just` (completions wrapper)  |
 | `lib/task/task.nu`              | `task` (lists task commands)  |
 | `lib/ui/pick.nu`                | `pick` (fuzzy-select wrapper) |
 | `lib/task/bm.nu`                | `bm` (bookmark help)          |
+
+## Command shadowing hazard
+
+`lib/task/task.nu` exports `kill` for pueue, shadowing nu's builtin `kill`.
+Resolution happens at **parse** time, so a module in this repo that calls
+`kill --quiet ...$pids` fails to _load_ under `use lib/mod.nu *` — the error
+surfaces as `unknown flag --quiet` and takes the whole load down, not just that
+line. Call `/bin/kill` by absolute path with numeric signals instead; see
+`lib/sys/sys-reap.nu` and the `sys-usage` skill. `lib/sys/validate-load.nu`
+exists to catch this class of regression, which `validate.nu` cannot, because it
+loads by file path.
+
+## lib/sys — system inspection
+
+`lib/sys/` reports process memory, swap pressure, and on-disk bloat on macOS.
+Read-only except `sys-reap`, which kills and refuses its own ancestry.
+Neither disk command deletes anything, and neither has a delete flag.
+
+```nu
+sys-scan | sys-triage      # classify, ranked by reclaimable swap
+sys-reap --pids [...]      # SIGTERM; --escalate for SIGKILL survivors
+sys-disk --depth 1         # dev-tree report: rebuildable | worktree | git | source
+sys-audit                  # home report: cache | rebuildable | vm | container |
+                          #   archive | media | appdata | source
+```
+
+`sys-disk` answers "which project under `~/dev` is the hog". `sys-audit` answers
+"should we clean anything from `~`" — pointed at `$HOME`, `sys-disk` labels
+`~/Library/Caches`, `~/.cache` and `~/.minibox` all `source`, because its four
+categories are tuned for Rust and JS repos. Both share one classifier
+(`lib/sys/disk-classify.nu`) so the two cannot drift.
+
+A `~`-wide scan is slower than the 90-135s `~/dev` scan, and macOS TCC denies
+reading much of `~/Library` and `~/.Trash`. Unreadable paths appear in the
+`skipped` list rather than being omitted, so a long `skipped` list means the
+total is a floor rather than a measurement.
+
+Validate with `nu --no-config-file lib/sys/validate.nu` (by file path) and
+`lib/sys/validate-load.nu` (via `lib/mod.nu *`). `lib/sys/validate-classify.nu`
+covers the classifier and the disk pipeline against a synthetic fixture. See the
+`sys-usage` skill.
 
 ## lib/ai Architecture
 

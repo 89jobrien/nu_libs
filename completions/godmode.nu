@@ -39,18 +39,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode session help" [
-  ]
-
-  # Delete session JSONL files older than N days
-  export extern "godmode session help prune" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode session help help" [
-  ]
-
   # Task graph management
   export extern "godmode task" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -72,6 +60,10 @@ module completions {
     --id: string              # Task ID (e.g. t5). Auto-assigned if omitted
     --depends-on: string
     --crate-name: string
+    --notes: string           # Freeform task notes
+    --run: string             # Shell command to run for this task
+    --priority: string        # Scheduling priority
+    --tag: string             # Freeform task tag. Repeat to add multiple tags
     --json                    # Emit machine-readable JSON instead of human text
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
@@ -158,7 +150,15 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Mark completed tasks as done in doob (uses `doob:` UUID in notes field)
+  # Publish tasks that do not yet have Doob provenance
+  export extern "godmode task push" [
+    --project: string         # Doob project name (defaults to configured or detected project name)
+    --json                    # Emit machine-readable JSON instead of human text
+    --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
+    --help(-h)                # Print help
+  ]
+
+  # Mark completed tasks as done in doob (uses structured provenance or legacy notes)
   export extern "godmode task push-done" [
     --json                    # Emit machine-readable JSON instead of human text
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
@@ -188,74 +188,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode task help" [
-  ]
-
-  # List all tasks with status
-  export extern "godmode task help list" [
-  ]
-
-  # Add a new task. Omit ID to auto-assign the next available "tN" slot
-  export extern "godmode task help add" [
-  ]
-
-  # Mark a task as running
-  export extern "godmode task help start" [
-  ]
-
-  # Mark a running task as done
-  export extern "godmode task help done" [
-  ]
-
-  # Mark a task as blocked
-  export extern "godmode task help block" [
-  ]
-
-  # Unblock a blocked task (resets to pending)
-  export extern "godmode task help unblock" [
-  ]
-
-  # Remove a task
-  export extern "godmode task help remove" [
-  ]
-
-  # Clear tasks from the graph
-  export extern "godmode task help clear" [
-  ]
-
-  # Show the next runnable task(s)
-  export extern "godmode task help next" [
-  ]
-
-  # Run the shell command attached to a task's `run:` field
-  export extern "godmode task help run" [
-  ]
-
-  # Pull pending todos/issues into the task graph
-  export extern "godmode task help pull" [
-  ]
-
-  # Mark completed tasks as done in doob (uses `doob:` UUID in notes field)
-  export extern "godmode task help push-done" [
-  ]
-
-  # Reset all blocked tasks to pending in one operation
-  export extern "godmode task help unblock-all" [
-  ]
-
-  # Apply a template to the task graph
-  export extern "godmode task help apply" [
-  ]
-
-  # List available templates
-  export extern "godmode task help list-templates" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode task help help" [
-  ]
-
   # Plan operations
   export extern "godmode plan" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -269,18 +201,6 @@ module completions {
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
     path: string              # Path to the plan markdown file
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode plan help" [
-  ]
-
-  # Parse a plan markdown file and populate the task graph
-  export extern "godmode plan help ingest" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode plan help help" [
   ]
 
   # Show independent chains ready for parallel agent dispatch (JSON)
@@ -356,34 +276,6 @@ module completions {
     name?: string             # Name of a single agent .md to migrate (stem, no extension). Omit for --all
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode agent help" [
-  ]
-
-  # List available agents (table or JSON)
-  export extern "godmode agent help list" [
-  ]
-
-  # Regenerate agents/INDEX.md
-  export extern "godmode agent help index" [
-  ]
-
-  # Ingest a plan file and emit an orca-strait dispatch payload
-  export extern "godmode agent help dispatch" [
-  ]
-
-  # Generate .md from agent YAML definitions
-  export extern "godmode agent help generate" [
-  ]
-
-  # Migrate agents/*.md frontmatter to agents/*.yaml stubs
-  export extern "godmode agent help migrate" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode agent help help" [
-  ]
-
   # Run verification gate: nextest + clippy + fmt + non-empty git log
   export extern "godmode verify" [
     --crate-name: string      # Scope to a single crate instead of --workspace
@@ -439,34 +331,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode wave help" [
-  ]
-
-  # Initialise a new wave state file
-  export extern "godmode wave help init" [
-  ]
-
-  # Show current wave status
-  export extern "godmode wave help status" [
-  ]
-
-  # Mark an agent slot as done
-  export extern "godmode wave help done" [
-  ]
-
-  # Mark an agent slot as blocked
-  export extern "godmode wave help block" [
-  ]
-
-  # Exit 1 if any slot is still pending
-  export extern "godmode wave help check" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode wave help help" [
-  ]
-
   # Git worktree lifecycle management
   export extern "godmode worktree" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -491,22 +355,6 @@ module completions {
     branch: string
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode worktree help" [
-  ]
-
-  # Create a worktree for a branch (optionally linked to a GH issue)
-  export extern "godmode worktree help add" [
-  ]
-
-  # Remove a worktree after verifying its branch is merged into main
-  export extern "godmode worktree help remove" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode worktree help help" [
-  ]
-
   # CI failure triage
   export extern "godmode ci" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -520,18 +368,6 @@ module completions {
     --json                    # Emit machine-readable JSON instead of human text
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode ci help" [
-  ]
-
-  # Fetch latest failed CI run and classify root cause
-  export extern "godmode ci help triage" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode ci help help" [
   ]
 
   # GitHub issue operations
@@ -560,20 +396,14 @@ module completions {
     number: string
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode issue help" [
-  ]
-
-  # List open GitHub issues
-  export extern "godmode issue help list" [
-  ]
-
-  # Close a GitHub issue with a commit reference
-  export extern "godmode issue help close" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode issue help help" [
+  # Synchronize source TODO markers with GitHub issues (preview by default)
+  export extern "godmode issue sync-todos" [
+    --repo: string
+    --preview                 # Explicitly preview without creating issues (the default)
+    --apply                   # Create missing issues and persist progress
+    --json                    # Emit machine-readable JSON instead of human text
+    --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
+    --help(-h)                # Print help
   ]
 
   # Interactive or file-driven task graph construction
@@ -590,18 +420,6 @@ module completions {
     --json                    # Emit machine-readable JSON instead of human text
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode graph help" [
-  ]
-
-  # Build a task graph interactively or from a template file
-  export extern "godmode graph help build" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode graph help help" [
   ]
 
   # Hook observability: list, log, and test hooks
@@ -649,34 +467,6 @@ module completions {
     name: string              # Hook name: stop-guard, auto-block, pre-commit, quality-gate
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode hook help" [
-  ]
-
-  # List all hooks registered in hooks/hooks.json
-  export extern "godmode hook help list" [
-  ]
-
-  # Print the last N lines from .ctx/godmode/traces/hooks.log
-  export extern "godmode hook help log" [
-  ]
-
-  # Run a hook script with synthetic stdin JSON and show exit code + stderr
-  export extern "godmode hook help test" [
-  ]
-
-  # Run all numbered migration scripts in hooks/migrations/
-  export extern "godmode hook help migrate" [
-  ]
-
-  # Run a built-in hook by name (Rust implementation)
-  export extern "godmode hook help run" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode hook help help" [
-  ]
-
   # Skill registry management
   export extern "godmode skill" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -707,24 +497,51 @@ module completions {
     name: string              # Skill name to remove
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode skill help" [
+  # Skill evaluation runs, baselines, comparisons, and CI gates
+  export extern "godmode eval" [
+    --json                    # Emit machine-readable JSON instead of human text
+    --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
+    --help(-h)                # Print help
   ]
 
-  # List all registered skills
-  export extern "godmode skill help list" [
+  # Execute a bounded evaluation using deterministic result fixtures
+  export extern "godmode eval run" [
+    --results: string         # JSON fixture containing pass/fail outcomes from an evaluation adapter
+    --repeat: string          # Number of times to run each case (maximum 10)
+    --max-cases: string       # Maximum total case invocations
+    --max-cost-usd: string    # Maximum aggregate model cost in US dollars
+    --json                    # Emit machine-readable JSON instead of human text
+    --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
+    --help(-h)                # Print help
+    skill: string             # Skill directory name under skills/
   ]
 
-  # Install a skill from a local directory path
-  export extern "godmode skill help install" [
+  # Compare the latest run with the promoted baseline
+  export extern "godmode eval compare" [
+    --json                    # Emit machine-readable JSON instead of human text
+    --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
+    --help(-h)                # Print help
+    skill: string
   ]
 
-  # Remove a skill from the registry by name
-  export extern "godmode skill help uninstall" [
+  # Promote the latest passing run to the baseline
+  export extern "godmode eval promote" [
+    --min-pass-rate: string
+    --max-cost-usd: string
+    --json                    # Emit machine-readable JSON instead of human text
+    --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
+    --help(-h)                # Print help
+    skill: string
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode skill help help" [
+  # Show latest and baseline results and enforce a CI gate
+  export extern "godmode eval status" [
+    --min-pass-rate: string
+    --max-cost-usd: string
+    --json                    # Emit machine-readable JSON instead of human text
+    --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
+    --help(-h)                # Print help
+    skill: string
   ]
 
   # Plugin conformance and consistency auditing
@@ -753,26 +570,6 @@ module completions {
     --json                    # Emit machine-readable JSON instead of human text
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode review help" [
-  ]
-
-  # Run all conformance checks (skills + agents + plugin.json)
-  export extern "godmode review help self" [
-  ]
-
-  # Check skill dirs for SKILL.md, frontmatter, and link integrity
-  export extern "godmode review help skills" [
-  ]
-
-  # Check agent frontmatter completeness
-  export extern "godmode review help agents" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode review help help" [
   ]
 
   # Plugin release: bump version, tag, push
@@ -825,38 +622,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode release help" [
-  ]
-
-  # Show current plugin version
-  export extern "godmode release help current" [
-  ]
-
-  # Increment patch version in all files listed in .version-bump.json
-  export extern "godmode release help bump" [
-  ]
-
-  # Create annotated git tag for the current version
-  export extern "godmode release help tag" [
-  ]
-
-  # Push current branch and version tag to origin
-  export extern "godmode release help push" [
-  ]
-
-  # Generate and prepend a changelog entry from commits since last tag
-  export extern "godmode release help changelog" [
-  ]
-
-  # Cross-check plugin.json, Cargo.toml, and git tag versions
-  export extern "godmode release help validate" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode release help help" [
-  ]
-
   # Workflow DAG execution per agent
   export extern "godmode workflow" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -887,26 +652,6 @@ module completions {
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
     name: string              # Workflow name
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode workflow help" [
-  ]
-
-  # Execute a workflow DAG for an agent
-  export extern "godmode workflow help run" [
-  ]
-
-  # List workflows for an agent (or all agents)
-  export extern "godmode workflow help list" [
-  ]
-
-  # Show current state of a named workflow from .ctx/workflow-<name>.json
-  export extern "godmode workflow help status" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode workflow help help" [
   ]
 
   # Render the task graph as DOT or SVG
@@ -953,30 +698,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode memory-banking help" [
-  ]
-
-  # Print memory-bank contents for context injection (SessionStart hook)
-  export extern "godmode memory-banking help inject" [
-  ]
-
-  # Print update reminder if session had commits (Stop hook)
-  export extern "godmode memory-banking help remind" [
-  ]
-
-  # Create .ctx/memory-banking/ with empty template files
-  export extern "godmode memory-banking help init" [
-  ]
-
-  # Show memory-banking status and staleness
-  export extern "godmode memory-banking help status" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode memory-banking help help" [
-  ]
-
   # Insight capture and retrieval (append-only JSONL)
   export extern "godmode insight" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -1008,26 +729,6 @@ module completions {
     --json                    # Emit machine-readable JSON instead of human text
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode insight help" [
-  ]
-
-  # Record a new insight
-  export extern "godmode insight help add" [
-  ]
-
-  # List recorded insights
-  export extern "godmode insight help list" [
-  ]
-
-  # Render insights to `.ctx/insights-YYYY-MM-DD.md`
-  export extern "godmode insight help render" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode insight help help" [
   ]
 
   # Pipeline execution: list, start, advance, and status multi-step pipelines
@@ -1099,46 +800,6 @@ module completions {
     name: string              # Pipeline name to run
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode pipeline help" [
-  ]
-
-  # List all available pipelines with name and description
-  export extern "godmode pipeline help list" [
-  ]
-
-  # Show steps for a pipeline, marking current position if active
-  export extern "godmode pipeline help show" [
-  ]
-
-  # Start a pipeline, optionally from a named entry-point skill
-  export extern "godmode pipeline help start" [
-  ]
-
-  # Mark current step done and advance to the next step
-  export extern "godmode pipeline help next" [
-  ]
-
-  # Skip current step and advance without marking it done
-  export extern "godmode pipeline help skip" [
-  ]
-
-  # Deactivate the current pipeline (clear saved state)
-  export extern "godmode pipeline help stop" [
-  ]
-
-  # Show the active pipeline name, current step, and progress
-  export extern "godmode pipeline help status" [
-  ]
-
-  # Run a pipeline headlessly — walk task graph, execute run: fields
-  export extern "godmode pipeline help run" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode pipeline help help" [
-  ]
-
   # Governance policy management: resolve, check, list, audit
   export extern "godmode policy" [
     --json                    # Emit machine-readable JSON instead of human text
@@ -1179,30 +840,6 @@ module completions {
     --json                    # Emit machine-readable JSON instead of human text
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode policy help" [
-  ]
-
-  # Resolve the effective policy for an agent
-  export extern "godmode policy help resolve" [
-  ]
-
-  # Check if a tool call is allowed by an agent's policy
-  export extern "godmode policy help check" [
-  ]
-
-  # List all available policies (default, categories, levels)
-  export extern "godmode policy help list" [
-  ]
-
-  # Show governance audit trail
-  export extern "godmode policy help audit" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode policy help help" [
   ]
 
   # Pin the session to a specific repo root path
@@ -1249,426 +886,6 @@ module completions {
     --sarif                   # Emit SARIF v2.1.0 output (verify and review commands)
     --help(-h)                # Print help
     path: string              # Path to the .rs file to check
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode help" [
-  ]
-
-  # Print triage summary at session start
-  export extern "godmode help handon" [
-  ]
-
-  # Validate session state at session end
-  export extern "godmode help handoff" [
-  ]
-
-  # Session file management (pruning, etc.)
-  export extern "godmode help session" [
-  ]
-
-  # Delete session JSONL files older than N days
-  export extern "godmode help session prune" [
-  ]
-
-  # Task graph management
-  export extern "godmode help task" [
-  ]
-
-  # List all tasks with status
-  export extern "godmode help task list" [
-  ]
-
-  # Add a new task. Omit ID to auto-assign the next available "tN" slot
-  export extern "godmode help task add" [
-  ]
-
-  # Mark a task as running
-  export extern "godmode help task start" [
-  ]
-
-  # Mark a running task as done
-  export extern "godmode help task done" [
-  ]
-
-  # Mark a task as blocked
-  export extern "godmode help task block" [
-  ]
-
-  # Unblock a blocked task (resets to pending)
-  export extern "godmode help task unblock" [
-  ]
-
-  # Remove a task
-  export extern "godmode help task remove" [
-  ]
-
-  # Clear tasks from the graph
-  export extern "godmode help task clear" [
-  ]
-
-  # Show the next runnable task(s)
-  export extern "godmode help task next" [
-  ]
-
-  # Run the shell command attached to a task's `run:` field
-  export extern "godmode help task run" [
-  ]
-
-  # Pull pending todos/issues into the task graph
-  export extern "godmode help task pull" [
-  ]
-
-  # Mark completed tasks as done in doob (uses `doob:` UUID in notes field)
-  export extern "godmode help task push-done" [
-  ]
-
-  # Reset all blocked tasks to pending in one operation
-  export extern "godmode help task unblock-all" [
-  ]
-
-  # Apply a template to the task graph
-  export extern "godmode help task apply" [
-  ]
-
-  # List available templates
-  export extern "godmode help task list-templates" [
-  ]
-
-  # Plan operations
-  export extern "godmode help plan" [
-  ]
-
-  # Parse a plan markdown file and populate the task graph
-  export extern "godmode help plan ingest" [
-  ]
-
-  # Show independent chains ready for parallel agent dispatch (JSON)
-  export extern "godmode help dispatch" [
-  ]
-
-  # Emit full session context for hooks and subagents
-  export extern "godmode help context" [
-  ]
-
-  # Show graph counts and next runnable task(s) — fast mid-session state check
-  export extern "godmode help status" [
-  ]
-
-  # Agent operations: list installed agents, generate index, or dispatch a plan
-  export extern "godmode help agent" [
-  ]
-
-  # List available agents (table or JSON)
-  export extern "godmode help agent list" [
-  ]
-
-  # Regenerate agents/INDEX.md
-  export extern "godmode help agent index" [
-  ]
-
-  # Ingest a plan file and emit an orca-strait dispatch payload
-  export extern "godmode help agent dispatch" [
-  ]
-
-  # Generate .md from agent YAML definitions
-  export extern "godmode help agent generate" [
-  ]
-
-  # Migrate agents/*.md frontmatter to agents/*.yaml stubs
-  export extern "godmode help agent migrate" [
-  ]
-
-  # Run verification gate: nextest + clippy + fmt + non-empty git log
-  export extern "godmode help verify" [
-  ]
-
-  # Wave state management for parallel agent sessions
-  export extern "godmode help wave" [
-  ]
-
-  # Initialise a new wave state file
-  export extern "godmode help wave init" [
-  ]
-
-  # Show current wave status
-  export extern "godmode help wave status" [
-  ]
-
-  # Mark an agent slot as done
-  export extern "godmode help wave done" [
-  ]
-
-  # Mark an agent slot as blocked
-  export extern "godmode help wave block" [
-  ]
-
-  # Exit 1 if any slot is still pending
-  export extern "godmode help wave check" [
-  ]
-
-  # Git worktree lifecycle management
-  export extern "godmode help worktree" [
-  ]
-
-  # Create a worktree for a branch (optionally linked to a GH issue)
-  export extern "godmode help worktree add" [
-  ]
-
-  # Remove a worktree after verifying its branch is merged into main
-  export extern "godmode help worktree remove" [
-  ]
-
-  # CI failure triage
-  export extern "godmode help ci" [
-  ]
-
-  # Fetch latest failed CI run and classify root cause
-  export extern "godmode help ci triage" [
-  ]
-
-  # GitHub issue operations
-  export extern "godmode help issue" [
-  ]
-
-  # List open GitHub issues
-  export extern "godmode help issue list" [
-  ]
-
-  # Close a GitHub issue with a commit reference
-  export extern "godmode help issue close" [
-  ]
-
-  # Interactive or file-driven task graph construction
-  export extern "godmode help graph" [
-  ]
-
-  # Build a task graph interactively or from a template file
-  export extern "godmode help graph build" [
-  ]
-
-  # Hook observability: list, log, and test hooks
-  export extern "godmode help hook" [
-  ]
-
-  # List all hooks registered in hooks/hooks.json
-  export extern "godmode help hook list" [
-  ]
-
-  # Print the last N lines from .ctx/godmode/traces/hooks.log
-  export extern "godmode help hook log" [
-  ]
-
-  # Run a hook script with synthetic stdin JSON and show exit code + stderr
-  export extern "godmode help hook test" [
-  ]
-
-  # Run all numbered migration scripts in hooks/migrations/
-  export extern "godmode help hook migrate" [
-  ]
-
-  # Run a built-in hook by name (Rust implementation)
-  export extern "godmode help hook run" [
-  ]
-
-  # Skill registry management
-  export extern "godmode help skill" [
-  ]
-
-  # List all registered skills
-  export extern "godmode help skill list" [
-  ]
-
-  # Install a skill from a local directory path
-  export extern "godmode help skill install" [
-  ]
-
-  # Remove a skill from the registry by name
-  export extern "godmode help skill uninstall" [
-  ]
-
-  # Plugin conformance and consistency auditing
-  export extern "godmode help review" [
-  ]
-
-  # Run all conformance checks (skills + agents + plugin.json)
-  export extern "godmode help review self" [
-  ]
-
-  # Check skill dirs for SKILL.md, frontmatter, and link integrity
-  export extern "godmode help review skills" [
-  ]
-
-  # Check agent frontmatter completeness
-  export extern "godmode help review agents" [
-  ]
-
-  # Plugin release: bump version, tag, push
-  export extern "godmode help release" [
-  ]
-
-  # Show current plugin version
-  export extern "godmode help release current" [
-  ]
-
-  # Increment patch version in all files listed in .version-bump.json
-  export extern "godmode help release bump" [
-  ]
-
-  # Create annotated git tag for the current version
-  export extern "godmode help release tag" [
-  ]
-
-  # Push current branch and version tag to origin
-  export extern "godmode help release push" [
-  ]
-
-  # Generate and prepend a changelog entry from commits since last tag
-  export extern "godmode help release changelog" [
-  ]
-
-  # Cross-check plugin.json, Cargo.toml, and git tag versions
-  export extern "godmode help release validate" [
-  ]
-
-  # Workflow DAG execution per agent
-  export extern "godmode help workflow" [
-  ]
-
-  # Execute a workflow DAG for an agent
-  export extern "godmode help workflow run" [
-  ]
-
-  # List workflows for an agent (or all agents)
-  export extern "godmode help workflow list" [
-  ]
-
-  # Show current state of a named workflow from .ctx/workflow-<name>.json
-  export extern "godmode help workflow status" [
-  ]
-
-  # Render the task graph as DOT or SVG
-  export extern "godmode help visualize-graph" [
-  ]
-
-  # Memory banking: persistent source-backed project context
-  export extern "godmode help memory-banking" [
-  ]
-
-  # Print memory-bank contents for context injection (SessionStart hook)
-  export extern "godmode help memory-banking inject" [
-  ]
-
-  # Print update reminder if session had commits (Stop hook)
-  export extern "godmode help memory-banking remind" [
-  ]
-
-  # Create .ctx/memory-banking/ with empty template files
-  export extern "godmode help memory-banking init" [
-  ]
-
-  # Show memory-banking status and staleness
-  export extern "godmode help memory-banking status" [
-  ]
-
-  # Insight capture and retrieval (append-only JSONL)
-  export extern "godmode help insight" [
-  ]
-
-  # Record a new insight
-  export extern "godmode help insight add" [
-  ]
-
-  # List recorded insights
-  export extern "godmode help insight list" [
-  ]
-
-  # Render insights to `.ctx/insights-YYYY-MM-DD.md`
-  export extern "godmode help insight render" [
-  ]
-
-  # Pipeline execution: list, start, advance, and status multi-step pipelines
-  export extern "godmode help pipeline" [
-  ]
-
-  # List all available pipelines with name and description
-  export extern "godmode help pipeline list" [
-  ]
-
-  # Show steps for a pipeline, marking current position if active
-  export extern "godmode help pipeline show" [
-  ]
-
-  # Start a pipeline, optionally from a named entry-point skill
-  export extern "godmode help pipeline start" [
-  ]
-
-  # Mark current step done and advance to the next step
-  export extern "godmode help pipeline next" [
-  ]
-
-  # Skip current step and advance without marking it done
-  export extern "godmode help pipeline skip" [
-  ]
-
-  # Deactivate the current pipeline (clear saved state)
-  export extern "godmode help pipeline stop" [
-  ]
-
-  # Show the active pipeline name, current step, and progress
-  export extern "godmode help pipeline status" [
-  ]
-
-  # Run a pipeline headlessly — walk task graph, execute run: fields
-  export extern "godmode help pipeline run" [
-  ]
-
-  # Governance policy management: resolve, check, list, audit
-  export extern "godmode help policy" [
-  ]
-
-  # Resolve the effective policy for an agent
-  export extern "godmode help policy resolve" [
-  ]
-
-  # Check if a tool call is allowed by an agent's policy
-  export extern "godmode help policy check" [
-  ]
-
-  # List all available policies (default, categories, levels)
-  export extern "godmode help policy list" [
-  ]
-
-  # Show governance audit trail
-  export extern "godmode help policy audit" [
-  ]
-
-  # Pin the session to a specific repo root path
-  export extern "godmode help pin" [
-  ]
-
-  # Remove the pinned root from the session
-  export extern "godmode help unpin" [
-  ]
-
-  # First-time setup: create global config and project state dirs
-  export extern "godmode help init" [
-  ]
-
-  # Validate environment: required tools, 1Password auth, worktrees
-  export extern "godmode help doctor" [
-  ]
-
-  # Generate a test module stub for a crate and testing dimension
-  export extern "godmode help scaffold" [
-  ]
-
-  # Check whether a Rust source file has associated tests
-  export extern "godmode help test-check" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "godmode help help" [
   ]
 
 }

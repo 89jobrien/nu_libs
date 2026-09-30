@@ -43,50 +43,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "propkit scaffold help" [
-  ]
-
-  # Generate smolvm test helpers (RAII VM guard, port utils, fixtures)
-  export extern "propkit scaffold help smolvm" [
-  ]
-
-  # Generate TestLinux VM runner (cross-compile + QEMU boot)
-  export extern "propkit scaffold help testlinux" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "propkit scaffold help help" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "propkit help" [
-  ]
-
-  # Analyze source files and print property test recommendations
-  export extern "propkit help scan" [
-  ]
-
-  # Generate a standalone property test file
-  export extern "propkit help generate" [
-  ]
-
-  # Scaffold reusable test infrastructure modules
-  export extern "propkit help scaffold" [
-  ]
-
-  # Generate smolvm test helpers (RAII VM guard, port utils, fixtures)
-  export extern "propkit help scaffold smolvm" [
-  ]
-
-  # Generate TestLinux VM runner (cross-compile + QEMU boot)
-  export extern "propkit help scaffold testlinux" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "propkit help help" [
-  ]
-
 }
 
 export use completions *

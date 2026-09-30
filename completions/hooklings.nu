@@ -31,40 +31,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "hooklings config help" [
-  ]
-
-  export extern "hooklings config help show" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "hooklings config help help" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "hooklings help" [
-  ]
-
-  # Run all enabled checks in the configured pipeline
-  export extern "hooklings help preflight" [
-  ]
-
-  # Run a single named check
-  export extern "hooklings help check" [
-  ]
-
-  # Print the merged effective config
-  export extern "hooklings help config" [
-  ]
-
-  export extern "hooklings help config show" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "hooklings help help" [
-  ]
-
 }
 
 export use completions *

@@ -104,56 +104,32 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "kan-cli help" [
+  # Add a dependency: `card_id` cannot start until `depends_on_id` completes
+  export extern "kan-cli add-dep" [
+    --board: string           # Board name (project-scoped when in a project)
+    --help(-h)                # Print help
+    card_id: string           # Card ID or display ID that has the dependency
+    depends_on_id: string     # Card ID or display ID that must complete first
   ]
 
-  # Show quick overview of the current board
-  export extern "kan-cli help list" [
+  # Remove a dependency between two cards
+  export extern "kan-cli remove-dep" [
+    --board: string           # Board name (project-scoped when in a project)
+    --help(-h)                # Print help
+    card_id: string           # Card ID or display ID that has the dependency
+    depends_on_id: string     # Card ID or display ID that must complete first
   ]
 
-  # Add a new card to a column
-  export extern "kan-cli help add" [
-  ]
+  def "nu-complete kan-cli export-deps format" [] {
+    [ "json" "gh-actions" ]
+  }
 
-  # Move a card to another column
-  export extern "kan-cli help move" [
-  ]
-
-  # Show details for a specific card
-  export extern "kan-cli help show" [
-  ]
-
-  # List all columns on the current board
-  export extern "kan-cli help columns" [
-  ]
-
-  # Initialize a new board with default columns
-  export extern "kan-cli help init" [
-  ]
-
-  # List all available boards
-  export extern "kan-cli help boards" [
-  ]
-
-  # Delete a card
-  export extern "kan-cli help delete" [
-  ]
-
-  # Update a card's title and/or description
-  export extern "kan-cli help update" [
-  ]
-
-  # Import Beads issues from a JSONL export
-  export extern "kan-cli help import-bd" [
-  ]
-
-  # Import ready Beads issues via `bd ready --json`
-  export extern "kan-cli help import-bd-ready" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "kan-cli help help" [
+  # Export the board's task-dependency graph
+  export extern "kan-cli export-deps" [
+    --format(-f): string@"nu-complete kan-cli export-deps format" # Output format
+    --out(-o): string         # Write to this file instead of stdout
+    --board: string           # Board name (project-scoped when in a project)
+    --help(-h)                # Print help (see more with '--help')
   ]
 
 }

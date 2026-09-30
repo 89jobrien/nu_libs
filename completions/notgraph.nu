@@ -1,11 +1,10 @@
 module completions {
 
-  # Workspace module graph and symbol analysis
   export extern notgraph [
-    --output: path
+    --help(-h)                # Print help
+    --output: string
     --fail-on-cycles
     --top: string
-    --help(-h)                # Print help
   ]
 
 }

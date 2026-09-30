@@ -57,26 +57,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "rslm help" [
-  ]
-
-  # Run a single query with context
-  export extern "rslm help query" [
-  ]
-
-  # Interactive mode: prompts for query and context
-  export extern "rslm help interactive" [
-  ]
-
-  # Ingest a document into the chunk store
-  export extern "rslm help ingest" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "rslm help help" [
-  ]
-
 }
 
 export use completions *

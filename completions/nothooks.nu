@@ -17,18 +17,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "nothooks help" [
-  ]
-
-  # Run hooks for a phase
-  export extern "nothooks help run" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "nothooks help help" [
-  ]
-
 }
 
 export use completions *

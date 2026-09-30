@@ -14,18 +14,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "notstrap help" [
-  ]
-
-  # Run the full bootstrap sequence
-  export extern "notstrap help run" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "notstrap help help" [
-  ]
-
 }
 
 export use completions *

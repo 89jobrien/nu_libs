@@ -38,22 +38,6 @@ module completions {
     tarball: path             # Path to OCI image tarball
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "repro help" [
-  ]
-
-  # Perform a reproducible container image build
-  export extern "repro help build" [
-  ]
-
-  # Analyze an OCI image tarball
-  export extern "repro help analyze" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "repro help help" [
-  ]
-
 }
 
 export use completions *

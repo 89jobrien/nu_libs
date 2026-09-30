@@ -49,26 +49,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "braid-cli sessions help" [
-  ]
-
-  # List session IDs, newest first
-  export extern "braid-cli sessions help list" [
-  ]
-
-  # Print a session's event timeline
-  export extern "braid-cli sessions help show" [
-  ]
-
-  # Delete oldest sessions, keeping N most recent
-  export extern "braid-cli sessions help prune" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "braid-cli sessions help help" [
-  ]
-
   # List installed components
   export extern "braid-cli components" [
     --help(-h)                # Print help
@@ -80,18 +60,6 @@ module completions {
     --help(-h)                # Print help
   ]
 
-  # Print this message or the help of the given subcommand(s)
-  export extern "braid-cli components help" [
-  ]
-
-  # List all installed components
-  export extern "braid-cli components help list" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "braid-cli components help help" [
-  ]
-
   # Run as a warpx agent harness (JSON-lines output)
   export extern "braid-cli agent" [
     --prompt: string          # Prompt text (reads stdin if omitted)
@@ -99,58 +67,6 @@ module completions {
     --model: string           # Model name
     --max-turns: string       # Maximum engine turns before stopping
     --help(-h)                # Print help
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "braid-cli help" [
-  ]
-
-  # Run a session against a provider
-  export extern "braid-cli help run" [
-  ]
-
-  # Check environment health
-  export extern "braid-cli help doctor" [
-  ]
-
-  # Set up local braid environment (~/.braid/)
-  export extern "braid-cli help setup" [
-  ]
-
-  # Start MCP server over stdio
-  export extern "braid-cli help mcp" [
-  ]
-
-  # Manage stored sessions
-  export extern "braid-cli help sessions" [
-  ]
-
-  # List session IDs, newest first
-  export extern "braid-cli help sessions list" [
-  ]
-
-  # Print a session's event timeline
-  export extern "braid-cli help sessions show" [
-  ]
-
-  # Delete oldest sessions, keeping N most recent
-  export extern "braid-cli help sessions prune" [
-  ]
-
-  # List installed components
-  export extern "braid-cli help components" [
-  ]
-
-  # List all installed components
-  export extern "braid-cli help components list" [
-  ]
-
-  # Run as a warpx agent harness (JSON-lines output)
-  export extern "braid-cli help agent" [
-  ]
-
-  # Print this message or the help of the given subcommand(s)
-  export extern "braid-cli help help" [
   ]
 
 }

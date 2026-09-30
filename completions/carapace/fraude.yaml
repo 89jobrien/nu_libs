@@ -1,0 +1,102 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: fraude
+description: Interactive coding assistant for the current workspace
+parsing: interspersed
+persistentflags:
+  --model=: Override the active model
+  --output-format=: Select non-interactive output format [default text]
+  --permission-mode=: Set the tool permission mode
+  --dangerously-skip-permissions: Skip all permission checks
+  --allowedTools=*: Restrict enabled tools; repeatable and comma-separated
+  --allowed-tools=*: Alias for --allowedTools
+  -p=: Run a one-shot prompt using all remaining arguments
+  --print: Use non-interactive text output
+  --resume=: Restore a session file; trailing arguments must be slash commands
+  -V, --version: Print version and build information
+  -h, --help: Print help
+completion:
+  flag:
+    model:
+      - "opus\tclaude-opus-4-6"
+      - "sonnet\tclaude-sonnet-4-6"
+      - "haiku\tclaude-haiku-4-5-20251213"
+    output-format:
+      - "text\thuman-readable output"
+      - "json\tmachine-readable output"
+    permission-mode:
+      - "read-only\tread and search tools only"
+      - "workspace-write\tallow workspace edits"
+      - "danger-full-access\tunrestricted tool access"
+    allowedTools:
+      - "bash\trun shell commands"
+      - "read_file\tread files"
+      - "write_file\twrite files"
+      - "edit_file\tedit files"
+      - "glob_search\tsearch file paths"
+      - "grep_search\tsearch file contents"
+      - "read\talias for read_file"
+      - "write\talias for write_file"
+      - "edit\talias for edit_file"
+      - "glob\talias for glob_search"
+      - "grep\talias for grep_search"
+    allowed-tools:
+      - "bash\trun shell commands"
+      - "read_file\tread files"
+      - "write_file\twrite files"
+      - "edit_file\tedit files"
+      - "glob_search\tsearch file paths"
+      - "grep_search\tsearch file contents"
+      - "read\talias for read_file"
+      - "write\talias for write_file"
+      - "edit\talias for edit_file"
+      - "glob\talias for glob_search"
+      - "grep\talias for grep_search"
+    resume: ["$files([.json])"]
+  positionalany:
+    - "/help\tshow available slash commands"
+    - "/status\tshow current session status"
+    - "/compact\tcompact local session history"
+    - "/clear --confirm\tclear the restored session"
+    - "/cost\tshow cumulative token usage"
+    - "/config\tinspect merged configuration"
+    - "/memory\tinspect instruction memory files"
+    - "/init\tcreate starter workspace files"
+    - "/diff\tshow the workspace diff"
+    - "/version\tshow version information"
+    - "/export\texport the conversation"
+    - "/agents\tlist configured agents"
+    - "/skills\tlist available skills"
+commands:
+  - name: dashboard
+    aliases: [tui]
+    description: Launch the live split-pane TUI dashboard
+  - name: dump-manifests
+    description: Read upstream TypeScript sources and print extracted counts
+  - name: bootstrap-plan
+    description: Print the bootstrap phase skeleton
+  - name: agents [ARGS]...
+    description: List configured agents
+    completion:
+      positional:
+        - ["list\tlist configured agents", "help\tshow agents usage"]
+  - name: skills [ARGS]...
+    description: List installed skills
+    completion:
+      positional:
+        - ["list\tlist installed skills", "help\tshow skills usage"]
+  - name: system-prompt [OPTIONS]
+    description: Print the assembled system prompt
+    flags:
+      --cwd=: Build the prompt for this working directory
+      --date=: Override the prompt date [default 2026-03-31]
+    completion:
+      flag:
+        cwd: ["$directories"]
+  - name: login
+    description: Start the OAuth login flow
+  - name: logout
+    description: Clear saved OAuth credentials
+  - name: init
+    description: Scaffold FRAUDE.md and local workspace files
+  - name: prompt <PROMPT>...
+    description: Run a one-shot prompt

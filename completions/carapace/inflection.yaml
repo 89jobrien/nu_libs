@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: inflection
+description: Observe AI tool-call logs and index conversations in a terminal UI
+flags:
+  --config=: Path to the configuration file
+  --sources=: JSON log source list
+  --event-sink=: Path to the event sink JSONL file
+  --enable-transcripts: Enable Claude transcript tailing
+  --transcript-latest=: Glob used to locate the latest transcript
+  --transcript-fallback=: Fallback transcript glob
+  --no-index: Skip indexing Claude projects
+  -h, --help: Print help
+completion:
+  flag:
+    config: ["$files([.json])"]
+    event-sink: ["$files([.jsonl])"]
+commands:
+  - name: proxy [OPTIONS]
+    description: Run the allowlisted HTTP proxy
+    flags:
+      --listen=: Listen address [default 127.0.0.1:8080]
+      --expose: Allow listening on non-loopback addresses (dangerous)
+      --allow-host=!: Comma-separated allowed hostnames
+      --event-sink=: Path to the event sink JSONL file
+      --mitm: Enable TLS interception for CONNECT requests
+      --i-understand-mitm: Acknowledge TLS interception risks
+      --capture-bodies: Capture request and response bodies (dangerous)
+      --i-understand-body-capture: Acknowledge body-capture risks
+      --capture-bodies-max-bytes=: Maximum bytes captured per request or response body
+      --ca-dir=: Directory used to store the proxy CA certificate and key
+      --proxy-token=: Require this bearer token for proxy requests
+      --proxy-token-key=: Load the proxy token from the secrets store by key
+      -h, --help: Print help
+    exclusiveflags:
+      - [proxy-token, proxy-token-key]
+    completion:
+      flag:
+        event-sink: ["$files([.jsonl])"]
+        ca-dir: ["$directories"]
+  - name: secrets [OPTIONS]
+    description: Manage the encrypted SQLite secrets store or import a CSV file
+    flags:
+      --db=: Path to the secrets SQLite database
+      --import-csv=: Import key/value rows from a CSV file
+      -h, --help: Print help
+    completion:
+      flag:
+        db: ["$files([.db, .sqlite, .sqlite3])"]
+        import-csv: ["$files([.csv])"]
+    commands:
+      - name: set [OPTIONS] <KEY> [VALUE]
+        description: Store or replace an encrypted secret
+        flags:
+          --db=: Path to the secrets SQLite database
+          --stdin: Read the secret value from standard input
+          -h, --help: Print help
+        completion:
+          flag:
+            db: ["$files([.db, .sqlite, .sqlite3])"]
+      - name: get [OPTIONS] <KEY>
+        description: Print an encrypted secret value
+        flags:
+          --db=: Path to the secrets SQLite database
+          -h, --help: Print help
+        completion:
+          flag:
+            db: ["$files([.db, .sqlite, .sqlite3])"]
+      - name: list [OPTIONS]
+        description: List stored secret keys
+        flags:
+          --db=: Path to the secrets SQLite database
+          -h, --help: Print help
+        completion:
+          flag:
+            db: ["$files([.db, .sqlite, .sqlite3])"]
+      - name: delete [OPTIONS] <KEY>
+        description: Delete a stored secret
+        flags:
+          --db=: Path to the secrets SQLite database
+          -h, --help: Print help
+        completion:
+          flag:
+            db: ["$files([.db, .sqlite, .sqlite3])"]
+      - name: export [OPTIONS]
+        description: Export encrypted secrets as JSONL or CSV
+        flags:
+          --db=: Path to the secrets SQLite database
+          --out=!: Output file path
+          --format=: Output format [default jsonl]
+          -h, --help: Print help
+        completion:
+          flag:
+            db: ["$files([.db, .sqlite, .sqlite3])"]
+            out: ["$files"]
+            format:
+              - "jsonl\tone JSON object per line"
+              - "csv\tcomma-separated encrypted records"

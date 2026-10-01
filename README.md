@@ -17,6 +17,8 @@ lib/
   rust/       Rust/Cargo: cargo search, rust AST, coverage
   doob/       Doob wrappers: repo-scoped todos, search, notes, handoff sync
   misc/       Misc tools: asciinema, zellij, rustic, rbw, website builder
+  sys/        macOS system inspection: process memory, swap pressure, disk bloat
+  workspace/  Multi-repo workspace introspection (proj-index)
 
 scripts/      Standalone scripts (not modules — contain top-level executable code)
 ai_nu/        Separate repo: AI/LLM agent primitives (OpenAI, Gemini, Ollama)
@@ -53,7 +55,17 @@ unrelated user specs. Use `sync-carapace-specs --dry-run` to preview destination
 
 ### Files with `export def main`
 
-These conflict when glob-re-exported, so use them directly by file path:
+These are **omitted from their category `mod.nu`**, so globbing the category does
+not bring them into scope. Load them by file path:
+
+```nu
+use lib/fs/loc.nu *
+loc src/
+```
+
+Glob re-export does **not** strip `export def main` — the note here previously
+claimed it did, which is wrong. `lib/sys/mod.nu` exports all five of its `main`
+files and all five resolve through `use lib/sys *`.
 
 | File                            | Command                      |
 | ------------------------------- | ---------------------------- |
@@ -68,7 +80,38 @@ These conflict when glob-re-exported, so use them directly by file path:
 | `lib/task/just.nu`              | `just` (completions wrapper) |
 | `lib/rust/taskit-release.nu`    | `taskit-release`             |
 
+## lib/workspace — proj-index
+
+Generates `~/dev/PROJECTS.md` from the repos on disk: name, description,
+toolkit, crate count, last commit.
+
 ```nu
-use lib/fs/loc.nu
-loc src/
+proj-index            # rewrite PROJECTS.md
+proj-index --check    # exit 1 if stale
+proj-index --auto     # suggest names for the include list
 ```
+
+Selection is a curated **name list** at `~/dev/.proj-index-include`, because
+every automatic "is this repo substantial?" signal was measured and failed:
+README.md exists in 99/99 repos, 64/99 committed within the week, and a
+composite marker score put real projects at 0..6 while 35 scratch repos scored
+3+. Everything except selection is derived automatically.
+
+## lib/sys — system inspection
+
+macOS process memory, swap pressure, and on-disk bloat. Read-only except
+`sys-reap`, which kills and refuses its own ancestry; `sys-disk` never deletes.
+
+```nu
+sys-scan | sys-triage      # classify, ranked by reclaimable swap
+sys-reap --pids [...]      # SIGTERM; add --escalate for SIGKILL survivors
+sys-disk --depth 1         # categorised disk report (slow: ~90-135s on ~/dev)
+```
+
+Validate with `nu --no-config-file lib/sys/validate.nu`, and
+`lib/sys/validate-load.nu` for the full-`use lib/mod.nu *` path. See the
+`sys-usage` skill for the workflow and encoded gotchas.
+
+Note: `lib/task/task.nu` exports `kill` for pueue, which shadows nu's builtin
+`kill` and breaks any module that calls `kill` by name at parse time. Use
+`/bin/kill` with numeric signals, as `lib/sys/sys-reap.nu` does.
